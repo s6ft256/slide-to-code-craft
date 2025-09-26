@@ -11,19 +11,21 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Link, useLocation } from "react-router-dom";
 
 const menuItems = [
-  { icon: Home, label: "Dashboard", active: true },
-  { icon: Calendar, label: "Daily Management" },
-  { icon: FileBarChart, label: "Statistic Reports" },
-  { icon: AlertTriangle, label: "Incident Management" },
-  { icon: Shield, label: "HSE Audit" },
-  { icon: Eye, label: "HSE Inspection" },
-  { icon: Siren, label: "Emergency Mgmt." },
-  { icon: XCircle, label: "HSE Violations" },
+  { icon: Home, label: "Dashboard", path: "/" },
+  { icon: Calendar, label: "Daily Management", path: "/daily-management" },
+  { icon: FileBarChart, label: "Statistic Reports", path: "/statistic-reports" },
+  { icon: AlertTriangle, label: "Incident Management", path: "/incident-management" },
+  { icon: Shield, label: "HSE Audit", path: "/hse-audit" },
+  { icon: Eye, label: "HSE Inspection", path: "/hse-inspection" },
+  { icon: Siren, label: "Emergency Mgmt.", path: "/emergency-management" },
+  { icon: XCircle, label: "HSE Violations", path: "/hse-violations" },
 ];
 
 const HSESidebar = () => {
+  const location = useLocation();
   return (
     <aside className="w-64 bg-sidebar-background border-r border-sidebar-border shadow-medium">
       <div className="p-6">
@@ -39,17 +41,18 @@ const HSESidebar = () => {
         
         <nav className="space-y-2">
           {menuItems.map((item, index) => (
-            <Button
-              key={index}
-              variant="ghost"
-              className={cn(
-                "w-full justify-start gap-3 h-12 text-sidebar-foreground hover:bg-sidebar-accent transition-smooth",
-                item.active && "bg-sidebar-accent text-sidebar-primary font-medium"
-              )}
-            >
-              <item.icon className="h-5 w-5" />
-              {item.label}
-            </Button>
+            <Link key={index} to={item.path}>
+              <Button
+                variant="ghost"
+                className={cn(
+                  "w-full justify-start gap-3 h-12 text-sidebar-foreground hover:bg-sidebar-accent transition-smooth",
+                  location.pathname === item.path && "bg-sidebar-accent text-sidebar-primary font-medium"
+                )}
+              >
+                <item.icon className="h-5 w-5" />
+                {item.label}
+              </Button>
+            </Link>
           ))}
         </nav>
         
