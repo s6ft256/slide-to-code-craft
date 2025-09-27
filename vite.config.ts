@@ -5,6 +5,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  base: '/slide-to-code-craft/', // Set the repository name as the base path for GitHub Pages
   server: {
     host: "::",
     port: 8080,

@@ -7,6 +7,8 @@ import Index from "./pages/Index";
 import DailyManagement from "./pages/DailyManagement";
 import StatisticReports from "./pages/StatisticReports";
 import IncidentManagement from "./pages/IncidentManagement";
+
+const basename = import.meta.env.DEV ? "/" : "/slide-to-code-craft";
 import HSEAudit from "./pages/HSEAudit";
 import HSEInspection from "./pages/HSEInspection";
 import EmergencyManagement from "./pages/EmergencyManagement";
@@ -20,7 +22,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
+      <BrowserRouter basename={basename}>
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/daily-management" element={<DailyManagement />} />
