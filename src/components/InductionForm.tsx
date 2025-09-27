@@ -3,7 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Search, FileText, Eye, Edit, Download } from "lucide-react";
+import { Search, FileText, Eye, Edit, Download, Plus } from "lucide-react";
+import AddInductionForm from "./AddInductionForm";
 import {
   Table,
   TableBody,
@@ -18,6 +19,7 @@ const InductionForm = () => {
   const [inductionType, setInductionType] = useState("internal");
   const [employeeName, setEmployeeName] = useState("");
   const [employeeId, setEmployeeId] = useState("");
+  const [showAddForm, setShowAddForm] = useState(false);
 
   const inductionData = [
     {
@@ -102,63 +104,74 @@ const InductionForm = () => {
               Events
             </Button>
           </div>
+          <Button 
+            onClick={() => setShowAddForm(!showAddForm)}
+            className="flex items-center space-x-2"
+          >
+            <Plus className="h-4 w-4" />
+            <span>{showAddForm ? "View Records" : "Add New Record"}</span>
+          </Button>
         </div>
         <CardTitle className="text-xl font-bold mt-4">INDUCTIONS</CardTitle>
       </CardHeader>
       
       <CardContent className="space-y-6">
-        {/* Search Section */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <Input
-              placeholder="Employee Name"
-              value={employeeName}
-              onChange={(e) => setEmployeeName(e.target.value)}
-              className="w-40"
-            />
-            <Input
-              placeholder="Employee ID"
-              value={employeeId}
-              onChange={(e) => setEmployeeId(e.target.value)}
-              className="w-32"
-            />
-            <div className="flex space-x-2">
-              <Button
-                variant={inductionType === "internal" ? "default" : "outline"}
-                onClick={() => setInductionType("internal")}
-                size="sm"
-              >
-                INTERNAL
-              </Button>
-              <Button
-                variant={inductionType === "external" ? "default" : "outline"}
-                onClick={() => setInductionType("external")}
-                size="sm"
-              >
-                EXTERNAL
-              </Button>
+        {showAddForm ? (
+          <AddInductionForm onClose={() => setShowAddForm(false)} />
+        ) : (
+          <>
+            {/* Search Section */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <Input
+                  placeholder="Employee Name"
+                  value={employeeName}
+                  onChange={(e) => setEmployeeName(e.target.value)}
+                  className="w-40"
+                />
+                <Input
+                  placeholder="Employee ID"
+                  value={employeeId}
+                  onChange={(e) => setEmployeeId(e.target.value)}
+                  className="w-32"
+                />
+                <div className="flex space-x-2">
+                  <Button
+                    variant={inductionType === "internal" ? "default" : "outline"}
+                    onClick={() => setInductionType("internal")}
+                    size="sm"
+                  >
+                    INTERNAL
+                  </Button>
+                  <Button
+                    variant={inductionType === "external" ? "default" : "outline"}
+                    onClick={() => setInductionType("external")}
+                    size="sm"
+                  >
+                    EXTERNAL
+                  </Button>
+                </div>
+                <Button size="sm" variant="outline">
+                  <Search className="h-4 w-4" />
+                </Button>
+              </div>
+              
+              {/* Summary Stats */}
+              <div className="flex space-x-4 text-sm">
+                <div className="text-center">
+                  <div className="text-muted-foreground">Total Entries</div>
+                  <div className="bg-pink-100 text-pink-800 px-2 py-1 rounded">Autofill</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-muted-foreground">Overdue Re-inductions</div>
+                  <div className="bg-pink-100 text-pink-800 px-2 py-1 rounded">Autofill</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-muted-foreground">Upcoming Re-inductions</div>
+                  <div className="bg-pink-100 text-pink-800 px-2 py-1 rounded">Autofill</div>
+                </div>
+              </div>
             </div>
-            <Button size="sm" variant="outline">
-              <Search className="h-4 w-4" />
-            </Button>
-          </div>
-          
-          {/* Summary Stats */}
-          <div className="flex space-x-4 text-sm">
-            <div className="text-center">
-              <div className="text-muted-foreground">Total Entries</div>
-              <div className="bg-pink-100 text-pink-800 px-2 py-1 rounded">Autofill</div>
-            </div>
-            <div className="text-center">
-              <div className="text-muted-foreground">Overdue Re-inductions</div>
-              <div className="bg-pink-100 text-pink-800 px-2 py-1 rounded">Autofill</div>
-            </div>
-            <div className="text-center">
-              <div className="text-muted-foreground">Upcoming Re-inductions</div>
-              <div className="bg-pink-100 text-pink-800 px-2 py-1 rounded">Autofill</div>
-            </div>
-          </div>
-        </div>
 
         {/* Table */}
         <div className="border rounded-lg">
@@ -213,7 +226,6 @@ const InductionForm = () => {
           </Table>
         </div>
 
-        {/* Bottom Action Buttons */}
         <div className="flex justify-end space-x-2">
           <Button className="bg-yellow-400 hover:bg-yellow-500 text-black font-medium">
             Medical Info
@@ -222,6 +234,8 @@ const InductionForm = () => {
             Documents Info
           </Button>
         </div>
+            </>
+        )}
       </CardContent>
     </Card>
   );
