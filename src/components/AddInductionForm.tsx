@@ -10,6 +10,8 @@ import { CalendarIcon, Upload } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { Database } from "@/integrations/supabase/types";
+import { supabase } from "@/integrations/supabase/client";
 
 const AddInductionForm = ({ onClose }: { onClose: () => void }) => {
   const [formData, setFormData] = useState({
@@ -47,15 +49,37 @@ const AddInductionForm = ({ onClose }: { onClose: () => void }) => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Basic validation
     if (!formData.name || !formData.idNo || !formData.company) {
       toast({
         title: "Validation Error",
         description: "Please fill in all required fields",
-        variant: "destructive"
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const mappedData = {
+      sno: formData.sno || null,
+      idno: formData.idNo || null,
+      name: formData.name || null,
+      designation: formData.designation || null,
+      company: formData.company || null,
+      inductedon: formData.inductedOn?.toISOString() || null,
+      nextinduction: formData.nextInduction?.toISOString() || null,
+      status: formData.status || null,
+    };
+
+    const { error } = await supabase.from("induction_records").insert(mappedData);
+
+    if (error) {
+      toast({
+        title: "Submission Error",
+        description: error.message,
+        variant: "destructive",
       });
       return;
     }
