@@ -2,6 +2,7 @@ import Layout from "@/components/Layout";
 import ProjectStatus from "@/components/ProjectStatus";
 import MetricCard from "@/components/MetricCard";
 import ChartCard from "@/components/ChartCard";
+import InductionForm from "@/components/InductionForm";
 import { Activity, Users, Clock, Target, AlertTriangle } from "lucide-react";
 
 const DailyManagement = () => {
@@ -107,6 +108,8 @@ const DailyManagement = () => {
             </div>
           </div>
         </div>
+
+        <InductionForm />
       </div>
     </Layout>
   );
