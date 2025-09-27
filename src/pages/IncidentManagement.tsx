@@ -2,9 +2,14 @@ import Layout from "@/components/Layout";
 import MetricCard from "@/components/MetricCard";
 import ChartCard from "@/components/ChartCard";
 import LTIChart from "@/components/LTIChart";
-import { AlertTriangle, FileText, Clock, Users, TrendingDown } from "lucide-react";
+import IncidentReportForm from "@/components/IncidentReportForm";
+import { AlertTriangle, FileText, Clock, Users, TrendingDown, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 const IncidentManagement = () => {
+  const [showReportForm, setShowReportForm] = useState(false);
+  
   const incidentMetrics = [
     {
       title: "Total Incidents",
@@ -36,15 +41,52 @@ const IncidentManagement = () => {
     }
   ];
 
+  if (showReportForm) {
+    return (
+      <Layout>
+        <div className="mb-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-2xl font-bold text-foreground mb-2">
+                New Incident Report
+              </h1>
+              <p className="text-muted-foreground">
+                Fill out the incident report form with all required details
+              </p>
+            </div>
+            <Button 
+              variant="outline" 
+              onClick={() => setShowReportForm(false)}
+            >
+              Back to Dashboard
+            </Button>
+          </div>
+        </div>
+        <IncidentReportForm />
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-foreground mb-2">
-          Incident Management
-        </h1>
-        <p className="text-muted-foreground">
-          Track and manage safety incidents and near misses
-        </p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold text-foreground mb-2">
+              Incident Management
+            </h1>
+            <p className="text-muted-foreground">
+              Track and manage safety incidents and near misses
+            </p>
+          </div>
+          <Button 
+            onClick={() => setShowReportForm(true)}
+            className="flex items-center gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            New Incident Report
+          </Button>
+        </div>
       </div>
 
       <div className="space-y-8">
