@@ -8,46 +8,117 @@ import {
   Target,
   CheckCircle,
   AlertTriangle,
-  TrendingUp
+  TrendingUp,
+  Loader2
 } from "lucide-react";
 import MetricCard from "./MetricCard";
+import { useDashboardMetrics } from "@/hooks/use-dashboard-metrics";
+
+type MetricVariant = 'success' | 'warning' | 'destructive' | 'default';
 
 const HSEMetricsGrid = () => {
+  const { 
+    projectRating,
+    projectScore,
+    leadingIndicators,
+    trainingAverage,
+    daysWithoutLTI,
+    incidentsReported,
+    reportsSubmitted,
+    activeTrainings,
+    ncrs,
+    completedInspections,
+    loading,
+    error
+  } = useDashboardMetrics();
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[200px]">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-[200px] text-red-500">
+        <AlertTriangle className="h-6 w-6 mr-2" />
+        {error}
+      </div>
+    );
+  }
+
   const metrics = [
     {
       title: "Project Rating",
-      value: "★★★★☆",
+      value: projectRating,
       subtitle: "OPS 14",
       icon: Target,
-      variant: "success" as const
+      variant: 'success' as MetricVariant
     },
     {
       title: "Project Score",
-      value: "+0",
+      value: projectScore.toString(),
       subtitle: "G E",
       icon: TrendingUp,
-      variant: "default" as const
+      variant: (projectScore >= 0 ? 'success' : 'destructive') as MetricVariant
     },
     {
       title: "Leading Indicators",
-      value: "00",
+      value: leadingIndicators.toString().padStart(2, '0'),
       subtitle: "Incidents",
       icon: Activity,
-      variant: "success" as const
+      variant: 'success' as MetricVariant
     },
     {
       title: "Training Average",
-      value: "64.1%",
+      value: `${Math.round(trainingAverage)}%`,
       subtitle: "Completion",
       icon: GraduationCap,
-      variant: "warning" as const
+      variant: (trainingAverage >= 80 ? 'success' : 'warning') as MetricVariant
     },
     {
       title: "Days Without LTI",
-      value: "43",
+      value: daysWithoutLTI.toString(),
       subtitle: "Days",
       icon: Calendar,
-      variant: "success" as const
+      variant: (daysWithoutLTI > 30 ? 'success' : 'warning') as MetricVariant
+    },
+    {
+      title: "Incidents Reported",
+      value: incidentsReported.toString(),
+      subtitle: "This Month",
+      icon: AlertTriangle,
+      variant: (incidentsReported === 0 ? 'success' : 'warning') as MetricVariant
+    },
+    {
+      title: "Reports Submitted",
+      value: reportsSubmitted.toString(),
+      subtitle: "This Month",
+      icon: FileText,
+      variant: 'default' as MetricVariant
+    },
+    {
+      title: "Active Trainings",
+      value: activeTrainings.toString(),
+      subtitle: "In Progress",
+      icon: Users,
+      variant: 'default' as MetricVariant
+    },
+    {
+      title: "NCRs",
+      value: ncrs.toString(),
+      subtitle: "Open",
+      icon: AlertTriangle,
+      variant: (ncrs > 5 ? 'destructive' : ncrs > 2 ? 'warning' : 'success') as MetricVariant
+    },
+    {
+      title: "Inspections",
+      value: completedInspections.toString(),
+      subtitle: "Completed",
+      icon: CheckCircle,
+      variant: (completedInspections >= 10 ? 'success' : 'warning') as MetricVariant
     },
     {
       title: "SCRs Status",

@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
+
+type TrainingCompetencyRecord = Database["public"]["Tables"]["training_competency_register"]["Row"];
 
 export default function TrainingCompetencyRecords() {
-  const [records, setRecords] = useState<any[]>([]);
+  const [records, setRecords] = useState<TrainingCompetencyRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

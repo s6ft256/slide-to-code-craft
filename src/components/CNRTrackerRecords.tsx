@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
+
+type CNRRecord = Database["public"]["Tables"]["cnr_tracker"]["Row"];
 
 export default function CNRTrackerRecords() {
-  const [records, setRecords] = useState<any[]>([]);
+  const [records, setRecords] = useState<CNRRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

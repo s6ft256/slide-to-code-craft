@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
+
+type ObservationTrackerRecord = Database["public"]["Tables"]["observation_tracker"]["Row"];
 
 export default function ObservationTrackerRecords() {
-  const [records, setRecords] = useState<any[]>([]);
+  const [records, setRecords] = useState<ObservationTrackerRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

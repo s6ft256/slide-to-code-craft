@@ -19,7 +19,11 @@ const fields = [
   { name: "trainingCertificateValidity", label: "Training / Certificate Validity", type: "string" }
 ];
 
-export default function TrainingCompetencyForm({ onSubmit }: { onSubmit?: (data: any) => void }) {
+import type { Database } from "@/integrations/supabase/types";
+
+type TrainingCompetencyInsert = Database["public"]["Tables"]["training_competency_register"]["Insert"];
+
+export default function TrainingCompetencyForm({ onSubmit }: { onSubmit?: (data: TrainingCompetencyInsert) => void }) {
   const initialForm = Object.fromEntries(fields.map(f => [f.name, ""]));
   const [form, setForm] = useState<Record<string, string | number>>(initialForm);
   const [loading, setLoading] = useState(false);
@@ -62,7 +66,7 @@ export default function TrainingCompetencyForm({ onSubmit }: { onSubmit?: (data:
 
     for (const field of fields) {
       const supabaseField = fieldMapping[field.name];
-      let val = form[field.name];
+  const val = form[field.name];
       if (field.type === "number") {
         supabaseData[supabaseField] = val === "" ? null : Number(val);
       } else if (field.type === "date") {
@@ -82,8 +86,8 @@ export default function TrainingCompetencyForm({ onSubmit }: { onSubmit?: (data:
         if (onSubmit) onSubmit(form);
         setForm(initialForm);
       }
-    } catch (err: any) {
-      setError(err.message || "Unknown error");
+    } catch (err) {
+      setError((err as Error).message || "Unknown error");
     } finally {
       setLoading(false);
     }

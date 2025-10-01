@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -12,8 +12,10 @@ import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { Database } from "@/integrations/supabase/types";
 import { supabase } from "@/integrations/supabase/client";
+import { useSerialNumber } from "@/hooks/use-serial-number";
 
 const AddInductionForm = ({ onClose }: { onClose: () => void }) => {
+  const { getNextSerialNumber } = useSerialNumber('induction_records' as const);
   const [formData, setFormData] = useState({
     sno: "",
     idNo: "",
@@ -24,6 +26,16 @@ const AddInductionForm = ({ onClose }: { onClose: () => void }) => {
     nextInduction: undefined as Date | undefined,
     status: ""
   });
+
+  useEffect(() => {
+    const initializeSerialNumber = async () => {
+      const nextSN = await getNextSerialNumber();
+      if (nextSN) {
+        setFormData(prev => ({ ...prev, sno: nextSN }));
+      }
+    };
+    initializeSerialNumber();
+  }, [getNextSerialNumber]);
   
   const [signature, setSignature] = useState<File | null>(null);
   const { toast } = useToast();
@@ -62,6 +74,26 @@ const AddInductionForm = ({ onClose }: { onClose: () => void }) => {
       return;
     }
 
+    let signatureUrl = null;
+
+    // Upload signature file if present
+    if (signature) {
+      const { data, error: uploadError } = await supabase.storage
+        .from("signatures")
+        .upload(`induction/${Date.now()}_${signature.name}`, signature);
+
+      if (uploadError) {
+        toast({
+          title: "File Upload Error",
+          description: uploadError.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      signatureUrl = data?.path ? supabase.storage.from("signatures").getPublicUrl(data.path).data.publicUrl : null;
+    }
+
     const mappedData = {
       sno: formData.sno || null,
       idno: formData.idNo || null,
@@ -71,6 +103,7 @@ const AddInductionForm = ({ onClose }: { onClose: () => void }) => {
       inductedon: formData.inductedOn?.toISOString() || null,
       nextinduction: formData.nextInduction?.toISOString() || null,
       status: formData.status || null,
+      signature: signatureUrl,
     };
 
     const { error } = await supabase.from("induction_records").insert(mappedData);

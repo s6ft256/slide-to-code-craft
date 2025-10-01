@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
+
+type MasterRegisterRecord = Database["public"]["Tables"]["master_register"]["Row"];
 
 export default function MasterRegisterRecords() {
-  const [records, setRecords] = useState<any[]>([]);
+  const [records, setRecords] = useState<MasterRegisterRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

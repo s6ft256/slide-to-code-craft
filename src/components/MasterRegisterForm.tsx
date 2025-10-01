@@ -122,7 +122,11 @@ const fields: FieldDef[] = [
   { name: "reportingMonthYear", label: "Reporting Month / Year", type: "string" }
 ];
 
-export default function MasterRegisterForm({ onSubmit }: { onSubmit?: (data: any) => void }) {
+import type { Database } from "@/integrations/supabase/types";
+
+type MasterRegisterInsert = Database["public"]["Tables"]["master_register"]["Insert"];
+
+export default function MasterRegisterForm({ onSubmit }: { onSubmit?: (data: MasterRegisterInsert) => void }) {
   const initialForm = Object.fromEntries(fields.map(f => [f.name, f.type === "checkbox" ? false : ""]));
   const [form, setForm] = useState<Record<string, string | number | boolean>>(initialForm);
 
@@ -150,7 +154,7 @@ export default function MasterRegisterForm({ onSubmit }: { onSubmit?: (data: any
     // Convert form values to correct types for Supabase
     const supabaseData: Record<string, string | number | boolean | null> = {};
     for (const field of fields) {
-      let val = form[field.name];
+  const val = form[field.name];
       if (field.type === "number") {
         supabaseData[field.name] = val === "" ? null : Number(val);
       } else if (field.type === "checkbox") {
@@ -172,8 +176,8 @@ export default function MasterRegisterForm({ onSubmit }: { onSubmit?: (data: any
         if (onSubmit) onSubmit(form);
         setForm(initialForm);
       }
-    } catch (err: any) {
-      setError(err.message || "Unknown error");
+    } catch (err) {
+      setError((err as Error).message || "Unknown error");
     } finally {
       setLoading(false);
     }

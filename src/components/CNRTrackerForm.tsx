@@ -21,7 +21,11 @@ const fields = [
   { name: "remarks", label: "Remarks", type: "string" }
 ];
 
-export default function CNRTrackerForm({ onSubmit }: { onSubmit?: (data: any) => void }) {
+import { Database } from "@/integrations/supabase/types";
+
+type CNRRecord = Database["public"]["Tables"]["cnr_tracker"]["Insert"];
+
+export default function CNRTrackerForm({ onSubmit }: { onSubmit?: (data: CNRRecord) => void }) {
   const initialForm = Object.fromEntries(fields.map(f => [f.name, ""]));
   const [form, setForm] = useState<Record<string, string | number>>(initialForm);
   const [loading, setLoading] = useState(false);
@@ -66,7 +70,7 @@ export default function CNRTrackerForm({ onSubmit }: { onSubmit?: (data: any) =>
 
     for (const field of fields) {
       const supabaseField = fieldMapping[field.name];
-      let val = form[field.name];
+  const val = form[field.name];
       if (field.type === "number") {
         supabaseData[supabaseField] = val === "" ? null : Number(val);
       } else if (field.type === "date") {
@@ -77,8 +81,8 @@ export default function CNRTrackerForm({ onSubmit }: { onSubmit?: (data: any) =>
     }
     try {
       const { error: supabaseError } = await supabase
-  .from("cnr_tracker")
-  .insert([supabaseData as import("@/integrations/supabase/types").Database["public"]["Tables"]["cnr_tracker"]["Insert"]]);
+        .from("cnr_tracker")
+        .insert([supabaseData as CNRRecord]);
       if (supabaseError) {
         setError(supabaseError.message);
       } else {
@@ -86,8 +90,8 @@ export default function CNRTrackerForm({ onSubmit }: { onSubmit?: (data: any) =>
         if (onSubmit) onSubmit(form);
         setForm(initialForm);
       }
-    } catch (err: any) {
-      setError(err.message || "Unknown error");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unknown error");
     } finally {
       setLoading(false);
     }

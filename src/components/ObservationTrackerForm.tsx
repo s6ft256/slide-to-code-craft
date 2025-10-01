@@ -18,7 +18,11 @@ const fields = [
   { name: "status", label: "Status", type: "string" }
 ];
 
-export default function ObservationTrackerForm({ onSubmit }: { onSubmit?: (data: any) => void }) {
+import type { Database } from "@/integrations/supabase/types";
+
+type ObservationInsert = Database["public"]["Tables"]["observation_tracker"]["Insert"];
+
+export default function ObservationTrackerForm({ onSubmit }: { onSubmit?: (data: ObservationInsert) => void }) {
   const initialForm = Object.fromEntries(fields.map(f => [f.name, ""]));
   const [form, setForm] = useState<Record<string, string | number>>(initialForm);
   const [loading, setLoading] = useState(false);
@@ -62,7 +66,7 @@ export default function ObservationTrackerForm({ onSubmit }: { onSubmit?: (data:
 
     for (const field of fields) {
       const supabaseField = fieldMapping[field.name];
-      let val = form[field.name];
+  const val = form[field.name];
       if (field.type === "number") {
         supabaseData[supabaseField] = val === "" ? null : Number(val);
       } else if (field.type === "date") {
@@ -73,8 +77,8 @@ export default function ObservationTrackerForm({ onSubmit }: { onSubmit?: (data:
     }
     try {
       const { error: supabaseError } = await supabase
-  .from("observation_tracker")
-  .insert([supabaseData as import("@/integrations/supabase/types").Database["public"]["Tables"]["observation_tracker"]["Insert"]]);
+        .from("observation_tracker")
+        .insert([supabaseData as ObservationInsert]);
       if (supabaseError) {
         setError(supabaseError.message);
       } else {
@@ -82,8 +86,8 @@ export default function ObservationTrackerForm({ onSubmit }: { onSubmit?: (data:
         if (onSubmit) onSubmit(form);
         setForm(initialForm);
       }
-    } catch (err: any) {
-      setError(err.message || "Unknown error");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unknown error");
     } finally {
       setLoading(false);
     }
