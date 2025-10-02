@@ -12,6 +12,8 @@ import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 // Using localStorage for data persistence
 import { useSerialNumber } from "@/hooks/use-serial-number";
+import FileUploader from "@/components/FileUploader";
+import { UploadedFile } from "@/hooks/use-file-upload";
 
 const AddInductionForm = ({ onClose }: { onClose: () => void }) => {
   const { getNextSerialNumber } = useSerialNumber('induction_records' as const);
@@ -39,7 +41,7 @@ const AddInductionForm = ({ onClose }: { onClose: () => void }) => {
     initializeSerialNumber();
   }, [getNextSerialNumber]);
   
-  const [signature, setSignature] = useState<File | null>(null);
+  const [signatureFiles, setSignatureFiles] = useState<UploadedFile[]>([]);
   const { toast } = useToast();
 
   const handleInputChange = (field: string, value: string) => {
@@ -62,11 +64,8 @@ const AddInductionForm = ({ onClose }: { onClose: () => void }) => {
     }));
   };
 
-  const handleSignatureUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSignature(file);
-    }
+  const handleSignatureUpload = (files: UploadedFile[]) => {
+    setSignatureFiles(files);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -85,23 +84,9 @@ const AddInductionForm = ({ onClose }: { onClose: () => void }) => {
     let signatureUrl = null;
 
     // Upload signature file if present
-    if (signature) {
-      // Convert signature to base64 for localStorage storage
-      try {
-        signatureUrl = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result as string);
-          reader.onerror = reject;
-          reader.readAsDataURL(signature);
-        });
-      } catch (error) {
-        toast({
-          title: "File Upload Error",
-          description: "Failed to process signature file",
-          variant: "destructive",
-        });
-        return;
-      }
+    if (signatureFiles.length > 0) {
+      // Use the dataUrl from the uploaded file
+      signatureUrl = signatureFiles[0].dataUrl;
     }
 
     const mappedData = {
@@ -140,7 +125,7 @@ const AddInductionForm = ({ onClose }: { onClose: () => void }) => {
         nextInduction: undefined,
         status: ""
       });
-      setSignature(null);
+      setSignatureFiles([]);
       onClose();
     } catch (error) {
       toast({
@@ -311,23 +296,17 @@ const AddInductionForm = ({ onClose }: { onClose: () => void }) => {
           {/* SIGNATURE */}
           <div className="space-y-2">
             <Label htmlFor="signature">SIGNATURE</Label>
-            <div className="flex items-center space-x-2">
-              <Button type="button" variant="outline" className="relative">
-                <Upload className="mr-2 h-4 w-4" />
-                Upload Signature
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleSignatureUpload}
-                  className="absolute inset-0 opacity-0 cursor-pointer"
-                />
-              </Button>
-              {signature && (
-                <span className="text-sm text-muted-foreground">
-                  {signature.name}
-                </span>
-              )}
-            </div>
+            <FileUploader
+              options={{
+                maxSize: 5 * 1024 * 1024, // 5MB
+                allowedTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'],
+                multiple: false
+              }}
+              onFilesChange={handleSignatureUpload}
+              showPreview={true}
+              showProgress={true}
+              className="w-full"
+            />
           </div>
 
           {/* Form Actions */}
