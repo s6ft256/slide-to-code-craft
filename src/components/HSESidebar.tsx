@@ -7,7 +7,8 @@ import {
   Eye, 
   Siren, 
   XCircle,
-  Home
+  Home,
+  BookOpen
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -22,6 +23,7 @@ const menuItems = [
   { icon: Eye, label: "HSE Inspection", path: "/hse-inspection" },
   { icon: Siren, label: "Emergency Mgmt.", path: "/emergency-management" },
   { icon: XCircle, label: "HSE Violations", path: "/hse-violations" },
+  { icon: BookOpen, label: "Library", path: "/library" },
 ];
 
 const HSESidebar = () => {

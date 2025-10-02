@@ -12,6 +12,7 @@ import HSEInspection from "./pages/HSEInspection";
 import EmergencyManagement from "./pages/EmergencyManagement";
 import HSEViolations from "./pages/HSEViolations";
 import NotFound from "./pages/NotFound";
+import Library from "./pages/Library";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/hse-inspection" element={<HSEInspection />} />
           <Route path="/emergency-management" element={<EmergencyManagement />} />
           <Route path="/hse-violations" element={<HSEViolations />} />
+          <Route path="/library" element={<Library />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </HashRouter>
