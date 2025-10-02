@@ -52,7 +52,7 @@ const HSESidebar = () => {
             </div>
           </div>
           
-          <div className="flex items-center space-x-1 overflow-x-auto">
+          <div className="flex items-center space-x-1 overflow-x-hidden">
             {menuItems.map((item, index) => (
               <Link key={index} to={item.path}>
                 <Button
