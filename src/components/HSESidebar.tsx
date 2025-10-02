@@ -40,75 +40,78 @@ const HSESidebar = () => {
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
   
   return (
-    <aside className="w-64 bg-sidebar-background border-r border-sidebar-border shadow-medium">
-      <div className="p-6">
-        <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 bg-gradient-success rounded-lg flex items-center justify-center">
-            <Shield className="h-6 w-6 text-success-foreground" />
+    <nav className="bg-sidebar-background border-b border-sidebar-border shadow-sm">
+      <div className="px-6 py-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-gradient-success rounded-lg flex items-center justify-center">
+              <Shield className="h-5 w-5 text-success-foreground" />
+            </div>
+            <div>
+              <h2 className="font-bold text-sidebar-foreground text-lg">TBMS 2.0</h2>
+            </div>
           </div>
-          <div>
-            <h2 className="font-bold text-sidebar-foreground text-lg">TBMS 2.0</h2>
-            <p className="text-sm text-sidebar-foreground/70">HSE Management</p>
+          
+          <div className="flex items-center space-x-1 overflow-x-auto">
+            {menuItems.map((item, index) => (
+              <Link key={index} to={item.path}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={cn(
+                    "flex items-center gap-2 px-3 py-2 text-sidebar-foreground hover:bg-sidebar-accent transition-smooth whitespace-nowrap",
+                    location.pathname === item.path && "bg-sidebar-accent text-sidebar-primary font-medium"
+                  )}
+                >
+                  <item.icon className="h-4 w-4" />
+                  {item.label}
+                </Button>
+              </Link>
+            ))}
+            
+            {/* Library Section */}
+            <div className="relative">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsLibraryOpen(!isLibraryOpen)}
+                className={cn(
+                  "flex items-center gap-2 px-3 py-2 text-sidebar-foreground hover:bg-sidebar-accent transition-smooth whitespace-nowrap",
+                  location.pathname.startsWith('/library') && "bg-sidebar-accent text-sidebar-primary font-medium"
+                )}
+              >
+                <BookOpen className="h-4 w-4" />
+                Library
+                {isLibraryOpen ? 
+                  <ChevronDown className="h-3 w-3" /> : 
+                  <ChevronRight className="h-3 w-3" />
+                }
+              </Button>
+              
+              {isLibraryOpen && (
+                <div className="absolute top-full left-0 mt-1 bg-sidebar-background border border-sidebar-border rounded-md shadow-lg z-50 min-w-[120px]">
+                  {librarySubItems.map((subItem, index) => (
+                    <Link key={index} to={subItem.path}>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className={cn(
+                          "w-full justify-start px-3 py-2 text-sm text-sidebar-foreground hover:bg-sidebar-accent transition-smooth",
+                          location.search.includes(subItem.label.toLowerCase()) && "bg-sidebar-accent text-sidebar-primary font-medium"
+                        )}
+                      >
+                        {subItem.label}
+                      </Button>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
         
-        <nav className="flex flex-col space-y-2">
-          {menuItems.map((item, index) => (
-            <Link key={index} to={item.path}>
-              <Button
-                variant="ghost"
-                className={cn(
-                  "w-full justify-start gap-3 h-12 text-sidebar-foreground hover:bg-sidebar-accent transition-smooth",
-                  location.pathname === item.path && "bg-sidebar-accent text-sidebar-primary font-medium"
-                )}
-              >
-                <item.icon className="h-5 w-5" />
-                {item.label}
-              </Button>
-            </Link>
-          ))}
-          
-          {/* Library Section */}
-          <div className="flex flex-col">
-            <Button
-              variant="ghost"
-              onClick={() => setIsLibraryOpen(!isLibraryOpen)}
-              className={cn(
-                "w-full justify-start gap-3 h-12 text-sidebar-foreground hover:bg-sidebar-accent transition-smooth",
-                location.pathname.startsWith('/library') && "bg-sidebar-accent text-sidebar-primary font-medium"
-              )}
-            >
-              <BookOpen className="h-5 w-5" />
-              Library
-              {isLibraryOpen ? 
-                <ChevronDown className="h-4 w-4 ml-auto" /> : 
-                <ChevronRight className="h-4 w-4 ml-auto" />
-              }
-            </Button>
-            
-            {isLibraryOpen && (
-              <div className="ml-6 mt-2 flex flex-col space-y-1">
-                {librarySubItems.map((subItem, index) => (
-                  <Link key={index} to={subItem.path}>
-                    <Button
-                      variant="ghost"
-                      className={cn(
-                        "w-full justify-start gap-3 h-10 text-sm text-sidebar-foreground hover:bg-sidebar-accent transition-smooth",
-                        location.search.includes(subItem.label.toLowerCase()) && "bg-sidebar-accent text-sidebar-primary font-medium"
-                      )}
-                    >
-                      {subItem.label}
-                    </Button>
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-        </nav>
-        
-        {/* Removed informational card per request */}
       </div>
-    </aside>
+    </nav>
   );
 };
 
