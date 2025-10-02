@@ -44,12 +44,11 @@ const HSESidebar = () => {
       <div className="px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-gradient-success rounded-lg flex items-center justify-center">
-              <Shield className="h-5 w-5 text-success-foreground" />
-            </div>
-            <div>
-              <h2 className="font-bold text-sidebar-foreground text-lg">TBMS 2.0</h2>
-            </div>
+            <img 
+              src="/slide-to-code-craft/troj.jpg" 
+              alt="Troj Logo" 
+              className="w-8 h-8 rounded-lg object-cover"
+            />
           </div>
           
           <div className="flex items-center space-x-1 overflow-x-hidden">
