@@ -21,8 +21,34 @@ const Library = () => {
 
         <TabsContent value="iso">
           <div className="p-6 border rounded-lg bg-card">
-            <h2 className="text-lg font-semibold mb-2">ISO Documents</h2>
-            <p className="text-muted-foreground">Add ISO standards, procedures, and references here.</p>
+            <h2 className="text-lg font-semibold mb-4">ISO Documents</h2>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div>
+                  <h3 className="font-medium">ISO 45001 Implementation Guide</h3>
+                  <p className="text-sm text-muted-foreground">Occupational Health and Safety Management Systems</p>
+                </div>
+                <a 
+                  href="/slide-to-code-craft/ISO.pdf" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+                >
+                  View PDF
+                </a>
+              </div>
+              
+              {/* PDF Embed */}
+              <div className="border rounded-lg overflow-hidden" style={{ height: '600px' }}>
+                <iframe
+                  src="/slide-to-code-craft/ISO.pdf"
+                  width="100%"
+                  height="100%"
+                  title="ISO 45001 Implementation Guide"
+                  className="border-0"
+                />
+              </div>
+            </div>
           </div>
         </TabsContent>
 
