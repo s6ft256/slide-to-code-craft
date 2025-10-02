@@ -40,7 +40,7 @@ const HSESidebar = () => {
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
   
   return (
-    <nav className="bg-sidebar-background border-b border-sidebar-border shadow-sm">
+    <nav className="bg-sidebar-background border-b border-sidebar-border shadow-sm sticky top-0 z-50">
       <div className="px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -88,7 +88,7 @@ const HSESidebar = () => {
               </Button>
               
               {isLibraryOpen && (
-                <div className="absolute top-full left-0 mt-0 bg-sidebar-background border border-sidebar-border rounded-md shadow-xl z-50 min-w-[140px] animate-in fade-in-0 slide-in-from-top-2 duration-200">
+                <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-xl z-[9999] min-w-[140px] animate-in fade-in-0 slide-in-from-top-2 duration-200">
                   <div className="py-1">
                     {librarySubItems.map((subItem, index) => (
                       <Link key={index} to={subItem.path}>
@@ -96,8 +96,8 @@ const HSESidebar = () => {
                           variant="ghost"
                           size="sm"
                           className={cn(
-                            "w-full justify-start px-4 py-2 text-sm text-sidebar-foreground hover:bg-sidebar-accent transition-colors duration-150 rounded-none first:rounded-t-md last:rounded-b-md",
-                            location.search.includes(subItem.label.toLowerCase()) && "bg-sidebar-accent text-sidebar-primary font-medium"
+                            "w-full justify-start px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150 rounded-none first:rounded-t-md last:rounded-b-md",
+                            location.search.includes(subItem.label.toLowerCase()) && "bg-gray-100 text-gray-900 font-medium"
                           )}
                         >
                           {subItem.label}
