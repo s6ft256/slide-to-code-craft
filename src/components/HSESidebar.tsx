@@ -88,22 +88,25 @@ const HSESidebar = () => {
               </Button>
               
               {isLibraryOpen && (
-                <div className="absolute top-full left-0 mt-0 bg-sidebar-background border border-sidebar-border rounded-md shadow-xl z-50 min-w-[140px] animate-in fade-in-0 slide-in-from-top-2 duration-200">
-                  <div className="py-1">
-                    {librarySubItems.map((subItem, index) => (
-                      <Link key={index} to={subItem.path}>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className={cn(
-                            "w-full justify-start px-4 py-2 text-sm text-sidebar-foreground hover:bg-sidebar-accent transition-colors duration-150 rounded-none first:rounded-t-md last:rounded-b-md",
-                            location.search.includes(subItem.label.toLowerCase()) && "bg-sidebar-accent text-sidebar-primary font-medium"
-                          )}
-                        >
-                          {subItem.label}
-                        </Button>
-                      </Link>
-                    ))}
+                <div className="fixed top-16 left-0 right-0 bg-sidebar-background/95 backdrop-blur-sm border-b border-sidebar-border shadow-lg z-50 animate-in fade-in-0 slide-in-from-top-2 duration-200">
+                  <div className="container mx-auto px-6 py-3">
+                    <div className="flex items-center space-x-4">
+                      <span className="text-sm font-medium text-sidebar-foreground/70">Library:</span>
+                      {librarySubItems.map((subItem, index) => (
+                        <Link key={index} to={subItem.path}>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className={cn(
+                              "px-4 py-2 text-sm text-sidebar-foreground hover:bg-sidebar-accent transition-colors duration-150 rounded-md",
+                              location.search.includes(subItem.label.toLowerCase()) && "bg-sidebar-accent text-sidebar-primary font-medium"
+                            )}
+                          >
+                            {subItem.label}
+                          </Button>
+                        </Link>
+                      ))}
+                    </div>
                   </div>
                 </div>
               )}
