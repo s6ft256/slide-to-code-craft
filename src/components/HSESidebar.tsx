@@ -69,11 +69,14 @@ const HSESidebar = () => {
             ))}
             
             {/* Library Section */}
-            <div className="relative">
+            <div 
+              className="relative"
+              onMouseEnter={() => setIsLibraryOpen(true)}
+              onMouseLeave={() => setIsLibraryOpen(false)}
+            >
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setIsLibraryOpen(!isLibraryOpen)}
                 className={cn(
                   "flex items-center gap-2 px-3 py-2 text-sidebar-foreground hover:bg-sidebar-accent transition-smooth whitespace-nowrap",
                   location.pathname.startsWith('/library') && "bg-sidebar-accent text-sidebar-primary font-medium"
@@ -81,10 +84,7 @@ const HSESidebar = () => {
               >
                 <BookOpen className="h-4 w-4" />
                 Library
-                {isLibraryOpen ? 
-                  <ChevronDown className="h-3 w-3" /> : 
-                  <ChevronRight className="h-3 w-3" />
-                }
+                <ChevronDown className="h-3 w-3" />
               </Button>
               
               {isLibraryOpen && (
