@@ -12,7 +12,7 @@ const Library = () => {
       </div>
 
       <Tabs defaultValue="iso" className="w-full">
-        <TabsList className="mb-4">
+        <TabsList className="mb-4 gap-2">
           <TabsTrigger value="iso">ISO</TabsTrigger>
           <TabsTrigger value="uae">UAE</TabsTrigger>
           <TabsTrigger value="sops">SOPs</TabsTrigger>
