@@ -52,7 +52,7 @@ const HSESidebar = () => {
           </div>
         </div>
         
-        <nav className="space-y-2">
+        <nav className="flex flex-col space-y-2">
           {menuItems.map((item, index) => (
             <Link key={index} to={item.path}>
               <Button
@@ -69,7 +69,7 @@ const HSESidebar = () => {
           ))}
           
           {/* Library Section */}
-          <div>
+          <div className="flex flex-col">
             <Button
               variant="ghost"
               onClick={() => setIsLibraryOpen(!isLibraryOpen)}
@@ -87,7 +87,7 @@ const HSESidebar = () => {
             </Button>
             
             {isLibraryOpen && (
-              <div className="ml-6 mt-1 space-y-1">
+              <div className="ml-6 mt-2 flex flex-col space-y-1">
                 {librarySubItems.map((subItem, index) => (
                   <Link key={index} to={subItem.path}>
                     <Button

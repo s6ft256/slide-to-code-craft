@@ -18,12 +18,6 @@ const Library = () => {
   return (
     <Layout>
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full h-screen">
-        <TabsList className="mb-4 gap-2">
-          <TabsTrigger value="iso">ISO</TabsTrigger>
-          <TabsTrigger value="uae">UAE</TabsTrigger>
-          <TabsTrigger value="sops">SOPs</TabsTrigger>
-          <TabsTrigger value="policy">Policy</TabsTrigger>
-        </TabsList>
 
         <TabsContent value="iso" className="h-full">
           <div className="h-full">
