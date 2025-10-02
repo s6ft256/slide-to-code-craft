@@ -88,7 +88,7 @@ const HSESidebar = () => {
               </Button>
               
               {isLibraryOpen && (
-                <div className="absolute top-full left-0 mt-1 bg-sidebar-background border border-sidebar-border rounded-md shadow-lg z-50 min-w-[140px] animate-in fade-in-0 slide-in-from-top-2 duration-200">
+                <div className="absolute top-full left-0 mt-0 bg-sidebar-background border border-sidebar-border rounded-md shadow-xl z-50 min-w-[140px] animate-in fade-in-0 slide-in-from-top-2 duration-200">
                   <div className="py-1">
                     {librarySubItems.map((subItem, index) => (
                       <Link key={index} to={subItem.path}>
