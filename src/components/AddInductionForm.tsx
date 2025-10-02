@@ -10,8 +10,7 @@ import { CalendarIcon, Upload } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
-import { Database } from "@/integrations/supabase/types";
-import { supabase } from "@/integrations/supabase/client";
+// Using localStorage for data persistence
 import { useSerialNumber } from "@/hooks/use-serial-number";
 
 const AddInductionForm = ({ onClose }: { onClose: () => void }) => {
@@ -29,9 +28,12 @@ const AddInductionForm = ({ onClose }: { onClose: () => void }) => {
 
   useEffect(() => {
     const initializeSerialNumber = async () => {
-      const nextSN = await getNextSerialNumber();
-      if (nextSN) {
-        setFormData(prev => ({ ...prev, sno: nextSN }));
+      try {
+        const nextSN = await getNextSerialNumber();
+        setFormData(prev => ({ ...prev, sno: nextSN || '001' }));
+      } catch (error) {
+        console.error('Error initializing serial number:', error);
+        setFormData(prev => ({ ...prev, sno: '001' }));
       }
     };
     initializeSerialNumber();
@@ -48,6 +50,12 @@ const AddInductionForm = ({ onClose }: { onClose: () => void }) => {
   };
 
   const handleDateChange = (field: string, date: Date | undefined) => {
+    // Validate the date before setting it
+    if (date && (isNaN(date.getTime()) || date.toString() === 'Invalid Date')) {
+      console.error('Invalid date received:', date);
+      return;
+    }
+    
     setFormData(prev => ({
       ...prev,
       [field]: date
@@ -78,20 +86,22 @@ const AddInductionForm = ({ onClose }: { onClose: () => void }) => {
 
     // Upload signature file if present
     if (signature) {
-      const { data, error: uploadError } = await supabase.storage
-        .from("signatures")
-        .upload(`induction/${Date.now()}_${signature.name}`, signature);
-
-      if (uploadError) {
+      // Convert signature to base64 for localStorage storage
+      try {
+        signatureUrl = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(signature);
+        });
+      } catch (error) {
         toast({
           title: "File Upload Error",
-          description: uploadError.message,
+          description: "Failed to process signature file",
           variant: "destructive",
         });
         return;
       }
-
-      signatureUrl = data?.path ? supabase.storage.from("signatures").getPublicUrl(data.path).data.publicUrl : null;
     }
 
     const mappedData = {
@@ -106,35 +116,39 @@ const AddInductionForm = ({ onClose }: { onClose: () => void }) => {
       signature: signatureUrl,
     };
 
-    const { error } = await supabase.from("induction_records").insert(mappedData);
+    try {
+      // Save to localStorage
+      const existingData = JSON.parse(localStorage.getItem('induction_records') || '[]');
+      const newRecord = { ...mappedData, id: Date.now().toString(), createdAt: new Date().toISOString() };
+      existingData.push(newRecord);
+      localStorage.setItem('induction_records', JSON.stringify(existingData));
 
-    if (error) {
+      toast({
+        title: "Success",
+        description: "Induction record has been added successfully",
+      });
+      
+      // Reset form and reinitialize serial number
+      const nextSN = await getNextSerialNumber();
+      setFormData({
+        sno: nextSN || "",
+        idNo: "",
+        name: "",
+        designation: "",
+        company: "",
+        inductedOn: undefined,
+        nextInduction: undefined,
+        status: ""
+      });
+      setSignature(null);
+      onClose();
+    } catch (error) {
       toast({
         title: "Submission Error",
-        description: error.message,
+        description: error instanceof Error ? error.message : "Unknown error occurred",
         variant: "destructive",
       });
-      return;
     }
-
-    toast({
-      title: "Success",
-      description: "Induction record has been added successfully",
-    });
-    
-    // Reset form
-    setFormData({
-      sno: "",
-      idNo: "",
-      name: "",
-      designation: "",
-      company: "",
-      inductedOn: undefined,
-      nextInduction: undefined,
-      status: ""
-    });
-    setSignature(null);
-    onClose();
   };
 
   return (
@@ -236,13 +250,20 @@ const AddInductionForm = ({ onClose }: { onClose: () => void }) => {
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {formData.inductedOn ? format(formData.inductedOn, "dd/MM/yyyy") : <span>Pick a date</span>}
+                    {formData.inductedOn ? (() => {
+                      try {
+                        return format(new Date(formData.inductedOn), "dd/MM/yyyy");
+                      } catch (error) {
+                        console.error('Error formatting inductedOn date:', error);
+                        return "Invalid date";
+                      }
+                    })() : <span>Pick a date</span>}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="single"
-                    selected={formData.inductedOn}
+                    selected={formData.inductedOn || undefined}
                     onSelect={(date) => handleDateChange("inductedOn", date)}
                     initialFocus
                     className={cn("p-3 pointer-events-auto")}
@@ -264,13 +285,20 @@ const AddInductionForm = ({ onClose }: { onClose: () => void }) => {
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {formData.nextInduction ? format(formData.nextInduction, "dd/MM/yyyy") : <span>Pick a date</span>}
+                    {formData.nextInduction ? (() => {
+                      try {
+                        return format(new Date(formData.nextInduction), "dd/MM/yyyy");
+                      } catch (error) {
+                        console.error('Error formatting nextInduction date:', error);
+                        return "Invalid date";
+                      }
+                    })() : <span>Pick a date</span>}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="single"
-                    selected={formData.nextInduction}
+                    selected={formData.nextInduction || undefined}
                     onSelect={(date) => handleDateChange("nextInduction", date)}
                     initialFocus
                     className={cn("p-3 pointer-events-auto")}

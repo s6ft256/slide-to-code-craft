@@ -7,10 +7,7 @@ import MasterRegisterForm from "@/components/MasterRegisterForm";
 import MasterRegisterRecords from "@/components/MasterRegisterRecords";
 import InjuryDetailsForm from "@/components/InjuryDetailsForm";
 import InjuryDetailsRecords from "@/components/InjuryDetailsRecords";
-import ObservationTrackerForm from "@/components/ObservationTrackerForm";
-import ObservationTrackerRecords from "@/components/ObservationTrackerRecords";
-import CNRTrackerForm from "@/components/CNRTrackerForm";
-import CNRTrackerRecords from "@/components/CNRTrackerRecords";
+
 import { Activity, Users, Clock, Target, AlertTriangle } from "lucide-react";
 import { useState } from "react";
 
@@ -163,11 +160,11 @@ const DailyManagement = () => {
               onClick={() => setObservationTab("add")}
             >Add New Record</button>
           </div>
-          {observationTab === "records" && <ObservationTrackerRecords />}
+          {observationTab === "records" && <div className="p-4 text-center text-muted-foreground">Observation records feature will be available soon</div>}
           {observationTab === "add" && (
             <>
               <h3 className="text-lg font-semibold text-foreground mb-4">Observation Tracker (Manual Data Entry)</h3>
-              <ObservationTrackerForm />
+              <div className="p-4 text-center text-muted-foreground">Observation form feature will be available soon</div>
             </>
           )}
         </div>
@@ -229,11 +226,11 @@ const DailyManagement = () => {
               onClick={() => setCnrTab("add")}
             >Add New Record</button>
           </div>
-          {cnrTab === "records" && <CNRTrackerRecords />}
+          {cnrTab === "records" && <div className="p-4 text-center text-muted-foreground">CNR records feature will be available soon</div>}
           {cnrTab === "add" && (
             <>
               <h3 className="text-lg font-semibold text-foreground mb-4">CNR Tracker (Manual Data Entry)</h3>
-              <CNRTrackerForm />
+              <div className="p-4 text-center text-muted-foreground">CNR form feature will be available soon</div>
             </>
           )}
         </div>

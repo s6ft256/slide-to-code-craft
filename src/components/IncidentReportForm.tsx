@@ -9,13 +9,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
-import { supabase } from "@/integrations/supabase/client";
-import type { Database } from "@/integrations/supabase/types";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
 
 // Database schema type
-// Match exact Supabase schema
+// Local storage record type
 interface IncidentReportDB {
   id?: number;
   srno: string | null;
@@ -109,11 +107,10 @@ const initialFormData: FormData = {
 
 interface IncidentReportFormProps {
   onSuccess?: () => void;
+  onSubmit?: (data: IncidentReportRecord) => void;
 }
 
-type IncidentInsert = Database["public"]["Tables"]["incident_reports"]["Insert"];
-
-const IncidentReportForm = ({ onSuccess }: IncidentReportFormProps) => {
+function IncidentReportForm({ onSubmit, onSuccess }: IncidentReportFormProps) {
   const { getNextSerialNumber } = useSerialNumber('incident_report' as const);
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -155,8 +152,7 @@ const IncidentReportForm = ({ onSuccess }: IncidentReportFormProps) => {
     try {
       validateForm();
 
-      // Prepare the database submission
-      // Ensure all fields match database schema exactly
+      // Prepare the data for localStorage
       const submissionData: IncidentReportDB = {
         srno: formData.srno || null,
         incidentdate: formData.incidentdate || null,
@@ -166,40 +162,15 @@ const IncidentReportForm = ({ onSuccess }: IncidentReportFormProps) => {
         details: formData.additionalDetails ? JSON.stringify(formData.additionalDetails) : null
       };
 
-      console.log('Submitting to Supabase:', submissionData); // Debug log
+      console.log('Saving to localStorage:', submissionData);
 
-      console.log('Submitting data:', submissionData); // Debug log
+      // Save to localStorage
+      const existingData = JSON.parse(localStorage.getItem('incident_report') || '[]');
+      const newRecord = { ...submissionData, id: Date.now().toString(), createdAt: new Date().toISOString() };
+      existingData.push(newRecord);
+      localStorage.setItem('incident_report', JSON.stringify(existingData));
 
-      console.log('Making Supabase request to incident_report table');
-      const { data, error } = await supabase
-        .from('incident_report')
-        .insert([submissionData])
-        .select();
-
-      console.log('Supabase response - data:', data); // Debug log
-      console.log('Supabase response - error:', error); // Debug log
-
-      if (error) {
-        console.error('Detailed Supabase error:', {
-          message: error.message,
-          details: error.details,
-          hint: error.hint,
-          code: error.code
-        });
-        throw new Error(`Database error: ${error.message}`);
-      }
-
-      if (!data || data.length === 0) {
-        console.warn('No data returned after successful insert');
-      } else {
-        console.log('Successfully inserted record:', data[0]);
-      }
-
-      if (!result.data || result.data.length === 0) {
-        throw new Error('No data returned after insert');
-      }
-
-      console.log('Submission successful:', result.data);
+      console.log('Submission successful');
 
       toast({
         title: "Success",

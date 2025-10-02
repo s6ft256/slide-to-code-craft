@@ -17,20 +17,7 @@ import { useDashboardMetrics } from "@/hooks/use-dashboard-metrics";
 type MetricVariant = 'success' | 'warning' | 'destructive' | 'default';
 
 const HSEMetricsGrid = () => {
-  const { 
-    projectRating,
-    projectScore,
-    leadingIndicators,
-    trainingAverage,
-    daysWithoutLTI,
-    incidentsReported,
-    reportsSubmitted,
-    activeTrainings,
-    ncrs,
-    completedInspections,
-    loading,
-    error
-  } = useDashboardMetrics();
+  const { metrics, loading, error } = useDashboardMetrics();
 
   if (loading) {
     return (
@@ -49,76 +36,76 @@ const HSEMetricsGrid = () => {
     );
   }
 
-  const metrics = [
+  const metricCards = [
     {
       title: "Project Rating",
-      value: projectRating,
+      value: metrics?.projectRating ?? "N/A",
       subtitle: "OPS 14",
       icon: Target,
       variant: 'success' as MetricVariant
     },
     {
       title: "Project Score",
-      value: projectScore.toString(),
+      value: ((metrics?.projectScore ?? 0)).toString(),
       subtitle: "G E",
       icon: TrendingUp,
-      variant: (projectScore >= 0 ? 'success' : 'destructive') as MetricVariant
+      variant: (((metrics?.projectScore ?? 0)) >= 0 ? 'success' : 'destructive') as MetricVariant
     },
     {
       title: "Leading Indicators",
-      value: leadingIndicators.toString().padStart(2, '0'),
+      value: ((metrics?.leadingIndicators ?? 0)).toString().padStart(2, '0'),
       subtitle: "Incidents",
       icon: Activity,
       variant: 'success' as MetricVariant
     },
     {
       title: "Training Average",
-      value: `${Math.round(trainingAverage)}%`,
+      value: `${Math.round(metrics?.trainingAverage ?? 0)}%`,
       subtitle: "Completion",
       icon: GraduationCap,
-      variant: (trainingAverage >= 80 ? 'success' : 'warning') as MetricVariant
+      variant: ((metrics?.trainingAverage ?? 0) >= 80 ? 'success' : 'warning') as MetricVariant
     },
     {
       title: "Days Without LTI",
-      value: daysWithoutLTI.toString(),
+      value: ((metrics?.daysWithoutLTI ?? 0)).toString(),
       subtitle: "Days",
       icon: Calendar,
-      variant: (daysWithoutLTI > 30 ? 'success' : 'warning') as MetricVariant
+      variant: ((metrics?.daysWithoutLTI ?? 0) > 30 ? 'success' : 'warning') as MetricVariant
     },
     {
       title: "Incidents Reported",
-      value: incidentsReported.toString(),
+      value: ((metrics?.incidentsReported ?? 0)).toString(),
       subtitle: "This Month",
       icon: AlertTriangle,
-      variant: (incidentsReported === 0 ? 'success' : 'warning') as MetricVariant
+      variant: ((metrics?.incidentsReported ?? 0) === 0 ? 'success' : 'warning') as MetricVariant
     },
     {
       title: "Reports Submitted",
-      value: reportsSubmitted.toString(),
+      value: ((metrics?.reportsSubmitted ?? 0)).toString(),
       subtitle: "This Month",
       icon: FileText,
       variant: 'default' as MetricVariant
     },
     {
       title: "Active Trainings",
-      value: activeTrainings.toString(),
+      value: ((metrics?.activeTrainings ?? 0)).toString(),
       subtitle: "In Progress",
       icon: Users,
       variant: 'default' as MetricVariant
     },
     {
       title: "NCRs",
-      value: ncrs.toString(),
+      value: ((metrics?.ncrs ?? 0)).toString(),
       subtitle: "Open",
       icon: AlertTriangle,
-      variant: (ncrs > 5 ? 'destructive' : ncrs > 2 ? 'warning' : 'success') as MetricVariant
+      variant: ((metrics?.ncrs ?? 0) > 5 ? 'destructive' : (metrics?.ncrs ?? 0) > 2 ? 'warning' : 'success') as MetricVariant
     },
     {
       title: "Inspections",
-      value: completedInspections.toString(),
+      value: ((metrics?.completedInspections ?? 0)).toString(),
       subtitle: "Completed",
       icon: CheckCircle,
-      variant: (completedInspections >= 10 ? 'success' : 'warning') as MetricVariant
+      variant: ((metrics?.completedInspections ?? 0) >= 10 ? 'success' : 'warning') as MetricVariant
     },
     {
       title: "SCRs Status",
@@ -160,7 +147,7 @@ const HSEMetricsGrid = () => {
       <div>
         <h2 className="text-xl font-semibold text-foreground mb-4">HSE Compliance Dashboard</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {metrics.map((metric, index) => (
+          {metricCards.map((metric, index) => (
             <MetricCard
               key={index}
               title={metric.title}

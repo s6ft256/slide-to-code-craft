@@ -34,9 +34,14 @@ export function IncidentList({ incidents }: IncidentListProps) {
             <TableRow key={incident.id}>
               <TableCell className="font-medium">{incident.srno}</TableCell>
               <TableCell>
-                {incident.incidentdate ? 
-                  format(new Date(incident.incidentdate), 'dd/MM/yyyy') : 
-                  'N/A'}
+                {incident.incidentdate ? (() => {
+                  try {
+                    return format(new Date(incident.incidentdate), 'dd/MM/yyyy');
+                  } catch (error) {
+                    console.error('Error formatting incident date:', error);
+                    return 'Invalid date';
+                  }
+                })() : 'N/A'}
               </TableCell>
               <TableCell>{incident.time || 'N/A'}</TableCell>
               <TableCell>{incident.section || 'N/A'}</TableCell>

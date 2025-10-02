@@ -50,14 +50,14 @@ const IncidentManagement = () => {
   const incidentMetrics: MetricItem[] = [
     {
       title: "Total Incidents",
-      value: metrics.totalIncidents.toString().padStart(2, '0'),
+      value: (metrics.totalIncidents || 0).toString().padStart(2, '0'),
       subtitle: "This Month",
       icon: AlertTriangle,
       variant: getVariant(metrics.totalIncidents === 0, 'success', 'warning')
     },
     {
       title: "Open Reports",
-      value: metrics.openReports.toString().padStart(2, '0'),
+      value: (metrics.openReports || 0).toString().padStart(2, '0'),
       subtitle: "Pending",
       icon: FileText,
       variant: metrics.openReports > 5 ? 'destructive' : 
@@ -72,7 +72,7 @@ const IncidentManagement = () => {
     },
     {
       title: "Personnel Affected",
-      value: metrics.personnelAffected.toString().padStart(2, '0'),
+      value: (metrics.personnelAffected || 0).toString().padStart(2, '0'),
       subtitle: "Current",
       icon: Users,
       variant: getVariant(metrics.personnelAffected > 0, 'warning', 'success')

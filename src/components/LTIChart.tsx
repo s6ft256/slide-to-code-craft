@@ -8,30 +8,37 @@ const LTIChart = () => {
   const { metrics } = useIncidentMetrics();
 
   const chartData = useMemo(() => {
-    const start = startOfMonth(new Date());
-    const end = endOfMonth(new Date());
-    
-    // Generate all days of the month
-    const days = eachDayOfInterval({ start, end });
+    try {
+      const start = startOfMonth(new Date());
+      const end = endOfMonth(new Date());
+      
+      // Generate all days of the month
+      const days = eachDayOfInterval({ start, end });
 
-    // Convert metrics data into a map for easier lookup
-    const dateMap = new Map(
-      metrics.monthlyData.dates.map((date, index) => [
-        date,
-        metrics.monthlyData.counts[index],
-      ])
-    );
+      // Convert metrics data into a map for easier lookup with safety checks
+      const dateMap = new Map();
+      if (metrics?.monthlyData?.dates && metrics?.monthlyData?.counts) {
+        metrics.monthlyData.dates.forEach((date, index) => {
+          if (date && metrics.monthlyData.counts[index] !== undefined) {
+            dateMap.set(date, metrics.monthlyData.counts[index]);
+          }
+        });
+      }
 
-    // Create data points for each day
-    return days.map(day => {
-      const dateStr = format(day, 'yyyy-MM-dd');
-      return {
-        date: format(day, 'dd'),
-        incidentCount: dateMap.get(dateStr) || 0,
-        safetyScore: Math.max(10 - (dateMap.get(dateStr) || 0) * 2, 0) // Calculate safety score inversely proportional to incidents
-      };
-    });
-  }, [metrics.monthlyData]);
+      // Create data points for each day
+      return days.map(day => {
+        const dateStr = format(day, 'yyyy-MM-dd');
+        return {
+          date: format(day, 'dd'),
+          incidentCount: dateMap.get(dateStr) || 0,
+          safetyScore: Math.max(10 - (dateMap.get(dateStr) || 0) * 2, 0) // Calculate safety score inversely proportional to incidents
+        };
+      });
+    } catch (error) {
+      console.error('Error creating chart data:', error);
+      return [];
+    }
+  }, [metrics?.monthlyData]);
 
   return (
     <Card className="shadow-soft">

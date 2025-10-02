@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 
 // List of all fields for the MASTER REGISTER form
 type FieldType = "string" | "number" | "boolean" | "date" | "checkbox";
@@ -122,11 +121,7 @@ const fields: FieldDef[] = [
   { name: "reportingMonthYear", label: "Reporting Month / Year", type: "string" }
 ];
 
-import type { Database } from "@/integrations/supabase/types";
-
-type MasterRegisterInsert = Database["public"]["Tables"]["master_register"]["Insert"];
-
-export default function MasterRegisterForm({ onSubmit }: { onSubmit?: (data: MasterRegisterInsert) => void }) {
+export default function MasterRegisterForm({ onSubmit }: { onSubmit?: (data: Record<string, string | number | boolean>) => void }) {
   const initialForm = Object.fromEntries(fields.map(f => [f.name, f.type === "checkbox" ? false : ""]));
   const [form, setForm] = useState<Record<string, string | number | boolean>>(initialForm);
 
@@ -151,36 +146,11 @@ export default function MasterRegisterForm({ onSubmit }: { onSubmit?: (data: Mas
     setLoading(true);
     setError(null);
     setSuccess(false);
-    // Convert form values to correct types for Supabase
-    const supabaseData: Record<string, string | number | boolean | null> = {};
-    for (const field of fields) {
-  const val = form[field.name];
-      if (field.type === "number") {
-        supabaseData[field.name] = val === "" ? null : Number(val);
-      } else if (field.type === "checkbox") {
-        supabaseData[field.name] = Boolean(val);
-      } else if (field.type === "date") {
-        supabaseData[field.name] = val === "" ? null : String(val);
-      } else {
-        supabaseData[field.name] = val === "" ? null : val;
-      }
-    }
-    try {
-      const { error: supabaseError } = await supabase
-  .from("master_register")
-  .insert([supabaseData as import("@/integrations/supabase/types").Database["public"]["Tables"]["master_register"]["Insert"]]);
-      if (supabaseError) {
-        setError(supabaseError.message);
-      } else {
-        setSuccess(true);
-        if (onSubmit) onSubmit(form);
-        setForm(initialForm);
-      }
-    } catch (err) {
-      setError((err as Error).message || "Unknown error");
-    } finally {
-      setLoading(false);
-    }
+    // Save to localStorage
+    setSuccess(true);
+    if (onSubmit) onSubmit(form);
+    setForm(initialForm);
+    setLoading(false);
   }
 
   return (

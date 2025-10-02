@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import type { Database } from "@/integrations/supabase/types";
 
-type MasterRegisterRecord = Database["public"]["Tables"]["master_register"]["Row"];
+type MasterRegisterRecord = Record<string, string | number | boolean> & {
+  id: string;
+  createdAt: string;
+};
 
 export default function MasterRegisterRecords() {
   const [records, setRecords] = useState<MasterRegisterRecord[]>([]);
@@ -13,9 +14,12 @@ export default function MasterRegisterRecords() {
     async function fetchRecords() {
       setLoading(true);
       setError(null);
-      const { data, error } = await supabase.from("master_register").select("*");
-      if (error) setError(error.message);
-      setRecords(data || []);
+      try {
+        const data = JSON.parse(localStorage.getItem('master_register') || '[]');
+        setRecords(data);
+      } catch (err: any) {
+        setError(err.message);
+      }
       setLoading(false);
     }
     fetchRecords();

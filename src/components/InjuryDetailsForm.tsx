@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 
 const fields = [
 	{ name: "srNo", label: "Sr.no", type: "number" },
@@ -33,9 +32,9 @@ const fields = [
 	{ name: "weekEndingOn", label: "Week Ending On", type: "date" },
 ];
 
-import type { Database } from "@/integrations/supabase/types";
 
-type InjuryDetailsInsert = Database["public"]["Tables"]["injury_details"]["Insert"];
+
+type InjuryDetailsInsert = Record<string, string | number | boolean | Date>;
 
 export default function InjuryDetailsForm({
 	onSubmit,
@@ -69,22 +68,18 @@ export default function InjuryDetailsForm({
 		setError(null);
 		setSuccess(false);
 
-		const supabaseData: InjuryDetailsInsert = { ...form };
-
 		try {
-			const { error: supabaseError } = await supabase
-				.from("injury_details")
-				.insert([supabaseData]);
-
-			if (supabaseError) {
-				setError(supabaseError.message);
-			} else {
-				setSuccess(true);
-				if (onSubmit) onSubmit(form);
-				setForm(initialForm);
-			}
+			// Save to localStorage
+			const existingData = JSON.parse(localStorage.getItem('injury_details') || '[]');
+			const newRecord = { ...form, id: Date.now().toString(), createdAt: new Date().toISOString() };
+			existingData.push(newRecord);
+			localStorage.setItem('injury_details', JSON.stringify(existingData));
+			
+			setSuccess(true);
+			if (onSubmit) onSubmit(form);
+			setForm(initialForm);
 		} catch (err) {
-			setError((err as Error).message || "Unknown error");
+			setError((err as Error).message || "Failed to save data");
 		} finally {
 			setLoading(false);
 		}

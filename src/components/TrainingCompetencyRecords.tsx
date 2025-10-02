@@ -1,50 +1,78 @@
-import React, { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import type { Database } from "@/integrations/supabase/types";
+import React, { useState, useEffect } from "react";
 
-type TrainingCompetencyRecord = Database["public"]["Tables"]["training_competency_register"]["Row"];
+type TrainingCompetencyRow = Record<string, string | number> & {
+  id: string;
+  createdAt: string;
+};
 
 export default function TrainingCompetencyRecords() {
-  const [records, setRecords] = useState<TrainingCompetencyRecord[]>([]);
+  const [records, setRecords] = useState<TrainingCompetencyRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchRecords() {
       setLoading(true);
-      setError(null);
-      const { data, error } = await supabase.from("training_competency_register").select("*");
-      if (error) setError(error.message);
-      setRecords(data || []);
-      setLoading(false);
+      try {
+        const data = JSON.parse(localStorage.getItem('training_competency_register') || '[]');
+        setRecords(data);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
     }
+
     fetchRecords();
   }, []);
 
-  if (loading) return <div>Loading records...</div>;
-  if (error) return <div className="text-red-600">{error}</div>;
-  if (!records.length) return <div>No records found.</div>;
+  if (loading) {
+    return <div className="p-4">Loading training competency records...</div>;
+  }
+
+  if (error) {
+    return <div className="p-4 text-red-600">Error: {error}</div>;
+  }
+
+  if (records.length === 0) {
+    return <div className="p-4 text-muted-foreground">No training competency records found.</div>;
+  }
 
   return (
-    <div className="overflow-auto">
-      <table className="min-w-full border rounded">
-        <thead>
-          <tr>
-            {Object.keys(records[0]).map((key) => (
-              <th key={key} className="px-2 py-1 border-b bg-gray-100 text-xs font-semibold text-gray-700">{key}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {records.map((row, idx) => (
-            <tr key={idx} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-              {Object.values(row).map((val, i) => (
-                <td key={i} className="px-2 py-1 border-b text-xs">{String(val ?? "")}</td>
-              ))}
+    <div className="p-4">
+      <h3 className="text-lg font-semibold mb-4">Training Competency Records</h3>
+      <div className="overflow-x-auto">
+        <table className="min-w-full border-collapse border border-gray-300">
+          <thead>
+            <tr className="bg-gray-50">
+              <th className="border border-gray-300 px-4 py-2 text-left">ID</th>
+              <th className="border border-gray-300 px-4 py-2 text-left">Name</th>
+              <th className="border border-gray-300 px-4 py-2 text-left">Training Course</th>
+              <th className="border border-gray-300 px-4 py-2 text-left">Score</th>
+              <th className="border border-gray-300 px-4 py-2 text-left">Date Created</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {records.map((record) => (
+              <tr key={record.id}>
+                <td className="border border-gray-300 px-4 py-2">{record.id}</td>
+                <td className="border border-gray-300 px-4 py-2">{record.name || 'N/A'}</td>
+                <td className="border border-gray-300 px-4 py-2">{record.trainingCourseTitle || 'N/A'}</td>
+                <td className="border border-gray-300 px-4 py-2">{record.score || 'N/A'}</td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {record.createdAt ? (() => {
+                    try {
+                      return new Date(record.createdAt).toLocaleDateString();
+                    } catch {
+                      return 'Invalid date';
+                    }
+                  })() : 'N/A'}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

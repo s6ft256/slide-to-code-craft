@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -26,82 +26,70 @@ const InductionForm = () => {
   const [employeeName, setEmployeeName] = useState("");
   const [employeeId, setEmployeeId] = useState("");
   const [showAddForm, setShowAddForm] = useState(false);
+  const [inductionData, setInductionData] = useState<any[]>([]);
 
-  const inductionData = [
-    {
-      sno: "01",
-      idNo: "xxxx",
-      name: "xxxx",
-      designation: "xxxx",
-      company: "xxxx",
-      inductedOn: "DD/MM/YYYY",
-      nextInduction: "DD/MM/YYYY",
-      status: "ACTIVE",
-      statusColor: "bg-green-100 text-green-800",
-      rowColor: "bg-white"
-    },
-    {
-      sno: "02",
-      idNo: "xxxx",
-      name: "xxxx", 
-      designation: "xxxx",
-      company: "xxxx",
-      inductedOn: "DD/MM/YYYY",
-      nextInduction: "DD/MM/YYYY",
-      status: "ACTIVE",
-      statusColor: "bg-green-100 text-green-800",
-      rowColor: "bg-white"
-    },
-    {
-      sno: "03",
-      idNo: "xxxx",
-      name: "xxxx",
-      designation: "xxxx", 
-      company: "xxxx",
-      inductedOn: "DD/MM/YYYY",
-      nextInduction: "DD/MM/YYYY",
-      status: "DUE IN 10 DAYS",
-      statusColor: "bg-yellow-100 text-yellow-800",
-      rowColor: "bg-yellow-50"
-    },
-    {
-      sno: "04",
-      idNo: "xxxx",
-      name: "xxxx",
-      designation: "xxxx",
-      company: "xxxx", 
-      inductedOn: "DD/MM/YYYY",
-      nextInduction: "DD/MM/YYYY",
-      status: "EXPIRED",
-      statusColor: "bg-red-100 text-red-800",
-      rowColor: "bg-red-50"
-    },
-    {
-      sno: "05",
-      idNo: "xxxx",
-      name: "xxxx",
-      designation: "xxxx",
-      company: "xxxx",
-      inductedOn: "DD/MM/YYYY", 
-      nextInduction: "DD/MM/YYYY",
-      status: "INACTIVE",
-      statusColor: "bg-gray-100 text-gray-800",
-      rowColor: "bg-gray-50"
+  // Load data from localStorage
+  useEffect(() => {
+    const loadInductionData = () => {
+      try {
+        const storedData = JSON.parse(localStorage.getItem('induction_records') || '[]');
+        setInductionData(storedData);
+      } catch (error) {
+        console.error('Error loading induction data:', error);
+        setInductionData([]);
+      }
+    };
+
+    loadInductionData();
+    
+    // Refresh data when form is closed (when new data might be added)
+    if (!showAddForm) {
+      loadInductionData();
     }
-  ];
+  }, [showAddForm]);
 
-  const mappedInductionData = inductionData.map((record) => ({
-    sno: record.sno || null,
-    idno: record.idNo || null,
-    name: record.name || null,
-    designation: record.designation || null,
-    company: record.company || null,
-    inductedon: record.inductedOn || null,
-    nextinduction: record.nextInduction || null,
-    status: record.status || null,
-    statusColor: record.statusColor || null, // Retain statusColor for UI
-    rowColor: record.rowColor || null, // Retain rowColor for UI
-  }));
+  const getStatusColors = (status: string) => {
+    switch (status?.toLowerCase()) {
+      case 'active':
+        return { statusColor: 'bg-green-100 text-green-800', rowColor: 'bg-white' };
+      case 'due':
+      case 'due in 10 days':
+        return { statusColor: 'bg-yellow-100 text-yellow-800', rowColor: 'bg-yellow-50' };
+      case 'expired':
+        return { statusColor: 'bg-red-100 text-red-800', rowColor: 'bg-red-50' };
+      case 'inactive':
+        return { statusColor: 'bg-gray-100 text-gray-800', rowColor: 'bg-gray-50' };
+      default:
+        return { statusColor: 'bg-gray-100 text-gray-800', rowColor: 'bg-white' };
+    }
+  };
+
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return 'N/A';
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return 'Invalid date';
+      return date.toLocaleDateString('en-GB');
+    } catch {
+      return 'N/A';
+    }
+  };
+
+  const mappedInductionData = inductionData.map((record) => {
+    const colors = getStatusColors(record.status);
+    return {
+      sno: record.sno || 'N/A',
+      idno: record.idno || 'N/A',
+      name: record.name || 'N/A',
+      designation: record.designation || 'N/A',
+      company: record.company || 'N/A',
+      inductedon: formatDate(record.inductedon),
+      nextinduction: formatDate(record.nextinduction),
+      status: record.status || 'N/A',
+      statusColor: colors.statusColor,
+      rowColor: colors.rowColor,
+    };
+  });
 
   return (
     <Card className="w-full">

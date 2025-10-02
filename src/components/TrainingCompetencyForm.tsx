@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 
 const fields = [
   { name: "srNo", label: "Sr.No", type: "number" },
@@ -19,11 +18,9 @@ const fields = [
   { name: "trainingCertificateValidity", label: "Training / Certificate Validity", type: "string" }
 ];
 
-import type { Database } from "@/integrations/supabase/types";
+type TrainingCompetencyRecord = Record<string, string | number>;
 
-type TrainingCompetencyInsert = Database["public"]["Tables"]["training_competency_register"]["Insert"];
-
-export default function TrainingCompetencyForm({ onSubmit }: { onSubmit?: (data: TrainingCompetencyInsert) => void }) {
+export default function TrainingCompetencyForm({ onSubmit }: { onSubmit?: (data: TrainingCompetencyRecord) => void }) {
   const initialForm = Object.fromEntries(fields.map(f => [f.name, ""]));
   const [form, setForm] = useState<Record<string, string | number>>(initialForm);
   const [loading, setLoading] = useState(false);
@@ -45,49 +42,18 @@ export default function TrainingCompetencyForm({ onSubmit }: { onSubmit?: (data:
     setLoading(true);
     setError(null);
     setSuccess(false);
-    const supabaseData: Record<string, string | number | null> = {};
-    const fieldMapping: Record<string, string> = {
-      srNo: "srno",
-      dateOfTraining: "dateoftraining",
-      noOfAttendees: "noofattendees",
-      trainingCourseTitle: "trainingcoursetitle",
-      score: "score",
-      internalExternal: "internalexternal",
-      trainingProvider: "trainingprovider",
-      trainingDurationHrs: "trainingdurationhrs",
-      trainingHours: "traininghours",
-      empIdEid: "empideid",
-      name: "name",
-      designation: "designation",
-      company: "company",
-      certificateReference: "certificatereference",
-      trainingCertificateValidity: "trainingcertificatevalidity",
-    };
-
-    for (const field of fields) {
-      const supabaseField = fieldMapping[field.name];
-  const val = form[field.name];
-      if (field.type === "number") {
-        supabaseData[supabaseField] = val === "" ? null : Number(val);
-      } else if (field.type === "date") {
-        supabaseData[supabaseField] = val === "" ? null : String(val);
-      } else {
-        supabaseData[supabaseField] = val === "" ? null : val;
-      }
-    }
     try {
-      const { error: supabaseError } = await supabase
-  .from("training_competency_register")
-  .insert([supabaseData as import("@/integrations/supabase/types").Database["public"]["Tables"]["training_competency_register"]["Insert"]]);
-      if (supabaseError) {
-        setError(supabaseError.message);
-      } else {
-        setSuccess(true);
-        if (onSubmit) onSubmit(form);
-        setForm(initialForm);
-      }
+      // Save to localStorage
+      const existingData = JSON.parse(localStorage.getItem('training_competency_register') || '[]');
+      const newRecord = { ...form, id: Date.now().toString(), createdAt: new Date().toISOString() };
+      existingData.push(newRecord);
+      localStorage.setItem('training_competency_register', JSON.stringify(existingData));
+      
+      setSuccess(true);
+      if (onSubmit) onSubmit(form);
+      setForm(initialForm);
     } catch (err) {
-      setError((err as Error).message || "Unknown error");
+      setError((err as Error).message || "Failed to save data");
     } finally {
       setLoading(false);
     }
