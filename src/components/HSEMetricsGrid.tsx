@@ -190,10 +190,7 @@ const HSEMetricsGrid = () => {
             <div className="text-2xl font-bold text-primary mb-1">Weekly</div>
             <div className="text-sm text-muted-foreground">Reporting Frequency</div>
           </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-accent mb-1">Compliant</div>
-            <div className="text-sm text-muted-foreground">HSE Status</div>
-          </div>
+          {/* Removed 'Compliant' status per request */}
         </div>
       </div>
     </div>

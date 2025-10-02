@@ -56,12 +56,7 @@ const HSESidebar = () => {
           ))}
         </nav>
         
-        <div className="mt-8 p-4 bg-sidebar-accent/30 rounded-lg border border-sidebar-border">
-          <p className="text-sm text-sidebar-foreground/80 mb-2">Safety First</p>
-          <p className="text-xs text-sidebar-foreground/60">
-            Current project status: <span className="text-success font-medium">Compliant</span>
-          </p>
-        </div>
+        {/* Removed informational card per request */}
       </div>
     </aside>
   );
