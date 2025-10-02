@@ -88,22 +88,19 @@ const HSESidebar = () => {
               </Button>
               
               {isLibraryOpen && (
-                <div className="fixed top-20 left-1/2 transform -translate-x-1/2 bg-sidebar-background border border-sidebar-border rounded-lg shadow-2xl z-[100] min-w-[200px] animate-in fade-in-0 slide-in-from-top-4 duration-300">
-                  <div className="py-2">
-                    <div className="text-xs font-medium text-muted-foreground px-4 py-1 border-b border-sidebar-border">
-                      Library Documents
-                    </div>
+                <div className="absolute top-full left-0 mt-1 bg-sidebar-background border border-sidebar-border rounded-md shadow-lg z-50 min-w-[140px] animate-in fade-in-0 slide-in-from-top-2 duration-200">
+                  <div className="py-1">
                     {librarySubItems.map((subItem, index) => (
                       <Link key={index} to={subItem.path}>
                         <Button
                           variant="ghost"
                           size="sm"
                           className={cn(
-                            "w-full justify-start px-4 py-3 text-sm text-sidebar-foreground hover:bg-sidebar-accent transition-colors duration-150 rounded-none",
+                            "w-full justify-start px-4 py-2 text-sm text-sidebar-foreground hover:bg-sidebar-accent transition-colors duration-150 rounded-none first:rounded-t-md last:rounded-b-md",
                             location.search.includes(subItem.label.toLowerCase()) && "bg-sidebar-accent text-sidebar-primary font-medium"
                           )}
                         >
-                          <span className="font-medium">{subItem.label}</span>
+                          {subItem.label}
                         </Button>
                       </Link>
                     ))}
