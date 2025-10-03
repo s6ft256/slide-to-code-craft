@@ -1,6 +1,15 @@
 import React, { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
-// List of all fields for the MASTER REGISTER form
 type FieldType = "string" | "number" | "boolean" | "date" | "checkbox";
 interface FieldDef {
   name: string;
@@ -124,6 +133,9 @@ const fields: FieldDef[] = [
 export default function MasterRegisterForm({ onSubmit }: { onSubmit?: (data: Record<string, string | number | boolean>) => void }) {
   const initialForm = Object.fromEntries(fields.map(f => [f.name, f.type === "checkbox" ? false : ""]));
   const [form, setForm] = useState<Record<string, string | number | boolean>>(initialForm);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, type, value, checked } = e.target;
@@ -136,10 +148,6 @@ export default function MasterRegisterForm({ onSubmit }: { onSubmit?: (data: Rec
     }
     setForm(f => ({ ...f, [name]: newValue }));
   }
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -167,51 +175,117 @@ export default function MasterRegisterForm({ onSubmit }: { onSubmit?: (data: Rec
     }
   }
 
+  // Group fields into logical sections for better UI
+  const sections = [
+    {
+      title: "Manpower & Hours",
+      fields: fields.filter(f => ["weekEndingOn","trojanManhours","npcManhours","otherSubconsManhours","totalManhours","trojanManpower","npcManpower","otherSubconManpower","totalManpower"].includes(f.name))
+    },
+    {
+      title: "Waste & Environment",
+      fields: fields.filter(f => ["expectedWasteGeneration","actualWasteGeneration","wasteRecycledPercent","envSamplingAir","envSamplingNoise","fuelConsumption","nonHazWasteDisposalTonnes","nonHazWasteDisposalL","hazWasteDisposalSolidTonnes","hazWasteDisposalLiquidL","waterConsumption"].includes(f.name))
+    },
+    {
+      title: "Incidents & Safety",
+      fields: fields.filter(f => ["level5","level4","level3","level2","level1","hipoIncidents","envIncidentMajor","envIncidentModerate","envIncidentMinor","totalLTI","fatalities","ptd","ppd","lostWorkdayCase","lostWorkdaysInjuries","lostWorkdaysIllness","noOfLostWorkDays","seriousDangerousOccurrence","rwdc","mtc","fac","equipmentPropertyDamages","fireIncidents","nearMiss","securityIncidents"].includes(f.name))
+    },
+    {
+      title: "Training & Meetings",
+      fields: fields.filter(f => ["totalTrainingHours","inductionAttendees","noOfAssessedTrainings","noOfAssessedTrainingsPerEmployee","avgTrainingPerEmployee","externalTrainingHours","externalTrainingAttendees","internalTrainingsSessions","internalTrainingHours","internalTrainingAttendees","drills","safetyInspectionsConducted","safetyObservationsRaised","safetyObservationsOpen","safetyObservationsClosed","safetyObservationsOverdue"].includes(f.name))
+    },
+    {
+      title: "NCR & Audits",
+      fields: fields.filter(f => ["avgResolutionTimeNCR","totalNCRS","totalNCRClosed","totalStopWorkNotices","internalHSEAudit","sraExternalHSEAudit","ncrsInternal","ncrsInternalClosed","ncrsExternal","ncrsExternalClosed","stopWorkNoticeExternal","stopWorkNoticeInternal","hseEnforcementAction"].includes(f.name))
+    },
+    {
+      title: "Other KPIs & Reporting",
+      fields: fields.filter(f => ["tbtSessions","tbtAttendees","managementWalks","managementMeetings","committeeMeetings","hseMeetings","awards","campaigns","ltifr","ltisr","kpiRatingART","kpiHSECompliance","kpiRatingStopWork","kpiPercentNCRClosed","kpiPercentObservationsClosed","kpiRatingHSEWeeklyInspection","kpiPercentActionClosureIncidents","kpiRatingEnforcementActions","kpiRatingLTIFR","kpiRatingLTISR","kpiEmergencyPreparednessDrills","kpiEnvironmentSustainability","kpiWasteRecycled","kpiWasteReductionRate","kpiRatingWaterConsumption","kpiLeadership","kpiRatingManagementWalk","kpiRatingManagementMeetings","kpiRatingCommitteeMeeting","kpiRatingAward","kpiRatingCampaigns","kpiTrainingOverall","kpiAvgTrainingPerEmployee","kpiNoOfAssessedTrainingPerEmployee","overallProjectPerformance","reportingMonthYear"].includes(f.name))
+    }
+  ];
+
   return (
-    <form className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4" onSubmit={handleSubmit}>
-      {fields.map(field => (
-        <div key={field.name} className="flex flex-col">
-          <label className="font-medium mb-1" htmlFor={field.name}>{field.label}</label>
-          {field.type === "checkbox" ? (
-            <div className="flex gap-4 items-center">
-              <label className="flex items-center gap-1">
-                <input
-                  id={field.name}
-                  name={field.name}
-                  type="checkbox"
-                  checked={form[field.name] === true}
-                  onChange={() => setForm(f => ({ ...f, [field.name]: true }))}
-                  className="border rounded"
-                /> Yes
-              </label>
-              <label className="flex items-center gap-1">
-                <input
-                  id={field.name + "_no"}
-                  name={field.name + "_no"}
-                  type="checkbox"
-                  checked={form[field.name] === false}
-                  onChange={() => setForm(f => ({ ...f, [field.name]: false }))}
-                  className="border rounded"
-                /> No
-              </label>
+    <Card className="w-full max-w-6xl mx-auto">
+      <CardHeader>
+        <CardTitle>Master Register</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-8">
+          {sections.map(section => (
+            <div key={section.title} className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">{section.title}</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {section.fields.map(field => (
+                  <div key={field.name} className="space-y-2">
+                    <Label htmlFor={field.name} className="text-sm font-medium">{field.label}</Label>
+                    {field.type === "checkbox" ? (
+                      <Select value={form[field.name] ? "Yes" : "No"} onValueChange={val => setForm(f => ({ ...f, [field.name]: val === "Yes" }))}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Yes">Yes</SelectItem>
+                          <SelectItem value="No">No</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    ) : field.type === "date" ? (
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "w-full justify-start text-left font-normal",
+                              !form[field.name] && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {form[field.name] ? (
+                              format(new Date(form[field.name] as string), "PPP")
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <Calendar
+                            mode="single"
+                            selected={form[field.name] ? new Date(form[field.name] as string) : undefined}
+                            onSelect={date => setForm(f => ({ ...f, [field.name]: date ? format(date, 'yyyy-MM-dd') : "" }))}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    ) : (
+                      <Input
+                        id={field.name}
+                        name={field.name}
+                        type={field.type}
+                        value={String(form[field.name] ?? "")}
+                        onChange={handleChange}
+                        placeholder={field.label}
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
-          ) : (
-            <input
-              id={field.name}
-              name={field.name}
-              type={field.type === "date" ? "date" : field.type}
-              value={String(form[field.name] ?? "")}
-              onChange={handleChange}
-              className="border rounded px-2 py-1"
-            />
+          ))}
+          <div className="flex justify-end space-x-4 pt-4">
+            <Button type="submit" disabled={loading}>
+              {loading ? "Saving..." : "Add Master Register Record"}
+            </Button>
+          </div>
+          {error && (
+            <div className="text-red-600 text-sm mt-2 p-2 bg-red-50 rounded">
+              {error}
+            </div>
           )}
-        </div>
-      ))}
-      <button type="submit" className="col-span-full bg-blue-600 text-white py-2 rounded mt-4" disabled={loading}>
-        {loading ? "Saving..." : "Save"}
-      </button>
-      {error && <div className="col-span-full text-red-600 mt-2">{error}</div>}
-      {success && <div className="col-span-full text-green-600 mt-2">Saved successfully!</div>}
-    </form>
+          {success && (
+            <div className="text-green-600 text-sm mt-2 p-2 bg-green-50 rounded">
+              Master Register record added successfully!
+            </div>
+          )}
+        </form>
+      </CardContent>
+    </Card>
   );
 }
