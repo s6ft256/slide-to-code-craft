@@ -3,18 +3,26 @@ import ProjectStatus from "@/components/ProjectStatus";
 import ChartCard from "@/components/ChartCard";
 import { Card, CardContent } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { useDashboardMetrics } from "@/hooks/use-dashboard-metrics";
 
 const HSEAudit = () => {
+  const { metrics, loading, error } = useDashboardMetrics();
+
   const auditData = [
-    { name: 'CATEGORY 1', open: 4.3, closed: 2.4 },
-    { name: 'CATEGORY 2', open: 6.5, closed: 4.4 },
-    { name: 'CATEGORY 3', open: 3.5, closed: 1.8 },
-    { name: 'CATEGORY 4', open: 4.5, closed: 2.8 },
+    { name: 'CATEGORY 1', open: metrics?.hseAuditMetrics?.NCRs || 0, closed: metrics?.closedNCRs || 0 },
+    { name: 'CATEGORY 2', open: metrics?.hseAuditMetrics?.SORs || 0, closed: metrics?.openObservations || 0 },
+    { name: 'CATEGORY 3', open: metrics?.hseAuditMetrics?.ART || 0, closed: metrics?.closedObservations || 0 },
+    { name: 'CATEGORY 4', open: metrics?.hseAuditMetrics?.MEETINGS || 0, closed: metrics?.completedInspections || 0 },
   ];
 
+  const totalOpen = auditData.reduce((sum, item) => sum + item.open, 0);
+  const totalClosed = auditData.reduce((sum, item) => sum + item.closed, 0);
+  const total = totalOpen + totalClosed;
+  const closureRate = total > 0 ? Math.round((totalClosed / total) * 100) : 0;
+
   const closureData = [
-    { name: 'Open', value: 43, color: '#ef4444' },
-    { name: 'Closed', value: 57, color: '#22c55e' },
+    { name: 'Open', value: totalOpen, color: '#ef4444' },
+    { name: 'Closed', value: totalClosed, color: '#22c55e' },
   ];
 
   return (
@@ -36,25 +44,25 @@ const HSEAudit = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card className="shadow-soft">
               <CardContent className="p-6 text-center">
-                <div className="text-3xl font-bold text-foreground mb-2">00</div>
+                <div className="text-3xl font-bold text-foreground mb-2">{(metrics?.hseAuditMetrics?.AUDIT ?? 0).toString().padStart(2, '0')}</div>
                 <div className="text-sm text-muted-foreground">Internal Audits</div>
-                <div className="text-xs text-muted-foreground mt-1">000 Total Audits</div>
+                <div className="text-xs text-muted-foreground mt-1">{(metrics?.hseAuditMetrics?.AUDIT ?? 0).toString().padStart(3, '0')} Total Audits</div>
               </CardContent>
             </Card>
 
             <Card className="shadow-soft">
               <CardContent className="p-6 text-center">
-                <div className="text-3xl font-bold text-foreground mb-2">00</div>
+                <div className="text-3xl font-bold text-foreground mb-2">{(metrics?.hseAuditMetrics?.NCRs ?? 0).toString().padStart(2, '0')}</div>
                 <div className="text-sm text-muted-foreground">External Audits</div>
-                <div className="text-xs text-muted-foreground mt-1">000 Total NCRs</div>
+                <div className="text-xs text-muted-foreground mt-1">{(metrics?.totalNCRs ?? 0).toString().padStart(3, '0')} Total NCRs</div>
               </CardContent>
             </Card>
 
             <Card className="shadow-soft">
               <CardContent className="p-6 text-center">
-                <div className="text-3xl font-bold text-foreground mb-2">00</div>
+                <div className="text-3xl font-bold text-foreground mb-2">{(metrics?.hseAuditMetrics?.SORs ?? 0).toString().padStart(2, '0')}</div>
                 <div className="text-sm text-muted-foreground">Overdue SORs</div>
-                <div className="text-xs text-muted-foreground mt-1">000</div>
+                <div className="text-xs text-muted-foreground mt-1">{(metrics?.hseAuditMetrics?.SORs ?? 0).toString().padStart(3, '0')}</div>
               </CardContent>
             </Card>
           </div>
@@ -102,21 +110,21 @@ const HSEAudit = () => {
           <div className="grid grid-cols-3 gap-6">
             <ChartCard title="Audit Closure">
               <div className="text-center">
-                <div className="text-2xl font-bold text-success mb-2">85%</div>
+                <div className="text-2xl font-bold text-success mb-2">{closureRate}%</div>
                 <div className="text-sm text-muted-foreground">Completed</div>
               </div>
             </ChartCard>
 
             <ChartCard title="NCRs Closure">
               <div className="text-center">
-                <div className="text-2xl font-bold text-warning mb-2">72%</div>
+                <div className="text-2xl font-bold text-warning mb-2">{metrics?.totalNCRs && metrics.closedNCRs ? Math.round((metrics.closedNCRs / metrics.totalNCRs) * 100) : 0}%</div>
                 <div className="text-sm text-muted-foreground">Resolved</div>
               </div>
             </ChartCard>
 
             <ChartCard title="Overall Progress">
               <div className="text-center">
-                <div className="text-2xl font-bold text-primary mb-2">78%</div>
+                <div className="text-2xl font-bold text-primary mb-2">{Math.round(metrics?.safetyScore ?? 0)}%</div>
                 <div className="text-sm text-muted-foreground">Average</div>
               </div>
             </ChartCard>

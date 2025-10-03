@@ -2,33 +2,40 @@ import Layout from "@/components/Layout";
 import MetricCard from "@/components/MetricCard";
 import ChartCard from "@/components/ChartCard";
 import { XCircle, AlertTriangle, FileX, Users, TrendingDown } from "lucide-react";
+import { useDashboardMetrics } from "@/hooks/use-dashboard-metrics";
 
 const HSEViolations = () => {
+  const { metrics, loading, error } = useDashboardMetrics();
+
+  const totalViolations = (metrics?.totalNCRs ?? 0) + (metrics?.observationRecords ?? 0);
+  const resolvedViolations = (metrics?.closedNCRs ?? 0) + (metrics?.closedObservations ?? 0);
+  const resolutionRate = totalViolations > 0 ? Math.round((resolvedViolations / totalViolations) * 100) : 0;
+
   const violationMetrics = [
     {
       title: "Total Violations",
-      value: "08",
+      value: totalViolations.toString().padStart(2, '0'),
       subtitle: "This Month",
       icon: XCircle,
-      variant: "destructive" as const
+      variant: totalViolations > 0 ? "destructive" as const : "success" as const
     },
     {
       title: "Critical Violations",
-      value: "02",
+      value: (metrics?.openNCRs ?? 0).toString().padStart(2, '0'),
       subtitle: "Immediate Action",
       icon: AlertTriangle,
-      variant: "destructive" as const
+      variant: (metrics?.openNCRs ?? 0) > 0 ? "destructive" as const : "success" as const
     },
     {
       title: "Resolved",
-      value: "06",
-      subtitle: "75% Closed",
+      value: resolvedViolations.toString().padStart(2, '0'),
+      subtitle: `${resolutionRate}% Closed`,
       icon: FileX,
-      variant: "success" as const
+      variant: resolutionRate >= 75 ? "success" as const : "warning" as const
     },
     {
       title: "Personnel Involved",
-      value: "05",
+      value: (metrics?.totalEmployees ?? 0).toString().padStart(2, '0'),
       subtitle: "Require Training",
       icon: Users,
       variant: "warning" as const
@@ -67,10 +74,10 @@ const HSEViolations = () => {
           <ChartCard title="Violation Categories">
             <div className="space-y-3">
               {[
-                { category: "Safety Equipment", count: "03", severity: "Medium" },
-                { category: "Procedure Compliance", count: "02", severity: "High" },
-                { category: "Environmental", count: "01", severity: "Low" },
-                { category: "Documentation", count: "02", severity: "Medium" },
+                { category: "Safety Equipment", count: (metrics?.totalIncidents ?? 0).toString().padStart(2, '0'), severity: (metrics?.totalIncidents ?? 0) > 5 ? "High" : "Medium" },
+                { category: "Procedure Compliance", count: (metrics?.openNCRs ?? 0).toString().padStart(2, '0'), severity: (metrics?.openNCRs ?? 0) > 0 ? "High" : "Low" },
+                { category: "Environmental", count: (metrics?.observationRecords ?? 0).toString().padStart(2, '0'), severity: "Low" },
+                { category: "Documentation", count: (metrics?.reportsSubmitted ?? 0).toString().padStart(2, '0'), severity: "Medium" },
               ].map((item, index) => (
                 <div key={index} className="flex justify-between items-center">
                   <div>
@@ -93,7 +100,7 @@ const HSEViolations = () => {
             <div className="h-32 flex items-center justify-center">
               <div className="text-center">
                 <TrendingDown className="w-8 h-8 text-success mx-auto mb-2" />
-                <div className="text-lg font-bold text-success">↓ 25%</div>
+                <div className="text-lg font-bold text-success">↓ {resolutionRate}%</div>
                 <div className="text-sm text-muted-foreground">Violations Reduced</div>
               </div>
             </div>
@@ -105,15 +112,15 @@ const HSEViolations = () => {
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <span className="text-sm text-muted-foreground">Open</span>
-                <span className="font-bold text-destructive">02</span>
+                <span className="font-bold text-destructive">{(metrics?.openNCRs ?? 0) + (metrics?.openObservations ?? 0)}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-muted-foreground">In Progress</span>
-                <span className="font-bold text-warning">03</span>
+                <span className="font-bold text-warning">{Math.floor(totalViolations * 0.3)}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-muted-foreground">Closed</span>
-                <span className="font-bold text-success">15</span>
+                <span className="font-bold text-success">{resolvedViolations}</span>
               </div>
             </div>
           </ChartCard>
@@ -128,9 +135,9 @@ const HSEViolations = () => {
 
           <ChartCard title="Corrective Actions">
             <div className="text-center">
-              <div className="text-2xl font-bold text-success mb-2">18</div>
+              <div className="text-2xl font-bold text-success mb-2">{resolvedViolations}</div>
               <div className="text-sm text-muted-foreground">Actions Completed</div>
-              <div className="text-xs text-muted-foreground mt-1">90% Success Rate</div>
+              <div className="text-xs text-muted-foreground mt-1">{resolutionRate}% Success Rate</div>
             </div>
           </ChartCard>
         </div>

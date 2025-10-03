@@ -131,14 +131,14 @@ const HSEMetricsGrid = () => {
   ];
 
   const hseAuditMetrics = [
-    { label: "AUDIT", value: "00" },
-    { label: "NCRs", value: "00" },
-    { label: "SORs", value: "00" },
-    { label: "ART", value: "00" },
-    { label: "MEETINGS", value: "00" },
-    { label: "TRIR", value: "00" },
-    { label: "LTIFR", value: "00" },
-    { label: "LTISR", value: "00" }
+    { label: "AUDIT", value: (metrics?.hseAuditMetrics?.AUDIT ?? 0).toString() },
+    { label: "NCRs", value: (metrics?.hseAuditMetrics?.NCRs ?? 0).toString() },
+    { label: "SORs", value: (metrics?.hseAuditMetrics?.SORs ?? 0).toString() },
+    { label: "ART", value: (metrics?.hseAuditMetrics?.ART ?? 0).toString() },
+    { label: "MEETINGS", value: (metrics?.hseAuditMetrics?.MEETINGS ?? 0).toString() },
+    { label: "TRIR", value: (metrics?.hseAuditMetrics?.TRIR ?? 0).toString() },
+    { label: "LTIFR", value: (metrics?.hseAuditMetrics?.LTIFR ?? 0).toString() },
+    { label: "LTISR", value: (metrics?.hseAuditMetrics?.LTISR ?? 0).toString() }
   ];
 
   return (

@@ -14,6 +14,7 @@ import ObservationTrackerForm from "@/components/ObservationTrackerForm";
 import ObservationTrackerRecords from "@/components/ObservationTrackerRecords";
 import NCRForm from "@/components/NCRForm";
 import NCRRecords from "@/components/NCRRecords";
+import { useDashboardMetrics } from "@/hooks/use-dashboard-metrics";
 
 const DailyManagement = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -21,31 +22,34 @@ const DailyManagement = () => {
   const [injuryTab, setInjuryTab] = useState("records");
   const [observationTab, setObservationTab] = useState("records");
   const [cnrTab, setCnrTab] = useState("records");
+
+  const { metrics, loading, error } = useDashboardMetrics();
+
   const dailyMetrics = [
     {
       title: "Leading Indicators",
-      value: "00",
+      value: (metrics?.leadingIndicators ?? 0).toString().padStart(2, '0'),
       subtitle: "Incidents",
       icon: Activity,
-      variant: "success" as const
+      variant: ((metrics?.leadingIndicators ?? 0) === 0 ? "success" : "warning") as "success" | "warning"
     },
     {
       title: "Training Average",
-      value: "64.1%",
+      value: `${Math.round(metrics?.trainingAverage ?? 0)}%`,
       subtitle: "Completion",
       icon: Target,
-      variant: "warning" as const
+      variant: ((metrics?.trainingAverage ?? 0) >= 80 ? "success" : "warning") as "success" | "warning"
     },
     {
       title: "Days Without LTI",
-      value: "43",
+      value: (metrics?.daysWithoutLTI ?? 0).toString(),
       subtitle: "Days",
       icon: Clock,
-      variant: "success" as const
+      variant: ((metrics?.daysWithoutLTI ?? 0) > 30 ? "success" : "warning") as "success" | "warning"
     },
     {
       title: "Total Employees",
-      value: "000",
+      value: (metrics?.totalEmployees ?? 0).toString().padStart(3, '0'),
       subtitle: "Active",
       icon: Users,
       variant: "default" as const

@@ -4,8 +4,10 @@ import TrainingChart from "@/components/TrainingChart";
 import ChartCard from "@/components/ChartCard";
 import { Card, CardContent } from "@/components/ui/card";
 import { Star } from "lucide-react";
+import { useDashboardMetrics } from "@/hooks/use-dashboard-metrics";
 
 const StatisticReports = () => {
+  const { metrics, loading, error } = useDashboardMetrics();
   return (
     <Layout>
       <div className="mb-6">
@@ -28,26 +30,31 @@ const StatisticReports = () => {
                     <Star
                       key={i}
                       className={`w-6 h-6 ${
-                        i < 4 ? "fill-warning text-warning" : "fill-muted text-muted-foreground"
+                        i < Math.round((metrics?.safetyScore ?? 0) / 20) ? "fill-warning text-warning" : "fill-muted text-muted-foreground"
                       }`}
                     />
                   ))}
                 </div>
-                <div className="text-2xl font-bold text-foreground">S</div>
+                <div className="text-2xl font-bold text-foreground">
+                  {metrics?.safetyScore && metrics.safetyScore >= 80 ? "S" :
+                   metrics?.safetyScore && metrics.safetyScore >= 60 ? "A" :
+                   metrics?.safetyScore && metrics.safetyScore >= 40 ? "B" :
+                   metrics?.safetyScore && metrics.safetyScore >= 20 ? "C" : "D"}
+                </div>
                 <div className="text-sm text-muted-foreground">Rating</div>
               </CardContent>
             </Card>
 
             <Card className="shadow-soft">
               <CardContent className="p-6 text-center">
-                <div className="text-3xl font-bold text-foreground mb-2">14</div>
+                <div className="text-3xl font-bold text-foreground mb-2">{Math.round(metrics?.safetyScore ?? 0)}</div>
                 <div className="text-sm text-muted-foreground">Score</div>
               </CardContent>
             </Card>
 
             <Card className="shadow-soft">
               <CardContent className="p-6 text-center">
-                <div className="text-3xl font-bold text-success mb-2">72.8%</div>
+                <div className="text-3xl font-bold text-success mb-2">{Math.round(metrics?.trainingAverage ?? 0)}%</div>
                 <div className="text-sm text-muted-foreground">Completion</div>
               </CardContent>
             </Card>
@@ -57,7 +64,7 @@ const StatisticReports = () => {
                 <div className="text-sm text-muted-foreground mb-2">Total Attendees</div>
                 <div className="grid grid-cols-2 gap-4 text-center">
                   <div>
-                    <div className="text-lg font-bold text-foreground">000</div>
+                    <div className="text-lg font-bold text-foreground">{(metrics?.totalEmployees ?? 0).toString().padStart(3, '0')}</div>
                     <div className="text-xs text-muted-foreground">Internal</div>
                   </div>
                   <div>
@@ -77,11 +84,11 @@ const StatisticReports = () => {
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <span className="text-sm text-muted-foreground">Total Hours</span>
-                <span className="font-bold text-foreground">000</span>
+                <span className="font-bold text-foreground">{(metrics?.totalTrainingHours ?? 0).toString().padStart(3, '0')}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-muted-foreground">Completed</span>
-                <span className="font-bold text-success">000</span>
+                <span className="font-bold text-success">{(metrics?.completedTraining ?? 0).toString().padStart(3, '0')}</span>
               </div>
             </div>
           </ChartCard>
@@ -89,7 +96,7 @@ const StatisticReports = () => {
           <ChartCard title="Monthly Performance">
             <div className="h-32 flex items-center justify-center">
               <div className="text-center">
-                <div className="text-2xl font-bold text-primary mb-2">87.5%</div>
+                <div className="text-2xl font-bold text-primary mb-2">{Math.round(metrics?.safetyScore ?? 0)}%</div>
                 <div className="text-sm text-muted-foreground">Average Monthly Score</div>
               </div>
             </div>
