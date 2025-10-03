@@ -161,6 +161,7 @@ const AddInductionForm = ({ onClose }: { onClose: () => void }) => {
               <Label htmlFor="sno">S.NO. *</Label>
               <Input
                 id="sno"
+                name="sno"
                 value={formData.sno}
                 onChange={(e) => handleInputChange("sno", e.target.value)}
                 placeholder="Enter serial number"
@@ -173,6 +174,7 @@ const AddInductionForm = ({ onClose }: { onClose: () => void }) => {
               <Label htmlFor="idNo">ID NO. *</Label>
               <Input
                 id="idNo"
+                name="idNo"
                 value={formData.idNo}
                 onChange={(e) => handleInputChange("idNo", e.target.value)}
                 placeholder="Enter ID number"
@@ -185,6 +187,7 @@ const AddInductionForm = ({ onClose }: { onClose: () => void }) => {
               <Label htmlFor="name">NAME *</Label>
               <Input
                 id="name"
+                name="name"
                 value={formData.name}
                 onChange={(e) => handleInputChange("name", e.target.value)}
                 placeholder="Enter full name"
@@ -197,6 +200,7 @@ const AddInductionForm = ({ onClose }: { onClose: () => void }) => {
               <Label htmlFor="designation">DESIGNATION</Label>
               <Input
                 id="designation"
+                name="designation"
                 value={formData.designation}
                 onChange={(e) => handleInputChange("designation", e.target.value)}
                 placeholder="Enter designation"
@@ -208,6 +212,7 @@ const AddInductionForm = ({ onClose }: { onClose: () => void }) => {
               <Label htmlFor="company">COMPANY *</Label>
               <Input
                 id="company"
+                name="company"
                 value={formData.company}
                 onChange={(e) => handleInputChange("company", e.target.value)}
                 placeholder="Enter company name"

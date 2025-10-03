@@ -254,6 +254,7 @@ function IncidentReportForm({ onSubmit, onSuccess }: IncidentReportFormProps) {
                 <Label htmlFor="srno">Sr. No</Label>
                 <Input 
                   id="srno" 
+                  name="srno"
                   value={formData.srno} 
                   readOnly 
                   className="bg-muted"
@@ -263,6 +264,7 @@ function IncidentReportForm({ onSubmit, onSuccess }: IncidentReportFormProps) {
                 <Label htmlFor="incidentdate">Incident Date</Label>
                 <Input 
                   id="incidentdate" 
+                  name="incidentdate"
                   type="date"
                   value={formData.incidentdate}
                   onChange={(e) => handleChange("incidentdate", e.target.value)}
@@ -273,6 +275,7 @@ function IncidentReportForm({ onSubmit, onSuccess }: IncidentReportFormProps) {
                 <Label htmlFor="time">Time</Label>
                 <Input 
                   id="time" 
+                  name="time"
                   type="time"
                   value={formData.time}
                   onChange={(e) => handleChange("time", e.target.value)}
@@ -286,6 +289,7 @@ function IncidentReportForm({ onSubmit, onSuccess }: IncidentReportFormProps) {
                 <Label htmlFor="reportref">Report Reference</Label>
                 <Input 
                   id="reportref"
+                  name="reportref"
                   value={formData.reportref}
                   onChange={(e) => handleChange("reportref", e.target.value)}
                   placeholder="Enter report reference" 
@@ -312,6 +316,7 @@ function IncidentReportForm({ onSubmit, onSuccess }: IncidentReportFormProps) {
                 <Label htmlFor="location">Location</Label>
                 <Input 
                   id="location"
+                  name="location"
                   value={formData.additionalDetails.location}
                   onChange={(e) => handleChange("location", e.target.value)}
                   placeholder="Enter location" 
@@ -340,6 +345,7 @@ function IncidentReportForm({ onSubmit, onSuccess }: IncidentReportFormProps) {
                 <Label htmlFor="company_name">Company Name</Label>
                 <Input 
                   id="company_name"
+                  name="company_name"
                   value={formData.additionalDetails.company_name}
                   onChange={(e) => handleChange("company_name", e.target.value)}
                   placeholder="Enter company name" 
@@ -351,6 +357,7 @@ function IncidentReportForm({ onSubmit, onSuccess }: IncidentReportFormProps) {
               <Label htmlFor="description">Description</Label>
               <Textarea 
                 id="description"
+                name="description"
                 value={formData.additionalDetails.description}
                 onChange={(e) => handleChange("description", e.target.value)}
                 placeholder="Describe the incident"
@@ -405,6 +412,7 @@ function IncidentReportForm({ onSubmit, onSuccess }: IncidentReportFormProps) {
                   <Label htmlFor="injuries">Number of Injuries</Label>
                   <Input 
                     id="injuries"
+                    name="injuries"
                     type="number"
                     min="0"
                     value={formData.additionalDetails.injuries}
