@@ -147,7 +147,6 @@ function IncidentReportForm({ onSubmit, onSuccess }: IncidentReportFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Incident form submit triggered', formData);
     setIsSubmitting(true);
 
     try {
@@ -163,7 +162,7 @@ function IncidentReportForm({ onSubmit, onSuccess }: IncidentReportFormProps) {
         details: formData.additionalDetails ? JSON.stringify(formData.additionalDetails) : null
       };
 
-      console.log('Saving to localStorage:', submissionData);
+      
 
       // Save to localStorage
       const existingData = JSON.parse(localStorage.getItem('incident_report') || '[]');
@@ -171,7 +170,7 @@ function IncidentReportForm({ onSubmit, onSuccess }: IncidentReportFormProps) {
       existingData.push(newRecord);
       localStorage.setItem('incident_report', JSON.stringify(existingData));
 
-      console.log('Submission successful');
+      
 
       toast({
         title: "Success",
@@ -210,7 +209,6 @@ function IncidentReportForm({ onSubmit, onSuccess }: IncidentReportFormProps) {
   };
 
   const handleChange = (field: keyof IncidentReportDB | keyof IncidentDetails, value: string | number | boolean | string[] | null) => {
-    console.log(`Incident form field changed: ${field} = ${value}`);
     if (field in initialFormData) {
       // Handle main form fields
       setFormData(prev => ({ ...prev, [field]: value }));
@@ -470,6 +468,7 @@ function IncidentReportForm({ onSubmit, onSuccess }: IncidentReportFormProps) {
                 <div>
                   <Label htmlFor="severity">Severity (Actual)</Label>
                   <Select
+                    name="severity"
                     value={formData.additionalDetails.severity}
                     onValueChange={(value) => handleChange("severity", value)}
                   >
@@ -487,6 +486,7 @@ function IncidentReportForm({ onSubmit, onSuccess }: IncidentReportFormProps) {
                 <div>
                   <Label htmlFor="severityPotential">Severity (Potential)</Label>
                   <Select>
+                    name="potential_severity"
                     <SelectTrigger>
                       <SelectValue placeholder="Select potential severity" />
                     </SelectTrigger>
@@ -512,6 +512,7 @@ function IncidentReportForm({ onSubmit, onSuccess }: IncidentReportFormProps) {
                   <Label htmlFor="activity">Activity</Label>
                   <Input 
                     id="activity"
+                    name="activity"
                     value={formData.additionalDetails.activity}
                     onChange={(e) => handleChange("activity", e.target.value)}
                     placeholder="Describe the activity" 
@@ -521,6 +522,7 @@ function IncidentReportForm({ onSubmit, onSuccess }: IncidentReportFormProps) {
                   <Label htmlFor="incident_subtype">Type</Label>
                   <Input 
                     id="incident_subtype"
+                    name="incident_subtype"
                     value={formData.additionalDetails.incident_subtype}
                     onChange={(e) => handleChange("incident_subtype", e.target.value)}
                     placeholder="Enter type" 
@@ -532,6 +534,7 @@ function IncidentReportForm({ onSubmit, onSuccess }: IncidentReportFormProps) {
                 <Label htmlFor="immediate_cause">Immediate Cause</Label>
                 <Textarea 
                   id="immediate_cause"
+                  name="immediate_cause"
                   value={formData.additionalDetails.immediate_cause}
                   onChange={(e) => handleChange("immediate_cause", e.target.value)}
                   placeholder="Describe the immediate cause"
@@ -547,6 +550,7 @@ function IncidentReportForm({ onSubmit, onSuccess }: IncidentReportFormProps) {
                     </Label>
                     <Input
                       id={`contributory${index + 1}`}
+                      name={`contributory${index + 1}`}
                       value={formData.additionalDetails.contributory_factors[index]}
                       onChange={(e) => {
                         const newFactors = [...formData.additionalDetails.contributory_factors];
@@ -584,6 +588,7 @@ function IncidentReportForm({ onSubmit, onSuccess }: IncidentReportFormProps) {
                   <Label htmlFor="root_cause">Root/Basic Cause</Label>
                   <Textarea 
                     id="root_cause"
+                    name="root_cause"
                     value={formData.additionalDetails.root_cause}
                     onChange={(e) => handleChange("root_cause", e.target.value)}
                     placeholder="Describe the root cause"
@@ -594,6 +599,7 @@ function IncidentReportForm({ onSubmit, onSuccess }: IncidentReportFormProps) {
                   <Label htmlFor="system_deficiency">System Deficiency</Label>
                   <Textarea 
                     id="system_deficiency"
+                    name="system_deficiency"
                     value={formData.additionalDetails.system_deficiency}
                     onChange={(e) => handleChange("system_deficiency", e.target.value)}
                     placeholder="Describe system deficiency"

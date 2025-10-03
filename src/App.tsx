@@ -27,6 +27,7 @@ const App = () => (
           <Route path="/daily-management" element={<DailyManagement />} />
           <Route path="/statistic-reports" element={<StatisticReports />} />
           <Route path="/incident-management" element={<IncidentManagement />} />
+          <Route path="/incident-management/new" element={<IncidentManagement />} />
           <Route path="/hse-audit" element={<HSEAudit />} />
           <Route path="/hse-inspection" element={<HSEInspection />} />
           <Route path="/emergency-management" element={<EmergencyManagement />} />

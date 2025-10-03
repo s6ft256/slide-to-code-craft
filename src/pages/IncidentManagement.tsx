@@ -5,12 +5,13 @@ import LTIChart from "@/components/LTIChart";
 import IncidentReportForm from "@/components/IncidentReportForm";
 import { AlertTriangle, FileText, Clock, Users, TrendingDown, Plus, Loader2, LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { useIncidentMetrics } from "@/hooks/use-incident-metrics";
 import { IncidentList } from "@/components/IncidentList";
 
 const IncidentManagement = () => {
-  const [showReportForm, setShowReportForm] = useState(false);
+  const location = useLocation();
+  const isCreating = location.pathname.endsWith("/incident-management/new");
   const { metrics, incidents } = useIncidentMetrics();
 
   if (metrics.loading) {
@@ -79,7 +80,7 @@ const IncidentManagement = () => {
     }
   ];
 
-  if (showReportForm) {
+  if (isCreating) {
     return (
       <Layout>
         <div className="mb-6">
@@ -92,15 +93,12 @@ const IncidentManagement = () => {
                 Fill out the incident report form with all required details
               </p>
             </div>
-            <Button 
-              variant="outline" 
-              onClick={() => setShowReportForm(false)}
-            >
-              Back to Dashboard
+            <Button variant="outline" asChild>
+              <Link to="/incident-management">Back to Dashboard</Link>
             </Button>
           </div>
         </div>
-        <IncidentReportForm onSuccess={() => setShowReportForm(false)} />
+  <IncidentReportForm onSuccess={() => window.location.hash = "#/incident-management"} />
       </Layout>
     );
   }
@@ -117,12 +115,11 @@ const IncidentManagement = () => {
               Track and manage safety incidents and near misses
             </p>
           </div>
-          <Button 
-            onClick={() => setShowReportForm(true)}
-            className="flex items-center gap-2"
-          >
-            <Plus className="w-4 h-4" />
-            New Incident Report
+          <Button className="flex items-center gap-2" asChild>
+            <Link to="/incident-management/new">
+              <Plus className="w-4 h-4" />
+              New Incident Report
+            </Link>
           </Button>
         </div>
       </div>
