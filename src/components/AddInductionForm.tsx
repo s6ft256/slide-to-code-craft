@@ -45,6 +45,7 @@ const AddInductionForm = ({ onClose }: { onClose: () => void }) => {
   const { toast } = useToast();
 
   const handleInputChange = (field: string, value: string) => {
+    console.log(`Form field changed: ${field} = ${value}`);
     setFormData(prev => ({
       ...prev,
       [field]: value
@@ -70,6 +71,7 @@ const AddInductionForm = ({ onClose }: { onClose: () => void }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Form submit triggered', formData);
 
     // Basic validation
     if (!formData.name || !formData.idNo || !formData.company) {
@@ -143,6 +145,15 @@ const AddInductionForm = ({ onClose }: { onClose: () => void }) => {
       </CardHeader>
       
       <CardContent>
+         <div className="mb-4">
+           <Button 
+             type="button" 
+             onClick={() => console.log('Test button clicked!')} 
+             variant="outline"
+           >
+             Test Click (Check Console)
+           </Button>
+         </div>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* S.NO. */}

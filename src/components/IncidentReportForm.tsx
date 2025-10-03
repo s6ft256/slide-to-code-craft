@@ -107,7 +107,7 @@ const initialFormData: FormData = {
 
 interface IncidentReportFormProps {
   onSuccess?: () => void;
-  onSubmit?: (data: IncidentReportRecord) => void;
+  onSubmit?: (data: IncidentReportDB) => void;
 }
 
 function IncidentReportForm({ onSubmit, onSuccess }: IncidentReportFormProps) {
@@ -147,6 +147,7 @@ function IncidentReportForm({ onSubmit, onSuccess }: IncidentReportFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Incident form submit triggered', formData);
     setIsSubmitting(true);
 
     try {
@@ -175,7 +176,6 @@ function IncidentReportForm({ onSubmit, onSuccess }: IncidentReportFormProps) {
       toast({
         title: "Success",
         description: "Incident report submitted successfully",
-        variant: "success",
       });
 
       if (onSuccess) {
@@ -210,6 +210,7 @@ function IncidentReportForm({ onSubmit, onSuccess }: IncidentReportFormProps) {
   };
 
   const handleChange = (field: keyof IncidentReportDB | keyof IncidentDetails, value: string | number | boolean | string[] | null) => {
+    console.log(`Incident form field changed: ${field} = ${value}`);
     if (field in initialFormData) {
       // Handle main form fields
       setFormData(prev => ({ ...prev, [field]: value }));
