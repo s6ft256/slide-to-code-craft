@@ -116,15 +116,19 @@ function IncidentReportForm({ onSubmit, onSuccess }: IncidentReportFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
+  // Initialize serial number once on mount to avoid re-render loops
   useEffect(() => {
+    let isMounted = true;
     const initializeSerialNumber = async () => {
       const nextSN = await getNextSerialNumber();
+      if (!isMounted) return;
       if (nextSN) {
-        setFormData(prev => ({ ...prev, srno: nextSN }));
+        setFormData(prev => (prev.srno === nextSN ? prev : { ...prev, srno: nextSN }));
       }
     };
     initializeSerialNumber();
-  }, [getNextSerialNumber]);
+    return () => { isMounted = false; };
+  }, []);
 
   const validateForm = () => {
     // Validate required fields
@@ -485,8 +489,11 @@ function IncidentReportForm({ onSubmit, onSuccess }: IncidentReportFormProps) {
                 </div>
                 <div>
                   <Label htmlFor="severityPotential">Severity (Potential)</Label>
-                  <Select>
+                  <Select
                     name="potential_severity"
+                    value={formData.additionalDetails.potential_severity}
+                    onValueChange={(value) => handleChange("potential_severity", value)}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select potential severity" />
                     </SelectTrigger>
@@ -571,6 +578,7 @@ function IncidentReportForm({ onSubmit, onSuccess }: IncidentReportFormProps) {
                     </Label>
                     <Input
                       id={`contributory${index + 1}`}
+                      name={`contributory${index + 1}`}
                       value={formData.additionalDetails.contributory_factors[index]}
                       onChange={(e) => {
                         const newFactors = [...formData.additionalDetails.contributory_factors];
