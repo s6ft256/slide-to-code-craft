@@ -12,6 +12,8 @@ import { Activity, Users, Clock, Target, AlertTriangle } from "lucide-react";
 import { useState } from "react";
 import ObservationTrackerForm from "@/components/ObservationTrackerForm";
 import ObservationTrackerRecords from "@/components/ObservationTrackerRecords";
+import NCRForm from "@/components/NCRForm";
+import NCRRecords from "@/components/NCRRecords";
 
 const DailyManagement = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -85,7 +87,7 @@ const DailyManagement = () => {
         <button
           className={`px-4 py-2 rounded ${activeTab === "cnr-tracker" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-800"}`}
           onClick={() => setActiveTab("cnr-tracker")}
-        >CNR Tracker</button>
+        >NCR Tracker</button>
       </div>
 
       {activeTab === "dashboard" && (
@@ -228,11 +230,11 @@ const DailyManagement = () => {
               onClick={() => setCnrTab("add")}
             >Add New Record</button>
           </div>
-          {cnrTab === "records" && <div className="p-4 text-center text-muted-foreground">CNR records feature will be available soon</div>}
+          {cnrTab === "records" && <NCRRecords />}
           {cnrTab === "add" && (
             <>
-              <h3 className="text-lg font-semibold text-foreground mb-4">CNR Tracker (Manual Data Entry)</h3>
-              <div className="p-4 text-center text-muted-foreground">CNR form feature will be available soon</div>
+              <h3 className="text-lg font-semibold text-foreground mb-4">NCR Tracker (Manual Data Entry)</h3>
+              <NCRForm onClose={() => setCnrTab("records")} />
             </>
           )}
         </div>

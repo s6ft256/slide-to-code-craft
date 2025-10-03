@@ -1,31 +1,63 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
-const mockRecords = [
-  {
-    srNo: "01",
-    date: "2025-09-01",
-    typeOfActivity: "Safety Meeting",
-    titleTopic: "Fire Drill",
-    numberOfAttendees: "20",
-    supervisors: "John Doe",
-    siteEngineer: "Jane Smith",
-    projectEngineer: "Bob Lee",
-    deptManagersLead: "Alice Brown",
-    projectManager: "Tom White",
-    projectDirector: "Sara Black",
-    hseTeam: "HSE Team",
-    corporateHSE: "Corp HSE",
-    topManagement: "CEO",
-    activityLeader: "Mike Green",
-    activityLeaderDesignation: "Lead",
-    projectSeniorManagementInvolvement: "Yes",
-    corporateManagementInvolvement: "Yes",
-    remarks: "Successful"
-  }
-];
+type EventRecord = {
+  id: string;
+  srNo: string;
+  date: string;
+  typeOfActivity: string;
+  titleTopic: string;
+  numberOfAttendees: string;
+  supervisors: string;
+  siteEngineer: string;
+  projectEngineer: string;
+  deptManagersLead: string;
+  projectManager: string;
+  projectDirector: string;
+  hseTeam: string;
+  corporateHSE: string;
+  topManagement: string;
+  activityLeader: string;
+  activityLeaderDesignation: string;
+  projectSeniorManagementInvolvement: string;
+  corporateManagementInvolvement: string;
+  remarks: string;
+  createdAt: string;
+};
 
 export default function EventRecords() {
+  const [records, setRecords] = useState<EventRecord[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchRecords() {
+      setLoading(true);
+      try {
+        const data = JSON.parse(localStorage.getItem('event_records') || '[]');
+        setRecords(data.reverse()); // Most recent first
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchRecords();
+  }, []);
+
+  if (loading) {
+    return <div className="p-4">Loading event records...</div>;
+  }
+
+  if (error) {
+    return <div className="p-4 text-red-600">Error: {error}</div>;
+  }
+
+  if (records.length === 0) {
+    return <div className="p-4 text-muted-foreground">No event records found.</div>;
+  }
+
   return (
     <Card className="max-w-3xl mx-auto mb-6">
       <CardHeader>
@@ -58,8 +90,8 @@ export default function EventRecords() {
               </tr>
             </thead>
             <tbody>
-              {mockRecords.map((row, idx) => (
-                <tr key={idx}>
+              {records.map((row) => (
+                <tr key={row.id}>
                   <td>{row.srNo}</td>
                   <td>{row.date}</td>
                   <td>{row.typeOfActivity}</td>
