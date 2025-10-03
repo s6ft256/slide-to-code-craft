@@ -158,34 +158,6 @@ export default function MasterRegisterForm({ onSubmit }: { onSubmit?: (data: Rec
     }
   }
 
-  // Group fields into logical sections for better UI
-  const sections = [
-    {
-      title: "Manpower & Hours",
-      fields: fields.filter(f => ["weekEndingOn","trojanManhours","npcManhours","otherSubconsManhours","totalManhours","trojanManpower","npcManpower","otherSubconManpower","totalManpower"].includes(f.name))
-    },
-    {
-      title: "Waste & Environment",
-      fields: fields.filter(f => ["expectedWasteGeneration","actualWasteGeneration","wasteRecycledPercent","envSamplingAir","envSamplingNoise","fuelConsumption","nonHazWasteDisposalTonnes","nonHazWasteDisposalL","hazWasteDisposalSolidTonnes","hazWasteDisposalLiquidL","waterConsumption"].includes(f.name))
-    },
-    {
-      title: "Incidents & Safety",
-      fields: fields.filter(f => ["level5","level4","level3","level2","level1","hipoIncidents","envIncidentMajor","envIncidentModerate","envIncidentMinor","totalLTI","fatalities","ptd","ppd","lostWorkdayCase","lostWorkdaysInjuries","lostWorkdaysIllness","noOfLostWorkDays","seriousDangerousOccurrence","rwdc","mtc","fac","equipmentPropertyDamages","fireIncidents","nearMiss","securityIncidents"].includes(f.name))
-    },
-    {
-      title: "Training & Meetings",
-      fields: fields.filter(f => ["totalTrainingHours","inductionAttendees","noOfAssessedTrainings","avgTrainingPerEmployee","externalTrainingHours","externalTrainingAttendees","internalTrainingHours","internalTrainingAttendees","drills","safetyInspectionsConducted","safetyObservationsRaised","safetyObservationsOpen","safetyObservationsClosed","safetyObservationsOverdue","tbtSessions","tbtAttendees","managementWalks","managementMeetings","committeeMeetings","hseMeetings","awards","campaigns"].includes(f.name))
-    },
-    {
-      title: "NCR & Audits",
-      fields: fields.filter(f => ["avgResolutionTimeNCR","totalNCRS","totalNCRClosed","totalStopWorkNotices","internalHSEAudit","sraExternalHSEAudit","hseEnforcementAction"].includes(f.name))
-    },
-    {
-      title: "Performance Metrics",
-      fields: fields.filter(f => ["ltifr","ltisr","overallProjectPerformance","reportingMonthYear"].includes(f.name))
-    }
-  ];
-
   return (
     <Card className="w-full max-w-6xl mx-auto">
       <CardHeader>
@@ -193,65 +165,60 @@ export default function MasterRegisterForm({ onSubmit }: { onSubmit?: (data: Rec
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-8">
-          {sections.map(section => (
-            <div key={section.title} className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">{section.title}</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {section.fields.map(field => (
-                  <div key={field.name} className="space-y-2">
-                    <Label htmlFor={field.name} className="text-sm font-medium">{field.label}</Label>
-                    {field.type === "checkbox" ? (
-                      <Select value={form[field.name] ? "Yes" : "No"} onValueChange={val => setForm(f => ({ ...f, [field.name]: val === "Yes" }))}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="Yes">Yes</SelectItem>
-                          <SelectItem value="No">No</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    ) : field.type === "date" ? (
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant="outline"
-                            className={cn(
-                              "w-full justify-start text-left font-normal",
-                              !form[field.name] && "text-muted-foreground"
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {form[field.name] ? (
-                              format(new Date(form[field.name] as string), "PPP")
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
-                          <Calendar
-                            mode="single"
-                            selected={form[field.name] ? new Date(form[field.name] as string) : undefined}
-                            onSelect={date => setForm(f => ({ ...f, [field.name]: date ? format(date, 'yyyy-MM-dd') : "" }))}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                    ) : (
-                      <Input
-                        id={field.name}
-                        name={field.name}
-                        type={field.type}
-                        value={String(form[field.name] ?? "")}
-                        onChange={handleChange}
-                        placeholder={field.label}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {fields.map(field => (
+              <div key={field.name} className="space-y-2">
+                <Label htmlFor={field.name} className="text-sm font-medium">{field.label}</Label>
+                {field.type === "checkbox" ? (
+                  <Select value={form[field.name] ? "Yes" : "No"} onValueChange={val => setForm(f => ({ ...f, [field.name]: val === "Yes" }))}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Yes">Yes</SelectItem>
+                      <SelectItem value="No">No</SelectItem>
+                    </SelectContent>
+                  </Select>
+                ) : field.type === "date" ? (
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !form[field.name] && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {form[field.name] ? (
+                          format(new Date(form[field.name] as string), "PPP")
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0">
+                      <Calendar
+                        mode="single"
+                        selected={form[field.name] ? new Date(form[field.name] as string) : undefined}
+                        onSelect={date => setForm(f => ({ ...f, [field.name]: date ? format(date, 'yyyy-MM-dd') : "" }))}
+                        initialFocus
                       />
-                    )}
-                  </div>
-                ))}
+                    </PopoverContent>
+                  </Popover>
+                ) : (
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    type={field.type}
+                    value={String(form[field.name] ?? "")}
+                    onChange={handleChange}
+                    placeholder={field.label}
+                  />
+                )}
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
           <div className="flex justify-end space-x-4 pt-4">
             <Button type="submit" disabled={loading}>
               {loading ? "Saving..." : "Add Master Register Record"}
