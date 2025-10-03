@@ -146,11 +146,25 @@ export default function MasterRegisterForm({ onSubmit }: { onSubmit?: (data: Rec
     setLoading(true);
     setError(null);
     setSuccess(false);
-    // Save to localStorage
-    setSuccess(true);
-    if (onSubmit) onSubmit(form);
-    setForm(initialForm);
-    setLoading(false);
+    try {
+      // Save to localStorage under 'master_register'
+      const key = 'master_register';
+      const existing = JSON.parse(localStorage.getItem(key) || '[]');
+      const newRecord = { ...form, id: Date.now().toString(), createdAt: new Date().toISOString() };
+      if (Array.isArray(existing)) {
+        existing.push(newRecord);
+        localStorage.setItem(key, JSON.stringify(existing));
+      } else {
+        localStorage.setItem(key, JSON.stringify([newRecord]));
+      }
+      setSuccess(true);
+      if (onSubmit) onSubmit(form);
+      setForm(initialForm);
+    } catch (err) {
+      setError((err as Error).message || 'Failed to save data');
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
