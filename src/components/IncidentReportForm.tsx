@@ -65,6 +65,13 @@ const getCurrentDateString = () => {
   return today.toISOString().split('T')[0];
 };
 
+const getCurrentTimeString = () => {
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2, '0');
+  const mm = String(now.getMinutes()).padStart(2, '0');
+  return `${hh}:${mm}`;
+};
+
 const initialIncidentDetails: IncidentDetails = {
   description: "",
   location: "",
@@ -123,9 +130,12 @@ function IncidentReportForm({ onSubmit, onSuccess, onCancel }: IncidentReportFor
     const initializeSerialNumber = async () => {
       const nextSN = await getNextSerialNumber();
       if (!isMounted) return;
-      if (nextSN) {
-        setFormData(prev => (prev.srno === nextSN ? prev : { ...prev, srno: nextSN }));
-      }
+      setFormData(prev => ({
+        ...prev,
+        srno: nextSN || prev.srno || '',
+        incidentdate: getCurrentDateString(),
+        time: getCurrentTimeString(),
+      }));
     };
     initializeSerialNumber();
     return () => { isMounted = false; };
@@ -189,7 +199,9 @@ function IncidentReportForm({ onSubmit, onSuccess, onCancel }: IncidentReportFor
         const nextSN = await getNextSerialNumber();
         setFormData({
           ...initialFormData,
-          srno: nextSN || ""
+          srno: nextSN || "",
+          incidentdate: getCurrentDateString(),
+          time: getCurrentTimeString(),
         });
       }
     } catch (error) {
