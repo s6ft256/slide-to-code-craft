@@ -10,6 +10,8 @@ import InjuryDetailsRecords from "@/components/InjuryDetailsRecords";
 
 import { Activity, Users, Clock, Target, AlertTriangle } from "lucide-react";
 import { useState } from "react";
+import ObservationTrackerForm from "@/components/ObservationTrackerForm";
+import ObservationTrackerRecords from "@/components/ObservationTrackerRecords";
 
 const DailyManagement = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -160,11 +162,11 @@ const DailyManagement = () => {
               onClick={() => setObservationTab("add")}
             >Add New Record</button>
           </div>
-          {observationTab === "records" && <div className="p-4 text-center text-muted-foreground">Observation records feature will be available soon</div>}
+          {observationTab === "records" && <ObservationTrackerRecords />}
           {observationTab === "add" && (
             <>
               <h3 className="text-lg font-semibold text-foreground mb-4">Observation Tracker (Manual Data Entry)</h3>
-              <div className="p-4 text-center text-muted-foreground">Observation form feature will be available soon</div>
+              <ObservationTrackerForm onSuccess={() => setObservationTab("records")} />
             </>
           )}
         </div>
