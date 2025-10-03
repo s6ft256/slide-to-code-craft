@@ -5,13 +5,12 @@ import LTIChart from "@/components/LTIChart";
 import IncidentReportForm from "@/components/IncidentReportForm";
 import { AlertTriangle, FileText, Clock, Users, TrendingDown, Plus, Loader2, LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link, useLocation } from "react-router-dom";
+import { useState } from "react";
 import { useIncidentMetrics } from "@/hooks/use-incident-metrics";
 import { IncidentList } from "@/components/IncidentList";
 
 const IncidentManagement = () => {
-  const location = useLocation();
-  const isCreating = location.pathname.endsWith("/incident-management/new");
+  const [isCreating, setIsCreating] = useState(false);
   const { metrics, incidents } = useIncidentMetrics();
 
   if (metrics.loading) {
@@ -93,12 +92,12 @@ const IncidentManagement = () => {
                 Fill out the incident report form with all required details
               </p>
             </div>
-            <Button variant="outline" asChild>
-              <Link to="/incident-management">Back to Dashboard</Link>
+            <Button variant="outline" onClick={() => setIsCreating(false)}>
+              Back to Dashboard
             </Button>
           </div>
         </div>
-  <IncidentReportForm onSuccess={() => window.location.hash = "#/incident-management"} />
+        <IncidentReportForm onSuccess={() => setIsCreating(false)} onCancel={() => setIsCreating(false)} />
       </Layout>
     );
   }
@@ -115,11 +114,9 @@ const IncidentManagement = () => {
               Track and manage safety incidents and near misses
             </p>
           </div>
-          <Button className="flex items-center gap-2" asChild>
-            <Link to="/incident-management/new">
-              <Plus className="w-4 h-4" />
-              New Incident Report
-            </Link>
+          <Button className="flex items-center gap-2" onClick={() => setIsCreating(true)}>
+            <Plus className="w-4 h-4" />
+            New Incident Report
           </Button>
         </div>
       </div>

@@ -107,10 +107,11 @@ const initialFormData: FormData = {
 
 interface IncidentReportFormProps {
   onSuccess?: () => void;
+  onCancel?: () => void;
   onSubmit?: (data: IncidentReportDB) => void;
 }
 
-function IncidentReportForm({ onSubmit, onSuccess }: IncidentReportFormProps) {
+function IncidentReportForm({ onSubmit, onSuccess, onCancel }: IncidentReportFormProps) {
   const { getNextSerialNumber } = useSerialNumber('incident_report' as const);
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -779,7 +780,10 @@ function IncidentReportForm({ onSubmit, onSuccess }: IncidentReportFormProps) {
               <Button 
                 type="button" 
                 variant="outline"
-                onClick={() => window.history.back()}
+                onClick={() => {
+                  if (onCancel) onCancel();
+                  else window.history.back();
+                }}
               >
                 Cancel
               </Button>
