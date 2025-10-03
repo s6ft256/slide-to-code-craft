@@ -148,6 +148,9 @@ export default function MasterRegisterForm({ onSubmit }: { onSubmit?: (data: Rec
       } else {
         localStorage.setItem(key, JSON.stringify([newRecord]));
       }
+
+      // Dispatch custom event to notify dashboard of localStorage changes
+      window.dispatchEvent(new CustomEvent('localStorageUpdate', { detail: { key } }));
       setSuccess(true);
       if (onSubmit) onSubmit(form);
       setForm(initialForm);

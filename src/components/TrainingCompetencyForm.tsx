@@ -100,6 +100,9 @@ const TrainingCompetencyForm = ({ onSubmit }: { onSubmit?: (data: TrainingCompet
       existingData.push(newRecord);
       localStorage.setItem('training_competency_register', JSON.stringify(existingData));
 
+      // Dispatch custom event to notify dashboard of localStorage changes
+      window.dispatchEvent(new CustomEvent('localStorageUpdate', { detail: { key: 'training_competency_register' } }));
+
       setSuccess(true);
       toast({
         title: "Success",

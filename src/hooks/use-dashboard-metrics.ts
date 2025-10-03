@@ -1,5 +1,11 @@
 // Comprehensive dashboard metrics hook for localStorage
+import { useState, useEffect } from 'react';
+
 export function useDashboardMetrics() {
+  const [metrics, setMetrics] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const getMetrics = () => {
     try {
       // Get data from all forms
@@ -132,5 +138,54 @@ export function useDashboardMetrics() {
     }
   };
 
-  return { metrics: getMetrics(), loading: false, error: null };
+  const refreshMetrics = () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const newMetrics = getMetrics();
+      setMetrics(newMetrics);
+    } catch (err) {
+      setError('Failed to load metrics');
+      console.error('Error refreshing metrics:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // Initial load
+    refreshMetrics();
+
+    // Listen for localStorage changes (cross-tab synchronization)
+    const handleStorageChange = (e: StorageEvent) => {
+      // Only refresh if the changed key is one of our data sources
+      const relevantKeys = [
+        'incident_report',
+        'master_register',
+        'injury_details',
+        'training_competency_register',
+        'ncr_register',
+        'observation_tracker'
+      ];
+
+      if (e.key && relevantKeys.includes(e.key)) {
+        refreshMetrics();
+      }
+    };
+
+    // Custom event for same-tab updates
+    const handleCustomStorageChange = () => {
+      refreshMetrics();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('localStorageUpdate', handleCustomStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('localStorageUpdate', handleCustomStorageChange);
+    };
+  }, []);
+
+  return { metrics, loading, error, refreshMetrics };
 }

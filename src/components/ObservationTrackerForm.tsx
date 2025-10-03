@@ -92,6 +92,9 @@ export default function ObservationTrackerForm({ onSuccess }: Props) {
       list.push(record);
       localStorage.setItem(key, JSON.stringify(list));
 
+      // Dispatch custom event to notify dashboard of localStorage changes
+      window.dispatchEvent(new CustomEvent('localStorageUpdate', { detail: { key } }));
+
       toast({ title: "Saved", description: "Observation recorded successfully" });
       if (onSuccess) onSuccess();
 

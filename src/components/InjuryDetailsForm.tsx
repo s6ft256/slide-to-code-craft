@@ -107,6 +107,9 @@ const InjuryDetailsForm = ({ onSubmit }: { onSubmit?: (data: InjuryDetailsRecord
       existingData.push(newRecord);
       localStorage.setItem('injury_details', JSON.stringify(existingData));
 
+      // Dispatch custom event to notify dashboard of localStorage changes
+      window.dispatchEvent(new CustomEvent('localStorageUpdate', { detail: { key: 'injury_details' } }));
+
       setSuccess(true);
       toast({
         title: "Success",

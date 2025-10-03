@@ -185,6 +185,9 @@ function IncidentReportForm({ onSubmit, onSuccess, onCancel }: IncidentReportFor
       existingData.push(newRecord);
       localStorage.setItem('incident_report', JSON.stringify(existingData));
 
+      // Dispatch custom event to notify dashboard of localStorage changes
+      window.dispatchEvent(new CustomEvent('localStorageUpdate', { detail: { key: 'incident_report' } }));
+
       
 
       toast({

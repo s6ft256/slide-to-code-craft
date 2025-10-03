@@ -41,7 +41,7 @@ const NCRForm = ({ onClose }: { onClose: () => void }) => {
   // Generate Sr.No
   useEffect(() => {
     const generateSrNo = () => {
-      const existingData = JSON.parse(localStorage.getItem('ncr_records') || '[]');
+      const existingData = JSON.parse(localStorage.getItem('ncr_register') || '[]');
       const nextSrNo = (existingData.length + 1).toString().padStart(3, '0');
       setFormData(prev => ({ ...prev, srNo: nextSrNo }));
     };
@@ -75,7 +75,7 @@ const NCRForm = ({ onClose }: { onClose: () => void }) => {
       }
 
       // Save to localStorage
-      const existingData = JSON.parse(localStorage.getItem('ncr_records') || '[]');
+      const existingData = JSON.parse(localStorage.getItem('ncr_register') || '[]');
       const newRecord = {
         ...formData,
         issuedDate: formData.issuedDate ? format(formData.issuedDate, 'yyyy-MM-dd') : null,
@@ -85,7 +85,10 @@ const NCRForm = ({ onClose }: { onClose: () => void }) => {
         createdAt: new Date().toISOString()
       };
       existingData.push(newRecord);
-      localStorage.setItem('ncr_records', JSON.stringify(existingData));
+      localStorage.setItem('ncr_register', JSON.stringify(existingData));
+
+      // Dispatch custom event to notify dashboard of localStorage changes
+      window.dispatchEvent(new CustomEvent('localStorageUpdate', { detail: { key: 'ncr_register' } }));
 
       setSuccess(true);
       toast({
