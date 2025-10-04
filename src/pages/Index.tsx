@@ -9,6 +9,19 @@ const Index = () => {
   const [selectedPeriod, setSelectedPeriod] = useState<TimePeriod>('month');
   const { metrics, loading, error } = useDashboardMetrics(selectedPeriod);
 
+  const handlePeriodChange = (value: string) => {
+    const period = value as TimePeriod;
+    setSelectedPeriod(period);
+    
+    // Log the period change for analytics/debugging
+    console.log(`Switched to ${period === 'week' ? 'Week' : 'Month'} View`);
+    
+    // You could add additional functionality here like:
+    // - Analytics tracking
+    // - Data refresh
+    // - UI feedback
+  };
+
   return (
     <Layout>
       <div className="mb-6">
@@ -20,10 +33,20 @@ const Index = () => {
         </p>
       </div>
 
-      <Tabs value={selectedPeriod} onValueChange={(value) => setSelectedPeriod(value as TimePeriod)} className="mb-6">
-        <TabsList>
-          <TabsTrigger value="week">Week View</TabsTrigger>
-          <TabsTrigger value="month">Month View</TabsTrigger>
+      <Tabs value={selectedPeriod} onValueChange={handlePeriodChange} className="mb-6">
+        <TabsList className="grid w-full grid-cols-2 max-w-md gap-4">
+          <TabsTrigger 
+            value="week" 
+            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-200 hover:bg-primary/10"
+          >
+            Week View
+          </TabsTrigger>
+          <TabsTrigger 
+            value="month" 
+            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-200 hover:bg-primary/10"
+          >
+            Month View
+          </TabsTrigger>
         </TabsList>
       </Tabs>
 
