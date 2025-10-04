@@ -9,12 +9,14 @@ const Layout = ({ children }: LayoutProps) => {
   return (
     <div className="min-h-screen bg-background">
       <HSEHeader />
-      <HSESidebar />
-      <main className="flex-1 p-6">
-        <div className="max-w-full mx-auto">
-          {children}
-        </div>
-      </main>
+      <div className="flex">
+        <HSESidebar />
+        <main className="flex-1 p-4 md:p-6 lg:ml-0">
+          <div className="max-w-full mx-auto">
+            {children}
+          </div>
+        </main>
+      </div>
     </div>
   );
 };
