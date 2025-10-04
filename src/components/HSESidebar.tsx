@@ -34,27 +34,23 @@ const HSESidebar = () => {
       <div className="px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img 
-              src="/slide-to-code-craft/troj.jpg" 
-              alt="Troj Logo" 
-              className="w-8 h-8 rounded-lg object-cover"
-            />
+            {/* Logo removed as requested */}
           </div>
           
-          <div className="flex items-center space-x-1 overflow-x-hidden">
+          <div className="flex items-center space-x-2 overflow-x-hidden">
             {menuItems.map((item, index) => (
               <Link key={index} to={item.path}>
-                <Button
-                  variant="ghost"
-                  size="sm"
+                <div
                   className={cn(
-                    "flex items-center gap-2 px-3 py-2 text-sidebar-foreground hover:bg-sidebar-accent transition-smooth whitespace-nowrap",
-                    location.pathname === item.path && "bg-sidebar-accent text-sidebar-primary font-medium"
+                    "flex items-center gap-2 px-4 py-2 rounded-lg border transition-all duration-200 hover:shadow-md whitespace-nowrap",
+                    location.pathname === item.path 
+                      ? "bg-primary text-primary-foreground border-primary shadow-sm" 
+                      : "bg-card text-card-foreground border-border hover:bg-accent hover:border-accent-foreground/20"
                   )}
                 >
                   <item.icon className="h-4 w-4" />
-                  {item.label}
-                </Button>
+                  <span className="text-sm font-medium">{item.label}</span>
+                </div>
               </Link>
             ))}
           </div>

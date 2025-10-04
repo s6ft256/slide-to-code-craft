@@ -160,7 +160,7 @@ const InjuryDetailsForm = ({ onSubmit }: { onSubmit?: (data: InjuryDetailsRecord
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Basic Information Section */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">Basic Information</h3>
+            <h3 className="text-lg font-semibold text-foreground border-b pb-2">Basic Information</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {/* Sr.No */}
               <div className="space-y-2">
@@ -172,7 +172,7 @@ const InjuryDetailsForm = ({ onSubmit }: { onSubmit?: (data: InjuryDetailsRecord
                   name="srNo"
                   value={formData.srNo}
                   readOnly
-                  className="bg-gray-50"
+                  className="bg-muted"
                 />
               </div>
 

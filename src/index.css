@@ -6,74 +6,74 @@
 
 @layer base {
   :root {
-    /* Base colors - Professional industrial palette */
-    --background: 220 15% 97%;
-    --foreground: 215 25% 27%;
+    /* Base colors - Clean light theme */
+    --background: 0 0% 100%;
+    --foreground: 224 71% 4%;
 
     /* Card system */
     --card: 0 0% 100%;
-    --card-foreground: 215 25% 27%;
+    --card-foreground: 224 71% 4%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 27%;
+    --popover-foreground: 224 71% 4%;
 
-    /* Primary - Deep industrial blue */
-    --primary: 215 100% 25%;
-    --primary-foreground: 0 0% 100%;
-    --primary-hover: 215 100% 20%;
+    /* Primary - Professional blue */
+    --primary: 221 83% 53%;
+    --primary-foreground: 210 40% 98%;
+    --primary-hover: 221 83% 48%;
 
-    /* Secondary - Safety blue */
-    --secondary: 210 25% 92%;
-    --secondary-foreground: 215 25% 27%;
+    /* Secondary - Light gray */
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 9% 46%;
 
     /* Muted tones */
-    --muted: 210 20% 94%;
-    --muted-foreground: 215 15% 45%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
 
     /* Accent - Safety green */
-    --accent: 142 75% 36%;
-    --accent-foreground: 0 0% 100%;
-    --accent-light: 142 45% 92%;
+    --accent: 142 76% 36%;
+    --accent-foreground: 355 100% 100%;
+    --accent-light: 142 45% 95%;
 
     /* Status colors */
-    --success: 142 75% 36%;
-    --success-foreground: 0 0% 100%;
-    --success-light: 142 45% 92%;
+    --success: 142 76% 36%;
+    --success-foreground: 355 100% 100%;
+    --success-light: 142 45% 95%;
     
-    --warning: 35 92% 55%;
-    --warning-foreground: 215 25% 27%;
-    --warning-light: 35 100% 95%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 48 96% 89%;
+    --warning-light: 38 100% 96%;
     
-    --destructive: 0 75% 55%;
-    --destructive-foreground: 0 0% 100%;
-    --destructive-light: 0 100% 96%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+    --destructive-light: 0 100% 97%;
 
     /* Borders and inputs */
-    --border: 215 15% 88%;
-    --input: 215 15% 88%;
-    --ring: 215 100% 25%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 221 83% 53%;
 
     --radius: 0.75rem;
 
-    /* HSE Sidebar styling */
-    --sidebar-background: 215 100% 25%;
-    --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 0 0% 100%;
-    --sidebar-primary-foreground: 215 100% 25%;
-    --sidebar-accent: 215 100% 30%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 215 100% 20%;
-    --sidebar-ring: 142 75% 36%;
+    /* HSE Sidebar styling - Light theme */
+    --sidebar-background: 221 83% 53%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 210 40% 98%;
+    --sidebar-primary-foreground: 221 83% 53%;
+    --sidebar-accent: 221 83% 58%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 221 83% 48%;
+    --sidebar-ring: 142 76% 36%;
 
     /* Custom gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(215 100% 25%), hsl(215 100% 35%));
-    --gradient-success: linear-gradient(135deg, hsl(142 75% 36%), hsl(142 65% 46%));
-    --gradient-warning: linear-gradient(135deg, hsl(35 92% 55%), hsl(35 82% 65%));
+    --gradient-primary: linear-gradient(135deg, hsl(221 83% 53%), hsl(221 83% 63%));
+    --gradient-success: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 66% 46%));
+    --gradient-warning: linear-gradient(135deg, hsl(38 92% 50%), hsl(38 82% 60%));
     
     /* Shadows */
-    --shadow-soft: 0 2px 8px -2px hsl(215 25% 27% / 0.08);
-    --shadow-medium: 0 4px 16px -4px hsl(215 25% 27% / 0.12);
-    --shadow-strong: 0 8px 24px -8px hsl(215 25% 27% / 0.16);
+    --shadow-soft: 0 1px 3px 0 hsl(220 13% 91% / 0.1), 0 1px 2px -1px hsl(220 13% 91% / 0.1);
+    --shadow-medium: 0 4px 6px -1px hsl(220 13% 91% / 0.1), 0 1px 3px -1px hsl(220 13% 91% / 0.1);
+    --shadow-strong: 0 10px 15px -3px hsl(220 13% 91% / 0.1), 0 4px 6px -4px hsl(220 13% 91% / 0.1);
 
     /* Transitions */
     --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
