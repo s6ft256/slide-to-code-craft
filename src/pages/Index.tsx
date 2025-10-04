@@ -30,6 +30,9 @@ const Index = () => {
         </h1>
         <p className="text-muted-foreground">
           Comprehensive health, safety, and environment monitoring for construction projects
+          <span className="ml-2 text-sm font-medium text-primary">
+            • {selectedPeriod === 'week' ? 'Last 7 Days' : 'Last 30 Days'}
+          </span>
         </p>
       </div>
 
@@ -51,7 +54,7 @@ const Index = () => {
       </Tabs>
 
       <div className="space-y-8">
-        <HSEMetricsGrid metrics={metrics} loading={loading} error={error} />
+        <HSEMetricsGrid metrics={metrics} loading={loading} error={error} period={selectedPeriod} />
         <LTIChart />
       </div>
     </Layout>

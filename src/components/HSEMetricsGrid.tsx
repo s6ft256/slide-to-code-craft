@@ -19,9 +19,10 @@ interface HSEMetricsGridProps {
   metrics?: any;
   loading?: boolean;
   error?: string | null;
+  period?: 'week' | 'month';
 }
 
-const HSEMetricsGrid = ({ metrics, loading = false, error = null }: HSEMetricsGridProps) => {
+const HSEMetricsGrid = ({ metrics, loading = false, error = null, period = 'month' }: HSEMetricsGridProps) => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[200px]">
@@ -38,6 +39,8 @@ const HSEMetricsGrid = ({ metrics, loading = false, error = null }: HSEMetricsGr
       </div>
     );
   }
+
+  const periodText = period === 'week' ? 'This Week' : 'This Month';
 
   const metricCards = [
     {
@@ -78,14 +81,14 @@ const HSEMetricsGrid = ({ metrics, loading = false, error = null }: HSEMetricsGr
     {
       title: "Incidents Reported",
       value: ((metrics?.incidentsReported ?? 0)).toString(),
-      subtitle: "This Month",
+      subtitle: periodText,
       icon: AlertTriangle,
       variant: ((metrics?.incidentsReported ?? 0) === 0 ? 'success' : 'warning') as MetricVariant
     },
     {
       title: "Reports Submitted",
       value: ((metrics?.reportsSubmitted ?? 0)).toString(),
-      subtitle: "This Month",
+      subtitle: periodText,
       icon: FileText,
       variant: 'default' as MetricVariant
     },
