@@ -122,14 +122,14 @@ const HSEMetricsGrid = ({ metrics, loading = false, error = null, period = 'mont
     },
     {
       title: "Safe Man Hours",
-      value: "00,000",
+      value: ((metrics?.safeManHours ?? 0)).toLocaleString(),
       subtitle: "Total Hours",
       icon: Clock,
       variant: "default" as const
     },
     {
       title: "Total Employees",
-      value: "00",
+      value: ((metrics?.totalEmployees ?? 0)).toString().padStart(2, '0'),
       subtitle: "/ Employee",
       icon: Users,
       variant: "default" as const

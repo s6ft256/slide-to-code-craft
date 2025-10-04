@@ -22,46 +22,37 @@ const DataEntry = () => {
         </p>
       </div>
 
-      <Tabs defaultValue="inductions" className="space-y-4 md:space-y-6">
-        <div className="relative">
-          <TabsList className="flex w-full overflow-x-auto gap-1 md:gap-2 p-1 h-auto flex-wrap md:flex-nowrap">
-            <TabsTrigger value="inductions" className="flex items-center gap-1 md:gap-2 whitespace-nowrap text-xs md:text-sm px-2 md:px-4 py-2">
-              <Users className="h-3 w-3 md:h-4 md:w-4" />
-              <span className="hidden xs:inline">Inductions</span>
-              <span className="xs:hidden">Ind.</span>
-            </TabsTrigger>
-            <TabsTrigger value="project-info" className="flex items-center gap-1 md:gap-2 whitespace-nowrap text-xs md:text-sm px-2 md:px-4 py-2">
-              <Building2 className="h-3 w-3 md:h-4 md:w-4" />
-              <span className="hidden xs:inline">Project Info</span>
-              <span className="xs:hidden">Proj.</span>
-            </TabsTrigger>
-            <TabsTrigger value="master-register" className="flex items-center gap-1 md:gap-2 whitespace-nowrap text-xs md:text-sm px-2 md:px-4 py-2">
-              <FileText className="h-3 w-3 md:h-4 md:w-4" />
-              <span className="hidden sm:inline">Master Register</span>
-              <span className="sm:hidden">Master</span>
-            </TabsTrigger>
-            <TabsTrigger value="injury-details" className="flex items-center gap-1 md:gap-2 whitespace-nowrap text-xs md:text-sm px-2 md:px-4 py-2">
-              <AlertTriangle className="h-3 w-3 md:h-4 md:w-4" />
-              <span className="hidden sm:inline">Injury Details</span>
-              <span className="sm:hidden">Injury</span>
-            </TabsTrigger>
-            <TabsTrigger value="observation-tracker" className="flex items-center gap-1 md:gap-2 whitespace-nowrap text-xs md:text-sm px-2 md:px-4 py-2">
-              <Eye className="h-3 w-3 md:h-4 md:w-4" />
-              <span className="hidden sm:inline">Observation Tracker</span>
-              <span className="sm:hidden">Obs.</span>
-            </TabsTrigger>
-            <TabsTrigger value="incident-management" className="flex items-center gap-1 md:gap-2 whitespace-nowrap text-xs md:text-sm px-2 md:px-4 py-2">
-              <Shield className="h-3 w-3 md:h-4 md:w-4" />
-              <span className="hidden sm:inline">Incident Mgmt.</span>
-              <span className="sm:hidden">Inc.</span>
-            </TabsTrigger>
-            <TabsTrigger value="ncr-tracker" className="flex items-center gap-1 md:gap-2 whitespace-nowrap text-xs md:text-sm px-2 md:px-4 py-2">
-              <XCircle className="h-3 w-3 md:h-4 md:w-4" />
-              <span className="hidden sm:inline">NCR Tracker</span>
-              <span className="sm:hidden">NCR</span>
-            </TabsTrigger>
-          </TabsList>
-        </div>
+      <Tabs defaultValue="inductions" className="space-y-6">
+        <TabsList className="flex w-full overflow-x-auto gap-2 p-1">
+          <TabsTrigger value="inductions" className="flex items-center gap-2 whitespace-nowrap">
+            <Users className="h-4 w-4" />
+            Inductions
+          </TabsTrigger>
+          <TabsTrigger value="project-info" className="flex items-center gap-2 whitespace-nowrap">
+            <Building2 className="h-4 w-4" />
+            Project Info
+          </TabsTrigger>
+          <TabsTrigger value="master-register" className="flex items-center gap-2 whitespace-nowrap">
+            <FileText className="h-4 w-4" />
+            Master Register
+          </TabsTrigger>
+          <TabsTrigger value="injury-details" className="flex items-center gap-2 whitespace-nowrap">
+            <AlertTriangle className="h-4 w-4" />
+            Injury Details
+          </TabsTrigger>
+          <TabsTrigger value="observation-tracker" className="flex items-center gap-2 whitespace-nowrap">
+            <Eye className="h-4 w-4" />
+            Observation Tracker
+          </TabsTrigger>
+          <TabsTrigger value="incident-management" className="flex items-center gap-2 whitespace-nowrap">
+            <Shield className="h-4 w-4" />
+            Incident Management
+          </TabsTrigger>
+          <TabsTrigger value="ncr-tracker" className="flex items-center gap-2 whitespace-nowrap">
+            <XCircle className="h-4 w-4" />
+            NCR Tracker
+          </TabsTrigger>
+        </TabsList>
 
         <TabsContent value="inductions" className="space-y-6">
           <div className="bg-card rounded-lg border border-border p-6 shadow-soft">

@@ -64,6 +64,9 @@ const TrainingForm = ({ onClose }: { onClose: () => void }) => {
       existingData.push(newRecord);
       localStorage.setItem('training_records', JSON.stringify(existingData));
 
+      // Dispatch custom event to notify dashboard of localStorage changes
+      window.dispatchEvent(new CustomEvent('localStorageUpdate', { detail: { key: 'training_records' } }));
+
       setSuccess(true);
       toast({
         title: "Success",

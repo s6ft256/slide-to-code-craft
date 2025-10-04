@@ -108,6 +108,9 @@ const AddInductionForm = ({ onClose }: { onClose: () => void }) => {
       existingData.push(newRecord);
       localStorage.setItem('induction_records', JSON.stringify(existingData));
 
+      // Dispatch custom event to notify dashboard of localStorage changes
+      window.dispatchEvent(new CustomEvent('localStorageUpdate', { detail: { key: 'induction_records' } }));
+
       toast({
         title: "Success",
         description: "Induction record has been added successfully",

@@ -46,7 +46,10 @@ export default function EventForm({ onSubmit }: { onSubmit?: (data: typeof initi
       const newRecord = { ...form, id: Date.now().toString(), createdAt: new Date().toISOString() };
       existingData.push(newRecord);
       localStorage.setItem('event_records', JSON.stringify(existingData));
-      
+
+      // Dispatch custom event to notify dashboard of localStorage changes
+      window.dispatchEvent(new CustomEvent('localStorageUpdate', { detail: { key: 'event_records' } }));
+
       setSuccess(true);
       if (onSubmit) onSubmit(form);
       setForm(initialState);

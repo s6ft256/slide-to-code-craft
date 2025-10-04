@@ -18,6 +18,23 @@ export function useDashboardMetrics(period: TimePeriod = 'month') {
       const ncrRecords = JSON.parse(localStorage.getItem('ncr_register') || '[]');
       const observationRecords = JSON.parse(localStorage.getItem('observation_tracker') || '[]');
 
+      // Get project info data
+      const projects = JSON.parse(localStorage.getItem('projects') || '[]');
+      const projectInfoData = projects.map((project: any) => {
+        const projectInfo = localStorage.getItem(`project_info_${project.code}`);
+        return projectInfo ? JSON.parse(projectInfo) : null;
+      }).filter(Boolean);
+
+      // Calculate project-based metrics
+      const totalSafeManHours = projectInfoData.reduce((sum: number, project: any) =>
+        sum + (parseInt(project.safeManhours) || 0), 0);
+
+      // For total employees, we'll use the latest master register entry or derive from project data
+      // If no project info has employee count, fall back to master register length or default
+      const totalEmployeesFromProjects = projectInfoData.reduce((sum: number, project: any) =>
+        sum + (parseInt(project.totalEmployees) || 0), 0);
+      const totalEmployees = totalEmployeesFromProjects || masterRegister.length || 0;
+
       // Calculate date range based on period
       const now = new Date();
       const periodStart = new Date();
@@ -84,7 +101,7 @@ export function useDashboardMetrics(period: TimePeriod = 'month') {
       return {
         // Main dashboard metrics
         totalIncidents,
-        totalEmployees: masterRegister.length,
+        totalEmployees,
         totalInjuries: filteredInjuries.length,
         completedTraining: filteredTraining.length,
         safetyScore: Math.max(0, 100 - (totalIncidents * 5) - (filteredInjuries.length * 10)),
@@ -101,6 +118,7 @@ export function useDashboardMetrics(period: TimePeriod = 'month') {
         activeTrainings: filteredTraining.length,
         ncrs: openNCRs,
         completedInspections: latestMasterRecord.safetyInspectionsConducted || 0,
+        safeManHours: totalSafeManHours,
 
         // HSE Audit Metrics
         hseAuditMetrics,

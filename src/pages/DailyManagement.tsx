@@ -6,18 +6,62 @@ import MasterRegisterRecords from "@/components/MasterRegisterRecords";
 import InjuryDetailsRecords from "@/components/InjuryDetailsRecords";
 
 import { Activity, Users, Clock, Target, AlertTriangle } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ObservationTrackerRecords from "@/components/ObservationTrackerRecords";
 import NCRRecords from "@/components/NCRRecords";
 import TrainingRecords from "@/components/TrainingRecords";
 import TrainingCompetencyRecords from "@/components/TrainingCompetencyRecords";
 import EventRecords from "@/components/EventRecords";
 import { useDashboardMetrics } from "@/hooks/use-dashboard-metrics";
+import { calculateHSEMetrics, HSEMetrics } from "@/lib/hseMetrics";
 
 const DailyManagement = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [hseMetrics, setHseMetrics] = useState<HSEMetrics>({
+    LTIFR: 0,
+    LTISR: 0,
+    ART: 0,
+    EMERGENCY: 0,
+    LEADERSHIP: 0,
+    ENVIRONMENT_SUSTAINABILITY: 0,
+    TRAINING: 0,
+    AWARDS: 0,
+    CAMPAIGNS: 0,
+  });
 
   const { metrics, loading, error } = useDashboardMetrics();
+
+  // Calculate HSE metrics on component mount and when localStorage changes
+  useEffect(() => {
+    const updateMetrics = () => {
+      const calculatedMetrics = calculateHSEMetrics();
+      setHseMetrics(calculatedMetrics);
+    };
+
+    updateMetrics();
+
+    // Listen for localStorage changes from form submissions
+    const handleStorageChange = (e: CustomEvent) => {
+      if (e.detail?.key && [
+        'injury_details',
+        'incident_report',
+        'training_records',
+        'induction_records',
+        'training_competency_register',
+        'event_records',
+        'observation_tracker',
+        'ncr_register'
+      ].includes(e.detail.key)) {
+        updateMetrics();
+      }
+    };
+
+    window.addEventListener('localStorageUpdate', handleStorageChange as EventListener);
+
+    return () => {
+      window.removeEventListener('localStorageUpdate', handleStorageChange as EventListener);
+    };
+  }, []);
 
   const dailyMetrics = [
     {
@@ -131,10 +175,20 @@ const DailyManagement = () => {
             <h3 className="text-lg font-semibold text-foreground mb-4">Extended HSE Metrics</h3>
             <div className="bg-card rounded-lg border border-border p-6 shadow-soft">
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-9 gap-4">
-                {["LTIFR", "LTISR", "ART", "EMERGENCY", "LEADERSHIP", "ENV. & SUS.", "TRAINING", "AWARDS", "CAMPAIGNS"].map((item, index) => (
+                {[
+                  { label: "LTIFR", value: hseMetrics.LTIFR.toFixed(2) },
+                  { label: "LTISR", value: hseMetrics.LTISR.toFixed(2) },
+                  { label: "ART", value: hseMetrics.ART.toFixed(2) },
+                  { label: "EMERGENCY", value: hseMetrics.EMERGENCY.toString() },
+                  { label: "LEADERSHIP", value: hseMetrics.LEADERSHIP.toString() },
+                  { label: "ENV. & SUS.", value: hseMetrics.ENVIRONMENT_SUSTAINABILITY.toString() },
+                  { label: "TRAINING", value: hseMetrics.TRAINING.toString() },
+                  { label: "AWARDS", value: hseMetrics.AWARDS.toString() },
+                  { label: "CAMPAIGNS", value: hseMetrics.CAMPAIGNS.toString() }
+                ].map((item, index) => (
                   <div key={index} className="text-center">
-                    <p className="text-sm font-medium text-muted-foreground mb-1">{item}</p>
-                    <p className="text-xl font-bold text-foreground">00</p>
+                    <p className="text-sm font-medium text-muted-foreground mb-1">{item.label}</p>
+                    <p className="text-xl font-bold text-foreground">{item.value}</p>
                   </div>
                 ))}
               </div>
