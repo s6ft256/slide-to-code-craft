@@ -12,13 +12,16 @@ import {
   Loader2
 } from "lucide-react";
 import MetricCard from "./MetricCard";
-import { useDashboardMetrics } from "@/hooks/use-dashboard-metrics";
 
 type MetricVariant = 'success' | 'warning' | 'destructive' | 'default';
 
-const HSEMetricsGrid = () => {
-  const { metrics, loading, error } = useDashboardMetrics();
+interface HSEMetricsGridProps {
+  metrics?: any;
+  loading?: boolean;
+  error?: string | null;
+}
 
+const HSEMetricsGrid = ({ metrics, loading = false, error = null }: HSEMetricsGridProps) => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[200px]">

@@ -1,12 +1,14 @@
 // Comprehensive dashboard metrics hook for localStorage
 import { useState, useEffect } from 'react';
 
-export function useDashboardMetrics() {
+export type TimePeriod = 'week' | 'month';
+
+export function useDashboardMetrics(period: TimePeriod = 'month') {
   const [metrics, setMetrics] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const getMetrics = () => {
+  const getMetrics = (timePeriod: TimePeriod = 'month') => {
     try {
       // Get data from all forms
       const incidentReports = JSON.parse(localStorage.getItem('incident_report') || '[]');
@@ -15,6 +17,29 @@ export function useDashboardMetrics() {
       const trainingRecords = JSON.parse(localStorage.getItem('training_competency_register') || '[]');
       const ncrRecords = JSON.parse(localStorage.getItem('ncr_register') || '[]');
       const observationRecords = JSON.parse(localStorage.getItem('observation_tracker') || '[]');
+
+      // Calculate date range based on period
+      const now = new Date();
+      const periodStart = new Date();
+      if (timePeriod === 'week') {
+        periodStart.setDate(now.getDate() - 7);
+      } else {
+        periodStart.setDate(now.getDate() - 30);
+      }
+
+      // Filter data by time period
+      const filterByPeriod = (items: any[], dateField: string = 'date') => {
+        return items.filter((item: any) => {
+          const itemDate = new Date(item[dateField] || item.createdAt || item.dateReported);
+          return itemDate >= periodStart && itemDate <= now;
+        });
+      };
+
+      const filteredIncidents = filterByPeriod(incidentReports);
+      const filteredInjuries = filterByPeriod(injuryDetails);
+      const filteredTraining = filterByPeriod(trainingRecords);
+      const filteredNCRs = filterByPeriod(ncrRecords);
+      const filteredObservations = filterByPeriod(observationRecords);
 
       // Calculate metrics from master register (latest entry)
       const latestMasterRecord = masterRegister.length > 0 ? masterRegister[masterRegister.length - 1] : {};
@@ -31,24 +56,19 @@ export function useDashboardMetrics() {
         LTISR: latestMasterRecord.ltisr || 0
       };
 
-      // Incident metrics
-      const totalIncidents = incidentReports.length;
-      const recentIncidents = incidentReports.filter((incident: any) => {
-        const incidentDate = new Date(incident.date || incident.createdAt);
-        const thirtyDaysAgo = new Date();
-        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-        return incidentDate >= thirtyDaysAgo;
-      }).length;
+      // Incident metrics (filtered by period)
+      const totalIncidents = filteredIncidents.length;
+      const recentIncidents = filteredIncidents.length; // All filtered incidents are recent for the period
 
-      // Training metrics
-      const totalTrainingHours = trainingRecords.reduce((sum: number, record: any) =>
+      // Training metrics (filtered by period)
+      const totalTrainingHours = filteredTraining.reduce((sum: number, record: any) =>
         sum + (parseFloat(record.totalHours || 0) || 0), 0);
-      const avgTrainingPerEmployee = trainingRecords.length > 0 ?
-        Math.round(totalTrainingHours / trainingRecords.length) : 0;
+      const avgTrainingPerEmployee = filteredTraining.length > 0 ?
+        Math.round(totalTrainingHours / filteredTraining.length) : 0;
 
-      // NCR metrics
-      const openNCRs = ncrRecords.filter((ncr: any) => ncr.status !== 'Closed').length;
-      const closedNCRs = ncrRecords.filter((ncr: any) => ncr.status === 'Closed').length;
+      // NCR metrics (filtered by period)
+      const openNCRs = filteredNCRs.filter((ncr: any) => ncr.status !== 'Closed').length;
+      const closedNCRs = filteredNCRs.filter((ncr: any) => ncr.status === 'Closed').length;
 
       // Safety metrics from master register
       const totalLTIs = latestMasterRecord.totalLTI || 0;
@@ -65,20 +85,20 @@ export function useDashboardMetrics() {
         // Main dashboard metrics
         totalIncidents,
         totalEmployees: masterRegister.length,
-        totalInjuries: injuryDetails.length,
-        completedTraining: trainingRecords.length,
-        safetyScore: Math.max(0, 100 - (totalIncidents * 5) - (injuryDetails.length * 10)),
+        totalInjuries: filteredInjuries.length,
+        completedTraining: filteredTraining.length,
+        safetyScore: Math.max(0, 100 - (totalIncidents * 5) - (filteredInjuries.length * 10)),
         monthlyTrend: 5.2,
 
         // HSE Metrics Grid
         projectRating,
         projectScore,
         leadingIndicators: totalIncidents,
-        trainingAverage: trainingRecords.length > 0 ? 85 : 0, // Could be calculated from actual data
+        trainingAverage: filteredTraining.length > 0 ? 85 : 0, // Could be calculated from actual data
         daysWithoutLTI,
         incidentsReported: recentIncidents,
-        reportsSubmitted: incidentReports.length,
-        activeTrainings: trainingRecords.length,
+        reportsSubmitted: filteredIncidents.length,
+        activeTrainings: filteredTraining.length,
         ncrs: openNCRs,
         completedInspections: latestMasterRecord.safetyInspectionsConducted || 0,
 
@@ -90,10 +110,10 @@ export function useDashboardMetrics() {
         avgTrainingPerEmployee,
         openNCRs,
         closedNCRs,
-        totalNCRs: ncrRecords.length,
-        observationRecords: observationRecords.length,
-        openObservations: observationRecords.filter((obs: any) => obs.status !== 'Closed').length,
-        closedObservations: observationRecords.filter((obs: any) => obs.status === 'Closed').length,
+        totalNCRs: filteredNCRs.length,
+        observationRecords: filteredObservations.length,
+        openObservations: filteredObservations.filter((obs: any) => obs.status !== 'Closed').length,
+        closedObservations: filteredObservations.filter((obs: any) => obs.status === 'Closed').length,
 
         // Master register metrics
         latestMasterRecord,
@@ -138,11 +158,11 @@ export function useDashboardMetrics() {
     }
   };
 
-  const refreshMetrics = () => {
+  const refreshMetrics = (timePeriod?: TimePeriod) => {
     try {
       setLoading(true);
       setError(null);
-      const newMetrics = getMetrics();
+      const newMetrics = getMetrics(timePeriod || period);
       setMetrics(newMetrics);
     } catch (err) {
       setError('Failed to load metrics');
@@ -185,7 +205,7 @@ export function useDashboardMetrics() {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('localStorageUpdate', handleCustomStorageChange);
     };
-  }, []);
+  }, [period]);
 
   return { metrics, loading, error, refreshMetrics };
 }
