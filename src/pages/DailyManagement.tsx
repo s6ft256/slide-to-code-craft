@@ -2,26 +2,20 @@ import Layout from "@/components/Layout";
 import ProjectStatus from "@/components/ProjectStatus";
 import MetricCard from "@/components/MetricCard";
 import ChartCard from "@/components/ChartCard";
-import InductionForm from "@/components/InductionForm";
-import MasterRegisterForm from "@/components/MasterRegisterForm";
 import MasterRegisterRecords from "@/components/MasterRegisterRecords";
-import InjuryDetailsForm from "@/components/InjuryDetailsForm";
 import InjuryDetailsRecords from "@/components/InjuryDetailsRecords";
 
 import { Activity, Users, Clock, Target, AlertTriangle } from "lucide-react";
 import { useState } from "react";
-import ObservationTrackerForm from "@/components/ObservationTrackerForm";
 import ObservationTrackerRecords from "@/components/ObservationTrackerRecords";
-import NCRForm from "@/components/NCRForm";
 import NCRRecords from "@/components/NCRRecords";
+import TrainingRecords from "@/components/TrainingRecords";
+import TrainingCompetencyRecords from "@/components/TrainingCompetencyRecords";
+import EventRecords from "@/components/EventRecords";
 import { useDashboardMetrics } from "@/hooks/use-dashboard-metrics";
 
 const DailyManagement = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
-  const [masterTab, setMasterTab] = useState("records");
-  const [injuryTab, setInjuryTab] = useState("records");
-  const [observationTab, setObservationTab] = useState("records");
-  const [cnrTab, setCnrTab] = useState("records");
 
   const { metrics, loading, error } = useDashboardMetrics();
 
@@ -58,14 +52,6 @@ const DailyManagement = () => {
 
   return (
     <Layout>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-foreground mb-2">
-          Daily Management
-        </h1>
-        <p className="text-muted-foreground">
-          Daily HSE performance tracking and management
-        </p>
-      </div>
 
       <div className="mb-4 flex gap-2">
         <button
@@ -158,89 +144,38 @@ const DailyManagement = () => {
       )}
       {activeTab === "observation-tracker" && (
         <div className="mt-8">
-          <div className="flex gap-2 mb-4">
-            <button
-              className={`px-4 py-2 rounded ${observationTab === "records" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-800"}`}
-              onClick={() => setObservationTab("records")}
-            >Records</button>
-            <button
-              className={`px-4 py-2 rounded ${observationTab === "add" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-800"}`}
-              onClick={() => setObservationTab("add")}
-            >Add New Record</button>
-          </div>
-          {observationTab === "records" && <ObservationTrackerRecords />}
-          {observationTab === "add" && (
-            <>
-              <h3 className="text-lg font-semibold text-foreground mb-4">Observation Tracker (Manual Data Entry)</h3>
-              <ObservationTrackerForm onSuccess={() => setObservationTab("records")} />
-            </>
-          )}
+          <ObservationTrackerRecords />
         </div>
       )}
       {activeTab === "master-register" && (
         <div className="mt-8">
-          <div className="flex gap-2 mb-4">
-            <button
-              className={`px-4 py-2 rounded ${masterTab === "records" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-800"}`}
-              onClick={() => setMasterTab("records")}
-            >Records</button>
-            <button
-              className={`px-4 py-2 rounded ${masterTab === "add" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-800"}`}
-              onClick={() => setMasterTab("add")}
-            >Add New Record</button>
-          </div>
-          {masterTab === "records" && <MasterRegisterRecords />}
-          {masterTab === "add" && (
-            <>
-              <h3 className="text-lg font-semibold text-foreground mb-4">MASTER REGISTER (Manual Data Entry)</h3>
-              <MasterRegisterForm />
-            </>
-          )}
+          <MasterRegisterRecords />
         </div>
       )}
       {activeTab === "injury-details" && (
         <div className="mt-8">
-          <div className="flex gap-2 mb-4">
-            <button
-              className={`px-4 py-2 rounded ${injuryTab === "records" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-800"}`}
-              onClick={() => setInjuryTab("records")}
-            >Records</button>
-            <button
-              className={`px-4 py-2 rounded ${injuryTab === "add" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-800"}`}
-              onClick={() => setInjuryTab("add")}
-            >Add New Record</button>
-          </div>
-          {injuryTab === "records" && <InjuryDetailsRecords />}
-          {injuryTab === "add" && (
-            <>
-              <h3 className="text-lg font-semibold text-foreground mb-4">Injury Details (Manual Data Entry)</h3>
-              <InjuryDetailsForm />
-            </>
-          )}
+          <InjuryDetailsRecords />
         </div>
       )}
       {activeTab === "inductions" && (
-        <InductionForm />
+        <div className="mt-8 space-y-6">
+          <div>
+            <h3 className="text-lg font-semibold text-foreground mb-4">Training Records</h3>
+            <TrainingRecords />
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-foreground mb-4">Training & Competency Register</h3>
+            <TrainingCompetencyRecords />
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-foreground mb-4">Events Records</h3>
+            <EventRecords />
+          </div>
+        </div>
       )}
       {activeTab === "cnr-tracker" && (
         <div className="mt-8">
-          <div className="flex gap-2 mb-4">
-            <button
-              className={`px-4 py-2 rounded ${cnrTab === "records" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-800"}`}
-              onClick={() => setCnrTab("records")}
-            >Records</button>
-            <button
-              className={`px-4 py-2 rounded ${cnrTab === "add" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-800"}`}
-              onClick={() => setCnrTab("add")}
-            >Add New Record</button>
-          </div>
-          {cnrTab === "records" && <NCRRecords />}
-          {cnrTab === "add" && (
-            <>
-              <h3 className="text-lg font-semibold text-foreground mb-4">NCR Tracker (Manual Data Entry)</h3>
-              <NCRForm onClose={() => setCnrTab("records")} />
-            </>
-          )}
+          <NCRRecords />
         </div>
       )}
     </Layout>

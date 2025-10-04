@@ -38,7 +38,7 @@ interface AddProjectInfoFormProps {
 }
 
 export function AddProjectInfoForm({ onSave, onCancel }: AddProjectInfoFormProps) {
-  const { selectedProject } = useProject();
+  const { selectedProject, setSelectedProject } = useProject();
   const { toast } = useToast();
 
   const [formData, setFormData] = useState<ProjectInfoData>({
@@ -66,7 +66,7 @@ export function AddProjectInfoForm({ onSave, onCancel }: AddProjectInfoFormProps
 
   // Load existing data if available
   useEffect(() => {
-    const existingData = localStorage.getItem(`project_info_${selectedProject.code}`);
+    const existingData = localStorage.getItem(`project_info_${formData.projectCode}`);
     if (existingData) {
       try {
         const parsed = JSON.parse(existingData);
@@ -79,7 +79,7 @@ export function AddProjectInfoForm({ onSave, onCancel }: AddProjectInfoFormProps
         console.error('Error loading project info:', error);
       }
     }
-  }, [selectedProject.code]);
+  }, [formData.projectCode]);
 
   const handleInputChange = (field: keyof ProjectInfoData, value: string | Date | undefined) => {
     setFormData(prev => ({
@@ -94,17 +94,41 @@ export function AddProjectInfoForm({ onSave, onCancel }: AddProjectInfoFormProps
 
     try {
       // Validate required fields
-      if (!formData.projectName || !formData.client) {
+      if (!formData.projectCode || !formData.projectName || !formData.client) {
         throw new Error("Please fill in all required fields");
       }
 
-      // Save to localStorage
+      // Check if project exists in projects list, if not, add it
+      const existingProjects = JSON.parse(localStorage.getItem('projects') || '[]');
+      const projectExists = existingProjects.some((p: any) => p.code === formData.projectCode);
+
+      if (!projectExists) {
+        // Add new project to projects list
+        const newProject = {
+          code: formData.projectCode,
+          name: formData.projectName,
+          type: "Project"
+        };
+        existingProjects.push(newProject);
+        localStorage.setItem('projects', JSON.stringify(existingProjects));
+
+        // Update selected project in context
+        setSelectedProject(newProject);
+
+        toast({
+          title: "New Project Added",
+          description: `Project ${formData.projectCode} has been added to the projects list.`,
+          duration: 3000,
+        });
+      }
+
+      // Save project info to localStorage
       const dataToSave = {
         ...formData,
         projectStartingDate: formData.projectStartingDate?.toISOString()
       };
 
-      localStorage.setItem(`project_info_${selectedProject.code}`, JSON.stringify(dataToSave));
+      localStorage.setItem(`project_info_${formData.projectCode}`, JSON.stringify(dataToSave));
 
       toast({
         title: "Project Info Saved",
@@ -130,7 +154,7 @@ export function AddProjectInfoForm({ onSave, onCancel }: AddProjectInfoFormProps
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Plus className="h-5 w-5" />
-          Add Project Info - {selectedProject.code}
+          Add Project Info
         </CardTitle>
       </CardHeader>
       <CardContent>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { User, Settings, LogOut, Mail, Phone, MapPin, Calendar } from "lucide-react";
+import { userData } from "@/lib/userData";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -18,17 +19,7 @@ interface UserProfileDropdownProps {
 export function UserProfileDropdown({ className }: UserProfileDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
 
-  // Mock user data - in a real app, this would come from authentication context
-  const userData = {
-    name: "Ahmed Abbas",
-    role: "ESS",
-    email: "ahmed.abbas@troj.com",
-    phone: "+971-50-123-4567",
-    location: "Dubai, UAE",
-    joinDate: "January 2024",
-    department: "Engineering Safety Services",
-    employeeId: "EMP-2024-001"
-  };
+  // User data is imported from shared location
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>

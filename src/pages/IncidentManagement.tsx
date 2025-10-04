@@ -2,16 +2,14 @@ import Layout from "@/components/Layout";
 import MetricCard from "@/components/MetricCard";
 import ChartCard from "@/components/ChartCard";
 import LTIChart from "@/components/LTIChart";
-import IncidentReportForm from "@/components/IncidentReportForm";
-import { AlertTriangle, FileText, Clock, Users, TrendingDown, Plus, Loader2, LucideIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { AlertTriangle, FileText, Clock, Users, TrendingDown, Loader2, LucideIcon } from "lucide-react";
 import { useDashboardMetrics } from "@/hooks/use-dashboard-metrics";
 import { IncidentList } from "@/components/IncidentList";
+import { useIncidentMetrics } from "@/hooks/use-incident-metrics";
 
 const IncidentManagement = () => {
-  const [isCreating, setIsCreating] = useState(false);
   const { metrics, loading, error } = useDashboardMetrics();
+  const { incidents } = useIncidentMetrics();
 
   if (loading) {
     return (
@@ -79,48 +77,8 @@ const IncidentManagement = () => {
     }
   ];
 
-  if (isCreating) {
-    return (
-      <Layout>
-        <div className="mb-6">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-2xl font-bold text-foreground mb-2">
-                New Incident Report
-              </h1>
-              <p className="text-muted-foreground">
-                Fill out the incident report form with all required details
-              </p>
-            </div>
-            <Button variant="outline" onClick={() => setIsCreating(false)}>
-              Back to Dashboard
-            </Button>
-          </div>
-        </div>
-        <IncidentReportForm onSuccess={() => setIsCreating(false)} onCancel={() => setIsCreating(false)} />
-      </Layout>
-    );
-  }
-
   return (
     <Layout>
-      <div className="mb-6">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground mb-2">
-              Incident Management
-            </h1>
-            <p className="text-muted-foreground">
-              Track and manage safety incidents and near misses
-            </p>
-          </div>
-          <Button className="flex items-center gap-2" onClick={() => setIsCreating(true)}>
-            <Plus className="w-4 h-4" />
-            New Incident Report
-          </Button>
-        </div>
-      </div>
-
       <div className="space-y-8">
         <div>
           <h2 className="text-xl font-semibold text-foreground mb-4">Incident Overview</h2>
@@ -187,9 +145,7 @@ const IncidentManagement = () => {
 
         <div>
           <h2 className="text-xl font-semibold text-foreground mb-4">Recent Incidents</h2>
-          <div className="text-center text-muted-foreground py-8">
-            Incident details available in the Incident Report Form
-          </div>
+          <IncidentList incidents={incidents} />
         </div>
       </div>
     </Layout>

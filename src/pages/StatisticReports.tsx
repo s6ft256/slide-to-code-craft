@@ -10,14 +10,6 @@ const StatisticReports = () => {
   const { metrics, loading, error } = useDashboardMetrics();
   return (
     <Layout>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-foreground mb-2">
-          Statistic Reports
-        </h1>
-        <p className="text-muted-foreground">
-          Comprehensive statistical analysis and reporting
-        </p>
-      </div>
 
       <div className="space-y-8">
         <div>

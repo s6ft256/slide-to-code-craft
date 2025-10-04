@@ -37,15 +37,6 @@ const HSEInspection = () => {
 
   return (
     <Layout>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-foreground mb-2">
-          HSE Inspection
-        </h1>
-        <p className="text-muted-foreground">
-          Safety inspection scheduling and tracking system
-        </p>
-      </div>
-
       <div className="space-y-8">
         <div>
           <h2 className="text-xl font-semibold text-foreground mb-4">Inspection Overview</h2>

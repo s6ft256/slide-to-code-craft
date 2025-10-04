@@ -53,7 +53,7 @@ export default function NCRRecords() {
     async function fetchRecords() {
       setLoading(true);
       try {
-        const data = JSON.parse(localStorage.getItem('ncr_records') || '[]');
+        const data = JSON.parse(localStorage.getItem('ncr_register') || '[]');
         setRecords(data.reverse()); // Most recent first
       } catch (err: any) {
         setError(err.message);

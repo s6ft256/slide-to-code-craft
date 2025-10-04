@@ -15,6 +15,7 @@ import EmergencyManagement from "./pages/EmergencyManagement";
 import HSEViolations from "./pages/HSEViolations";
 import NotFound from "./pages/NotFound";
 import Library from "./pages/Library";
+import DataEntry from "./pages/DataEntry";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/daily-management" element={<DailyManagement />} />
+              <Route path="/data-entry" element={<DataEntry />} />
               <Route path="/statistic-reports" element={<StatisticReports />} />
               <Route path="/incident-management" element={<IncidentManagement />} />
               <Route path="/incident-management/new" element={<IncidentManagement />} />

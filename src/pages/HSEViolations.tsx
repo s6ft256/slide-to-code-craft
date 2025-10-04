@@ -44,15 +44,6 @@ const HSEViolations = () => {
 
   return (
     <Layout>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-foreground mb-2">
-          HSE Violations
-        </h1>
-        <p className="text-muted-foreground">
-          Track and manage HSE policy violations and corrective actions
-        </p>
-      </div>
-
       <div className="space-y-8">
         <div>
           <h2 className="text-xl font-semibold text-foreground mb-4">Violation Overview</h2>
