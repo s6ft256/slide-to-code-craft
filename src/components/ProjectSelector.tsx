@@ -22,10 +22,6 @@ export function ProjectSelector({ className }: ProjectSelectorProps) {
   // Mock project data - in a real app, this would come from an API
   const projects = [
     { code: "TG000", name: "Zayed National Museum", type: "Project" },
-    { code: "TG001", name: "Dubai Mall Expansion", type: "Project" },
-    { code: "TG002", name: "Burj Khalifa Maintenance", type: "Maintenance" },
-    { code: "TG003", name: "Palm Jumeirah Resort", type: "Hospitality" },
-    { code: "TG004", name: "Dubai Metro Line 3", type: "Infrastructure" },
     { code: "TG-2134", name: "Baniyas West", type: "Project" },
   ];
 
