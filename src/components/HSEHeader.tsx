@@ -10,14 +10,14 @@ import { Link } from "react-router-dom";
 
 const HSEHeader = () => {
   return (
-    <header className="bg-card border-b border-border px-6 py-4 shadow-soft">
+    <header className="fixed top-0 left-0 right-0 bg-card border-b border-border px-6 py-3 shadow-medium z-20 backdrop-blur-sm bg-opacity-95">
       <div className="flex items-center justify-between">
         {/* Left section - Logo and Project Info */}
         <div className="flex items-center gap-6">
           <img 
             src="/slide-to-code-craft/troj.jpg" 
             alt="Troj Logo" 
-            className="w-10 h-10 rounded-lg object-cover"
+            className="w-10 h-10 rounded-lg object-cover shadow-sm border border-border/50"
           />
           
           <div className="flex items-center gap-4">
@@ -32,7 +32,7 @@ const HSEHeader = () => {
         {/* Right section - Actions and User */}
         <div className="flex items-center gap-4">
           <Button 
-            className="bg-gradient-primary hover:bg-primary-hover text-primary-foreground font-medium shadow-medium transition-smooth"
+            className="bg-gradient-primary hover:bg-primary-hover text-primary-foreground font-medium shadow-sm transition-all duration-200 hover:shadow-md"
           >
             <FileText className="h-4 w-4 mr-2" />
             Generate Report
@@ -41,7 +41,7 @@ const HSEHeader = () => {
           <Link to="/data-entry">
             <Button 
               variant="outline"
-              className="font-medium transition-smooth"
+              className="font-medium transition-all duration-200 hover:border-primary/50 hover:text-primary shadow-sm hover:shadow-md"
             >
               <Database className="h-4 w-4 mr-2" />
               DATA ENTRY

@@ -24,26 +24,26 @@ const MetricCard = ({
   const getVariantClasses = () => {
     switch (variant) {
       case "success":
-        return "border-success/20 bg-success-light/50 shadow-sm shadow-success/10";
+        return "border-success/30 bg-gradient-to-br from-success-light/60 to-success-light/30 hover:from-success-light/70 hover:to-success-light/40";
       case "warning":
-        return "border-warning/20 bg-warning-light/50 shadow-sm shadow-warning/10";
+        return "border-warning/30 bg-gradient-to-br from-warning-light/60 to-warning-light/30 hover:from-warning-light/70 hover:to-warning-light/40";
       case "destructive":
-        return "border-destructive/20 bg-destructive-light/50 shadow-sm shadow-destructive/10";
+        return "border-destructive/30 bg-gradient-to-br from-destructive-light/60 to-destructive-light/30 hover:from-destructive-light/70 hover:to-destructive-light/40";
       default:
-        return "border-border bg-card shadow-sm hover:shadow-md";
+        return "border-border/30 bg-gradient-to-br from-card/80 to-card/40 hover:from-card/90 hover:to-card/50";
     }
   };
 
   const getIconClasses = () => {
     switch (variant) {
       case "success":
-        return "text-success bg-success-light";
+        return "text-success bg-success-light/80 shadow-sm";
       case "warning":
-        return "text-warning bg-warning-light";
+        return "text-warning bg-warning-light/80 shadow-sm";
       case "destructive":
-        return "text-destructive bg-destructive-light";
+        return "text-destructive bg-destructive-light/80 shadow-sm";
       default:
-        return "text-primary bg-accent-light";
+        return "text-primary bg-primary/10 shadow-sm";
     }
   };
 
@@ -59,22 +59,22 @@ const MetricCard = ({
   };
 
   return (
-    <Card className={cn("transition-all duration-300 hover:-translate-y-1", getVariantClasses(), className)}>
+    <Card className={cn("shadow-soft hover:shadow-medium transition-smooth", getVariantClasses(), className)}>
       <CardContent className="p-6">
         <div className="flex items-start justify-between">
           <div className="space-y-2 flex-1">
-            <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">{title}</p>
+            <p className="text-sm font-medium text-muted-foreground">{title}</p>
             <div className="flex items-baseline gap-2">
               <p className="text-2xl font-bold text-foreground">{value}</p>
               {subtitle && (
-                <p className={cn("text-xs font-semibold rounded-full px-2 py-0.5 bg-background", getTrendColor())}>
+                <p className={cn("text-sm font-medium", getTrendColor())}>
                   {subtitle}
                 </p>
               )}
             </div>
           </div>
-          <div className={cn("w-12 h-12 rounded-full flex items-center justify-center", getIconClasses())}>
-            <Icon className="h-5 w-5" />
+          <div className={cn("w-12 h-12 rounded-lg flex items-center justify-center", getIconClasses())}>
+            <Icon className="h-6 w-6" />
           </div>
         </div>
       </CardContent>
