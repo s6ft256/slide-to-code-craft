@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import Layout from "@/components/Layout";
-import ProjectStatus from "@/components/ProjectStatus";
-import ChartCard from "@/components/ChartCard";
+import Layout from "@/components/layout/Layout";
+import ProjectStatus from "@/components/charts/ProjectStatus";
+import ChartCard from "@/components/charts/ChartCard";
 import { Card, CardContent } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 

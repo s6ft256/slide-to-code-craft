@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import TrainingForm from "./TrainingForm";
-import TrainingCompetencyForm from "@/components/TrainingCompetencyForm";
-import EventForm from "@/components/EventForm";
+import TrainingCompetencyForm from "./TrainingCompetencyForm";
+import EventForm from "./EventForm";
 
 const InductionForm = () => {
   const [activeTab, setActiveTab] = useState("trainings");

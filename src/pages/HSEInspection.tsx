@@ -1,6 +1,6 @@
-import Layout from "@/components/Layout";
-import MetricCard from "@/components/MetricCard";
-import ChartCard from "@/components/ChartCard";
+import Layout from "@/components/layout/Layout";
+import MetricCard from "@/components/charts/MetricCard";
+import ChartCard from "@/components/charts/ChartCard";
 import { Eye, CheckCircle, AlertCircle, XCircle, Calendar } from "lucide-react";
 
 const HSEInspection = () => {

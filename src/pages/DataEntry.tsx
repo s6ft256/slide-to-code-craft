@@ -1,12 +1,12 @@
-import Layout from "@/components/Layout";
-import InductionForm from "@/components/InductionForm";
-import MasterRegisterForm from "@/components/MasterRegisterForm";
-import InjuryDetailsForm from "@/components/InjuryDetailsForm";
-import ObservationTrackerForm from "@/components/ObservationTrackerForm";
-import NCRForm from "@/components/NCRForm";
-import IncidentReportForm from "@/components/IncidentReportForm";
-import { AddProjectInfoForm } from "@/components/AddProjectInfoForm";
-import HSEViolationForm from "@/components/HSEViolationForm";
+import Layout from "@/components/layout/Layout";
+import InductionForm from "@/components/forms/InductionForm";
+import MasterRegisterForm from "@/components/forms/MasterRegisterForm";
+import InjuryDetailsForm from "@/components/forms/InjuryDetailsForm";
+import ObservationTrackerForm from "@/components/forms/ObservationTrackerForm";
+import NCRForm from "@/components/forms/NCRForm";
+import IncidentReportForm from "@/components/forms/IncidentReportForm";
+import { AddProjectInfoForm } from "@/components/forms/AddProjectInfoForm";
+import HSEViolationForm from "@/components/forms/HSEViolationForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Database, FileText, Users, AlertTriangle, Eye, XCircle, Shield, Building2 } from "lucide-react";
 

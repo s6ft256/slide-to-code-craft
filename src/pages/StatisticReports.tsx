@@ -1,7 +1,7 @@
-import Layout from "@/components/Layout";
-import ProjectStatus from "@/components/ProjectStatus";
-import TrainingChart from "@/components/TrainingChart";
-import ChartCard from "@/components/ChartCard";
+import Layout from "@/components/layout/Layout";
+import ProjectStatus from "@/components/charts/ProjectStatus";
+import TrainingChart from "@/components/charts/TrainingChart";
+import ChartCard from "@/components/charts/ChartCard";
 import { Card, CardContent } from "@/components/ui/card";
 import { Star } from "lucide-react";
 import { useDashboardMetrics } from "@/hooks/use-dashboard-metrics";

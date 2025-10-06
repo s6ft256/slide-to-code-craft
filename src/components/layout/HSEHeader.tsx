@@ -1,11 +1,11 @@
 import { FileText, Database } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { NotificationDropdown } from "@/components/NotificationDropdown";
-import { UserProfileDropdown } from "@/components/UserProfileDropdown";
+import { NotificationDropdown } from "@/components/layout/NotificationDropdown";
+import { UserProfileDropdown } from "@/components/layout/UserProfileDropdown";
 import { userData } from "@/lib/userData";
-import { ProjectSelector } from "@/components/ProjectSelector";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { ProjectSelector } from "@/components/layout/ProjectSelector";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { Link } from "react-router-dom";
 
 const HSEHeader = () => {

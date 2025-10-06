@@ -1,10 +1,10 @@
-import Layout from "@/components/Layout";
-import MetricCard from "@/components/MetricCard";
-import ChartCard from "@/components/ChartCard";
-import LTIChart from "@/components/LTIChart";
+import Layout from "@/components/layout/Layout";
+import MetricCard from "@/components/charts/MetricCard";
+import ChartCard from "@/components/charts/ChartCard";
+import LTIChart from "@/components/charts/LTIChart";
 import { AlertTriangle, FileText, Clock, Users, TrendingDown, Loader2, LucideIcon } from "lucide-react";
 import { useDashboardMetrics } from "@/hooks/use-dashboard-metrics";
-import { IncidentList } from "@/components/IncidentList";
+import { IncidentList } from "@/components/records/IncidentList";
 import { useIncidentMetrics } from "@/hooks/use-incident-metrics";
 
 const IncidentManagement = () => {

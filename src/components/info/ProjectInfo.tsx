@@ -4,7 +4,11 @@ import { Separator } from "@/components/ui/separator";
 import { Calendar, Clock, Users, Target, TrendingUp, Shield, Plus, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect, useCallback } from "react";
-import { AddProjectInfoForm } from "./AddProjectInfoForm";
+import { AddProjectInfoForm } from "@/components/forms/AddProjectInfoForm";
+
+interface ProjectInfoProps {
+  projectCode: string;
+}
 
 interface ProjectData {
   projectCode: string;

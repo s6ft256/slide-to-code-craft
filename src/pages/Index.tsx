@@ -1,6 +1,6 @@
-import Layout from "@/components/Layout";
-import HSEMetricsGrid from "@/components/HSEMetricsGrid";
-import LTIChart from "@/components/LTIChart";
+import Layout from "@/components/layout/Layout";
+import HSEMetricsGrid from "@/components/charts/HSEMetricsGrid";
+import LTIChart from "@/components/charts/LTIChart";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { RefreshCw, TrendingUp, Calendar, Keyboard, Info } from "lucide-react";
@@ -8,7 +8,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useDashboardMetrics, TimePeriod } from "@/hooks/use-dashboard-metrics";
 import { useToast } from "@/hooks/use-toast";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { ProjectInfo } from "@/components/ProjectInfo";
+import { ProjectInfo } from "@/components/info/ProjectInfo";
 import { useProject } from "@/contexts/ProjectContext";
 
 const Index = () => {
