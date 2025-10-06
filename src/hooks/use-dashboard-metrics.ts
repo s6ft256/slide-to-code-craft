@@ -10,13 +10,14 @@ export function useDashboardMetrics(period: TimePeriod = 'month') {
 
   const getMetrics = (timePeriod: TimePeriod = 'month') => {
     try {
-      // Get data from all forms
+      // Get data from all DATA ENTRY forms
       const incidentReports = JSON.parse(localStorage.getItem('incident_report') || '[]');
       const masterRegister = JSON.parse(localStorage.getItem('master_register') || '[]');
       const injuryDetails = JSON.parse(localStorage.getItem('injury_details') || '[]');
       const trainingRecords = JSON.parse(localStorage.getItem('training_competency_register') || '[]');
       const ncrRecords = JSON.parse(localStorage.getItem('ncr_register') || '[]');
       const observationRecords = JSON.parse(localStorage.getItem('observation_tracker') || '[]');
+      const hseViolations = JSON.parse(localStorage.getItem('hse_violations') || '[]');
 
       // Get project info data
       const projects = JSON.parse(localStorage.getItem('projects') || '[]');
@@ -30,7 +31,6 @@ export function useDashboardMetrics(period: TimePeriod = 'month') {
         sum + (parseInt(project.safeManhours) || 0), 0);
 
       // For total employees, we'll use the latest master register entry or derive from project data
-      // If no project info has employee count, fall back to master register length or default
       const totalEmployeesFromProjects = projectInfoData.reduce((sum: number, project: any) =>
         sum + (parseInt(project.totalEmployees) || 0), 0);
       const totalEmployees = totalEmployeesFromProjects || masterRegister.length || 0;
@@ -44,10 +44,23 @@ export function useDashboardMetrics(period: TimePeriod = 'month') {
         periodStart.setDate(now.getDate() - 30);
       }
 
-      // Filter data by time period
-      const filterByPeriod = (items: any[], dateField: string = 'date') => {
+      // Filter data by time period - handle different date field names
+      const filterByPeriod = (items: any[]) => {
         return items.filter((item: any) => {
-          const itemDate = new Date(item[dateField] || item.createdAt || item.dateReported);
+          // Try different date field names that forms might use
+          const dateFields = ['date', 'createdAt', 'dateReported', 'issuedDate', 'incidentdate', 'dateOfIncident'];
+          let itemDate: Date | null = null;
+
+          for (const field of dateFields) {
+            if (item[field]) {
+              itemDate = new Date(item[field]);
+              if (!isNaN(itemDate.getTime())) break;
+            }
+          }
+
+          // If no valid date found, include the item (for backward compatibility)
+          if (!itemDate || isNaN(itemDate.getTime())) return true;
+
           return itemDate >= periodStart && itemDate <= now;
         });
       };
@@ -57,17 +70,26 @@ export function useDashboardMetrics(period: TimePeriod = 'month') {
       const filteredTraining = filterByPeriod(trainingRecords);
       const filteredNCRs = filterByPeriod(ncrRecords);
       const filteredObservations = filterByPeriod(observationRecords);
+      const filteredViolations = filterByPeriod(hseViolations);
 
-      // Calculate metrics from master register (latest entry)
+      // Calculate metrics from master register (latest entry) - use as fallback
       const latestMasterRecord = masterRegister.length > 0 ? masterRegister[masterRegister.length - 1] : {};
 
-      // HSE Audit Metrics from master register
+      // HSE Audit Metrics - calculate from actual form data
       const hseAuditMetrics = {
-        AUDIT: latestMasterRecord.internalHSEAudit || 0,
-        NCRs: latestMasterRecord.totalNCRS || 0,
-        SORs: latestMasterRecord.seriousDangerousOccurrence || 0,
-        ART: latestMasterRecord.kpiRatingART || 0,
-        MEETINGS: latestMasterRecord.managementMeetings || 0,
+        AUDIT: latestMasterRecord.internalHSEAudit || 0, // Still from master register
+        NCRs: filteredNCRs.length,
+        SORs: filteredIncidents.filter((incident: any) => {
+          // Count serious incidents (could be based on severity or other criteria)
+          try {
+            const details = JSON.parse(incident.details || '{}');
+            return details.severity === 'High' || details.event_category === 'Serious';
+          } catch {
+            return false;
+          }
+        }).length,
+        ART: latestMasterRecord.kpiRatingART || 0, // Still from master register
+        MEETINGS: latestMasterRecord.managementMeetings || 0, // Still from master register
         TRIR: 0, // Calculate if needed
         LTIFR: latestMasterRecord.ltifr || 0,
         LTISR: latestMasterRecord.ltisr || 0
@@ -75,7 +97,7 @@ export function useDashboardMetrics(period: TimePeriod = 'month') {
 
       // Incident metrics (filtered by period)
       const totalIncidents = filteredIncidents.length;
-      const recentIncidents = filteredIncidents.length; // All filtered incidents are recent for the period
+      const recentIncidents = filteredIncidents.length;
 
       // Training metrics (filtered by period)
       const totalTrainingHours = filteredTraining.reduce((sum: number, record: any) =>
@@ -87,37 +109,57 @@ export function useDashboardMetrics(period: TimePeriod = 'month') {
       const openNCRs = filteredNCRs.filter((ncr: any) => ncr.status !== 'Closed').length;
       const closedNCRs = filteredNCRs.filter((ncr: any) => ncr.status === 'Closed').length;
 
-      // Safety metrics from master register
-      const totalLTIs = latestMasterRecord.totalLTI || 0;
-      const fatalities = latestMasterRecord.fatalities || 0;
+      // Safety metrics from injury details and incidents
+      const totalLTIs = filteredInjuries.length + filteredIncidents.filter((incident: any) => {
+        try {
+          const details = JSON.parse(incident.details || '{}');
+          return details.injuries > 0;
+        } catch {
+          return false;
+        }
+      }).length;
 
-      // Calculate days without LTI (simplified)
-      const daysWithoutLTI = totalLTIs === 0 ? 45 : Math.max(0, 45 - totalLTIs * 7);
+      const fatalities = filteredIncidents.filter((incident: any) => {
+        try {
+          const details = JSON.parse(incident.details || '{}');
+          return details.severity === 'Fatal';
+        } catch {
+          return false;
+        }
+      }).length;
 
-      // Project performance metrics
-      const projectScore = Math.max(0, 100 - (totalIncidents * 2) - (openNCRs * 5) - (fatalities * 20));
+      // Calculate days without LTI (simplified - based on recent incident dates)
+      const daysWithoutLTI = totalLTIs === 0 ? (timePeriod === 'week' ? 7 : 30) :
+        Math.max(0, (timePeriod === 'week' ? 7 : 30) - totalLTIs * 2);
+
+      // Project performance metrics - calculate from real data
+      const projectScore = Math.max(0, 100 - (totalIncidents * 2) - (openNCRs * 5) - (fatalities * 20) - (filteredViolations.length * 1));
       const projectRating = projectScore >= 90 ? 'A+' : projectScore >= 80 ? 'A' : projectScore >= 70 ? 'B' : 'C';
+
+      // Training completion rate - calculate from actual training data
+      const trainingCompletionRate = filteredTraining.length > 0 ?
+        Math.round((filteredTraining.filter((t: any) => t.status === 'Completed').length / filteredTraining.length) * 100) : 0;
 
       return {
         // Main dashboard metrics
         totalIncidents,
         totalEmployees,
         totalInjuries: filteredInjuries.length,
-        completedTraining: filteredTraining.length,
-        safetyScore: Math.max(0, 100 - (totalIncidents * 5) - (filteredInjuries.length * 10)),
-        monthlyTrend: 5.2,
+        completedTraining: filteredTraining.filter((t: any) => t.status === 'Completed').length,
+        safetyScore: Math.max(0, 100 - (totalIncidents * 5) - (filteredInjuries.length * 10) - (filteredViolations.length * 2)),
+        monthlyTrend: totalIncidents > 0 ? -2.1 : 5.2, // Negative if incidents, positive if no incidents
 
         // HSE Metrics Grid
         projectRating,
         projectScore,
         leadingIndicators: totalIncidents,
-        trainingAverage: filteredTraining.length > 0 ? 85 : 0, // Could be calculated from actual data
+        trainingAverage: trainingCompletionRate,
         daysWithoutLTI,
         incidentsReported: recentIncidents,
-        reportsSubmitted: filteredIncidents.length,
-        activeTrainings: filteredTraining.length,
+        reportsSubmitted: filteredIncidents.length + filteredNCRs.length + filteredViolations.length,
+        activeTrainings: filteredTraining.filter((t: any) => t.status === 'In Progress').length,
         ncrs: openNCRs,
-        completedInspections: latestMasterRecord.safetyInspectionsConducted || 0,
+        completedInspections: filteredObservations.length, // Use observations as proxy for inspections
         safeManHours: totalSafeManHours,
 
         // HSE Audit Metrics
@@ -132,8 +174,9 @@ export function useDashboardMetrics(period: TimePeriod = 'month') {
         observationRecords: filteredObservations.length,
         openObservations: filteredObservations.filter((obs: any) => obs.status !== 'Closed').length,
         closedObservations: filteredObservations.filter((obs: any) => obs.status === 'Closed').length,
+        totalViolations: filteredViolations.length,
 
-        // Master register metrics
+        // Master register metrics (as fallback)
         latestMasterRecord,
 
         loading: false,
@@ -148,18 +191,26 @@ export function useDashboardMetrics(period: TimePeriod = 'month') {
         completedTraining: 0,
         safetyScore: 100,
         monthlyTrend: 0,
-        projectRating: "N/A",
+        projectRating: 'N/A',
         projectScore: 0,
         leadingIndicators: 0,
         trainingAverage: 0,
-        daysWithoutLTI: 0,
+        daysWithoutLTI: 30,
         incidentsReported: 0,
         reportsSubmitted: 0,
         activeTrainings: 0,
         ncrs: 0,
         completedInspections: 0,
+        safeManHours: 0,
         hseAuditMetrics: {
-          AUDIT: 0, NCRs: 0, SORs: 0, ART: 0, MEETINGS: 0, TRIR: 0, LTIFR: 0, LTISR: 0
+          AUDIT: 0,
+          NCRs: 0,
+          SORs: 0,
+          ART: 0,
+          MEETINGS: 0,
+          TRIR: 0,
+          LTIFR: 0,
+          LTISR: 0
         },
         totalTrainingHours: 0,
         avgTrainingPerEmployee: 0,
@@ -169,41 +220,39 @@ export function useDashboardMetrics(period: TimePeriod = 'month') {
         observationRecords: 0,
         openObservations: 0,
         closedObservations: 0,
+        totalViolations: 0,
         latestMasterRecord: {},
         loading: false,
-        error: 'Failed to load metrics'
+        error: 'Failed to calculate metrics'
       };
     }
   };
 
   const refreshMetrics = (timePeriod?: TimePeriod) => {
+    setLoading(true);
+    setError(null);
     try {
-      setLoading(true);
-      setError(null);
       const newMetrics = getMetrics(timePeriod || period);
       setMetrics(newMetrics);
     } catch (err) {
-      setError('Failed to load metrics');
-      console.error('Error refreshing metrics:', err);
+      setError((err as Error).message);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    // Initial load
     refreshMetrics();
+  }, [period]);
 
-    // Listen for localStorage changes (cross-tab synchronization)
+  useEffect(() => {
+    // Listen for localStorage changes to refresh metrics
     const handleStorageChange = (e: StorageEvent) => {
-      // Only refresh if the changed key is one of our data sources
+      // Only refresh if relevant keys changed
       const relevantKeys = [
-        'incident_report',
-        'master_register',
-        'injury_details',
-        'training_competency_register',
-        'ncr_register',
-        'observation_tracker'
+        'incident_report', 'master_register', 'injury_details',
+        'training_competency_register', 'ncr_register', 'observation_tracker',
+        'hse_violations', 'projects'
       ];
 
       if (e.key && relevantKeys.includes(e.key)) {

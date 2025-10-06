@@ -235,3 +235,5 @@ const HSEViolations = () => {
     </Layout>
   );
 };
+
+export default HSEViolations;
