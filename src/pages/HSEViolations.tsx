@@ -1,10 +1,14 @@
 import Layout from "@/components/Layout";
 import MetricCard from "@/components/MetricCard";
 import ChartCard from "@/components/ChartCard";
-import { XCircle, AlertTriangle, FileX, Users, TrendingDown } from "lucide-react";
+import HSEViolationRecords from "@/components/HSEViolationRecords";
+import { XCircle, AlertTriangle, FileX, Users, TrendingDown, Eye } from "lucide-react";
 import { useDashboardMetrics } from "@/hooks/use-dashboard-metrics";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useState } from "react";
 
 const HSEViolations = () => {
+  const [activeTab, setActiveTab] = useState("overview");
   const { metrics, loading, error } = useDashboardMetrics();
 
   const totalViolations = (metrics?.totalNCRs ?? 0) + (metrics?.observationRecords ?? 0);
@@ -44,7 +48,29 @@ const HSEViolations = () => {
 
   return (
     <Layout>
-      <div className="space-y-8">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-foreground mb-2 flex items-center gap-2">
+          <XCircle className="h-6 w-6" />
+          HSE VIOLATIONS
+        </h1>
+        <p className="text-muted-foreground">
+          Safety violation tracking and management system
+        </p>
+      </div>
+
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <TabsList className="flex w-full gap-2 p-1">
+          <TabsTrigger value="overview" className="flex items-center gap-2 whitespace-nowrap">
+            <AlertTriangle className="h-4 w-4" />
+            Overview
+          </TabsTrigger>
+          <TabsTrigger value="records" className="flex items-center gap-2 whitespace-nowrap">
+            <Eye className="h-4 w-4" />
+            HSE Violation Records
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview" className="space-y-8">
         <div>
           <h2 className="text-xl font-semibold text-foreground mb-4">Violation Overview</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -169,7 +195,12 @@ const HSEViolations = () => {
             </div>
           </div>
         </div>
-      </div>
+      </TabsContent>
+
+      <TabsContent value="records" className="space-y-6">
+        <HSEViolationRecords />
+      </TabsContent>
+    </Tabs>
     </Layout>
   );
 };

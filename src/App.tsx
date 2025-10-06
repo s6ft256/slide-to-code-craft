@@ -5,7 +5,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HashRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { ProjectProvider } from "@/contexts/ProjectContext";
-import BackgroundVideo from "@/components/BackgroundVideo";
 import Index from "./pages/Index";
 import DailyManagement from "./pages/DailyManagement";
 import StatisticReports from "./pages/StatisticReports";
@@ -25,7 +24,6 @@ const App = () => (
     <ThemeProvider>
       <ProjectProvider>
         <TooltipProvider>
-          <BackgroundVideo />
           <Toaster />
           <Sonner />
           <HashRouter>
