@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { User, Settings, LogOut, Mail, Phone, MapPin, Calendar } from "lucide-react";
 import { userData } from "@/lib/userData";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -18,8 +20,14 @@ interface UserProfileDropdownProps {
 
 export function UserProfileDropdown({ className }: UserProfileDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
-
-  // User data is imported from shared location
+  const { signOut, user } = useAuth();
+  const navigate = useNavigate();
+  
+  // Combine auth user data with local user data
+  // We'll use the authenticated user info when available, falling back to local data
+  const displayName = user?.user_metadata?.name || userData.name;
+  const displayEmail = user?.email || userData.email;
+  const userInitials = displayName.split(' ').map(n => n[0]).join('');
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
@@ -31,9 +39,9 @@ export function UserProfileDropdown({ className }: UserProfileDropdownProps) {
           aria-label="User profile menu"
         >
           <Avatar className="w-8 h-8">
-            <AvatarImage src="" alt="User" />
+            <AvatarImage src={user?.user_metadata?.avatar_url || ""} alt={displayName} />
             <AvatarFallback className="bg-gradient-primary text-primary-foreground">
-              <User className="h-4 w-4" />
+              {userInitials || <User className="h-4 w-4" />}
             </AvatarFallback>
           </Avatar>
         </Button>
@@ -41,15 +49,17 @@ export function UserProfileDropdown({ className }: UserProfileDropdownProps) {
       <DropdownMenuContent align="end" className="w-80">
         <DropdownMenuLabel className="flex items-center gap-3 p-4">
           <Avatar className="w-12 h-12">
-            <AvatarImage src="" alt={userData.name} />
+            <AvatarImage src={user?.user_metadata?.avatar_url || ""} alt={displayName} />
             <AvatarFallback className="bg-gradient-primary text-primary-foreground text-lg">
-              {userData.name.split(' ').map(n => n[0]).join('')}
+              {userInitials}
             </AvatarFallback>
           </Avatar>
           <div>
-            <div className="font-semibold text-foreground">{userData.name}</div>
+            <div className="font-semibold text-foreground">{displayName}</div>
             <div className="text-sm text-muted-foreground">{userData.role}</div>
-            <div className="text-xs text-muted-foreground mt-1">{userData.employeeId}</div>
+            {userData.employeeId && (
+              <div className="text-xs text-muted-foreground mt-1">{userData.employeeId}</div>
+            )}
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
@@ -58,7 +68,7 @@ export function UserProfileDropdown({ className }: UserProfileDropdownProps) {
           <div className="flex items-center gap-3 px-3 py-2 text-sm">
             <Mail className="h-4 w-4 text-muted-foreground" />
             <div>
-              <div className="text-foreground">{userData.email}</div>
+              <div className="text-foreground">{displayEmail}</div>
               <div className="text-xs text-muted-foreground">Email</div>
             </div>
           </div>
@@ -95,7 +105,14 @@ export function UserProfileDropdown({ className }: UserProfileDropdownProps) {
           <span>Settings</span>
         </DropdownMenuItem>
 
-        <DropdownMenuItem className="flex items-center gap-3 text-destructive focus:text-destructive">
+        <DropdownMenuItem 
+          className="flex items-center gap-3 text-destructive focus:text-destructive"
+          onClick={async () => {
+            await signOut();
+            setIsOpen(false);
+            navigate("/auth");
+          }}
+        >
           <LogOut className="h-4 w-4" />
           <span>Sign Out</span>
         </DropdownMenuItem>
