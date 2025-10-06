@@ -2,13 +2,10 @@ import Layout from "@/components/Layout";
 import MetricCard from "@/components/MetricCard";
 import ChartCard from "@/components/ChartCard";
 import HSEViolationRecords from "@/components/HSEViolationRecords";
-import { XCircle, AlertTriangle, FileX, Users, TrendingDown, Eye } from "lucide-react";
+import { XCircle, AlertTriangle, FileX, Users, TrendingDown } from "lucide-react";
 import { useDashboardMetrics } from "@/hooks/use-dashboard-metrics";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useState } from "react";
 
 const HSEViolations = () => {
-  const [activeTab, setActiveTab] = useState("overview");
   const { metrics, loading, error } = useDashboardMetrics();
 
   const totalViolations = (metrics?.totalNCRs ?? 0) + (metrics?.observationRecords ?? 0);
@@ -48,29 +45,7 @@ const HSEViolations = () => {
 
   return (
     <Layout>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-foreground mb-2 flex items-center gap-2">
-          <XCircle className="h-6 w-6" />
-          HSE VIOLATIONS
-        </h1>
-        <p className="text-muted-foreground">
-          Safety violation tracking and management system
-        </p>
-      </div>
-
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="flex w-full gap-2 p-1">
-          <TabsTrigger value="overview" className="flex items-center gap-2 whitespace-nowrap">
-            <AlertTriangle className="h-4 w-4" />
-            Overview
-          </TabsTrigger>
-          <TabsTrigger value="records" className="flex items-center gap-2 whitespace-nowrap">
-            <Eye className="h-4 w-4" />
-            HSE Violation Records
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="overview" className="space-y-8">
+      <div className="space-y-8">
         <div>
           <h2 className="text-xl font-semibold text-foreground mb-4">Violation Overview</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -160,47 +135,10 @@ const HSEViolations = () => {
         </div>
 
         <div>
-          <h3 className="text-lg font-semibold text-foreground mb-4">Recent Violations</h3>
-          <div className="bg-card rounded-lg border border-border p-6 shadow-soft">
-            <div className="space-y-4">
-              {[
-                { id: "V001", type: "PPE Violation", date: "2024-03-15", status: "Resolved", severity: "Medium" },
-                { id: "V002", type: "Procedure Non-compliance", date: "2024-03-14", status: "Open", severity: "High" },
-                { id: "V003", type: "Environmental Breach", date: "2024-03-12", status: "In Progress", severity: "Low" },
-              ].map((violation, index) => (
-                <div key={index} className="flex justify-between items-center py-2 border-b border-border last:border-b-0">
-                  <div className="flex items-center gap-4">
-                    <span className="text-sm font-medium text-foreground">{violation.id}</span>
-                    <span className="text-sm text-muted-foreground">{violation.type}</span>
-                    <span className="text-xs text-muted-foreground">{violation.date}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className={`text-xs px-2 py-1 rounded ${
-                      violation.severity === 'High' ? 'bg-destructive text-destructive-foreground' :
-                      violation.severity === 'Medium' ? 'bg-warning text-warning-foreground' :
-                      'bg-muted text-muted-foreground'
-                    }`}>
-                      {violation.severity}
-                    </span>
-                    <span className={`text-xs px-2 py-1 rounded ${
-                      violation.status === 'Resolved' ? 'bg-success text-success-foreground' :
-                      violation.status === 'Open' ? 'bg-destructive text-destructive-foreground' :
-                      'bg-warning text-warning-foreground'
-                    }`}>
-                      {violation.status}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          <h3 className="text-lg font-semibold text-foreground mb-4">HSE Violation Records</h3>
+          <HSEViolationRecords />
         </div>
-      </TabsContent>
-
-      <TabsContent value="records" className="space-y-6">
-        <HSEViolationRecords />
-      </TabsContent>
-    </Tabs>
+      </div>
     </Layout>
   );
 };

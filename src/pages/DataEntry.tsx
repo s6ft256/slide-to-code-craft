@@ -6,8 +6,7 @@ import ObservationTrackerForm from "@/components/ObservationTrackerForm";
 import NCRForm from "@/components/NCRForm";
 import IncidentReportForm from "@/components/IncidentReportForm";
 import { AddProjectInfoForm } from "@/components/AddProjectInfoForm";
-import { HSEViolationForm } from "@/components/HSEViolationForm";
-import HSEViolationRecords from "@/components/HSEViolationRecords";
+import HSEViolationForm from "@/components/HSEViolationForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Database, FileText, Users, AlertTriangle, Eye, XCircle, Shield, Building2 } from "lucide-react";
 
@@ -55,7 +54,7 @@ const DataEntry = () => {
             NCR Tracker
           </TabsTrigger>
           <TabsTrigger value="hse-violation" className="flex items-center gap-2 whitespace-nowrap">
-            <AlertTriangle className="h-4 w-4" />
+            <Shield className="h-4 w-4" />
             HSE Violation
           </TabsTrigger>
         </TabsList>

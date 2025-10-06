@@ -1,22 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, AlertTriangle, Save } from "lucide-react";
+import { CalendarIcon, Shield, Save } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
-import { useSerialNumber } from "@/hooks/use-serial-number";
 
-type HSEViolationRecord = {
-  id: string;
-  violationNo: string;
+interface HSEViolationData {
   employee: string;
+  violationNo: string;
   reportedTo: string;
   date: Date | undefined;
   reportedBy: string;
@@ -28,22 +26,12 @@ type HSEViolationRecord = {
   safetyCodesBroken: string;
   descriptionOfEvent: string;
   nextCourseOfAction: string;
-  createdAt: string;
-};
-
-interface HSEViolationFormProps {
-  onSuccess?: () => void;
 }
 
-export function HSEViolationForm({ onSuccess }: HSEViolationFormProps) {
-  const { getNextSerialNumber } = useSerialNumber('hse_violations' as const);
-  const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
-
-  const [formData, setFormData] = useState<HSEViolationRecord>({
-    id: "",
-    violationNo: "",
+const HSEViolationForm = () => {
+  const [formData, setFormData] = useState<HSEViolationData>({
     employee: "",
+    violationNo: `VIO-${Date.now()}`,
     reportedTo: "",
     date: new Date(),
     reportedBy: "",
@@ -55,31 +43,12 @@ export function HSEViolationForm({ onSuccess }: HSEViolationFormProps) {
     safetyCodesBroken: "",
     descriptionOfEvent: "",
     nextCourseOfAction: "",
-    createdAt: "",
   });
 
-  // Generate violation number on component mount
-  useEffect(() => {
-    const generateViolationNo = async () => {
-      try {
-        const nextSN = await getNextSerialNumber();
-        setFormData(prev => ({
-          ...prev,
-          violationNo: `VIO-${nextSN || Date.now()}`
-        }));
-      } catch (error) {
-        console.error('Error generating violation number:', error);
-        setFormData(prev => ({
-          ...prev,
-          violationNo: `VIO-${Date.now()}`
-        }));
-      }
-    };
+  const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
 
-    generateViolationNo();
-  }, [getNextSerialNumber]);
-
-  const handleInputChange = (field: keyof HSEViolationRecord, value: string | Date | undefined) => {
+  const handleInputChange = (field: keyof HSEViolationData, value: string | Date | undefined) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
@@ -92,40 +61,38 @@ export function HSEViolationForm({ onSuccess }: HSEViolationFormProps) {
 
     try {
       // Validate required fields
-      if (!formData.employee || !formData.reportedBy || !formData.violators ||
-          !formData.location || !formData.safetyCodesBroken || !formData.descriptionOfEvent) {
+      if (!formData.employee || !formData.reportedTo || !formData.reportedBy ||
+          !formData.dateOfIncident || !formData.reportType || !formData.location ||
+          !formData.safetyCodesBroken || !formData.descriptionOfEvent) {
         throw new Error("Please fill in all required fields");
       }
 
-      // Prepare data for storage
-      const dataToSave: HSEViolationRecord = {
+      // Save to localStorage
+      const existingData = JSON.parse(localStorage.getItem('hse_violations') || '[]');
+      const newRecord = {
         ...formData,
+        date: formData.date?.toISOString(),
+        dateOfIncident: formData.dateOfIncident?.toISOString(),
         id: Date.now().toString(),
-        date: formData.date,
-        dateOfIncident: formData.dateOfIncident,
         createdAt: new Date().toISOString()
       };
 
-      // Save to localStorage
-      const existingData = JSON.parse(localStorage.getItem('hse_violations') || '[]');
-      existingData.push(dataToSave);
+      existingData.push(newRecord);
       localStorage.setItem('hse_violations', JSON.stringify(existingData));
 
       // Dispatch custom event to notify dashboard of localStorage changes
       window.dispatchEvent(new CustomEvent('localStorageUpdate', { detail: { key: 'hse_violations' } }));
 
       toast({
-        title: "HSE Violation Report Saved",
-        description: `Violation report ${formData.violationNo} has been saved successfully.`,
+        title: "HSE Violation Recorded",
+        description: `Violation ${formData.violationNo} has been recorded successfully.`,
         duration: 3000,
       });
 
-      // Reset form
-      const nextSN = await getNextSerialNumber();
+      // Reset form with new violation number
       setFormData({
-        id: "",
-        violationNo: `VIO-${nextSN || Date.now() + 1}`,
         employee: "",
+        violationNo: `VIO-${Date.now() + 1}`,
         reportedTo: "",
         date: new Date(),
         reportedBy: "",
@@ -137,14 +104,12 @@ export function HSEViolationForm({ onSuccess }: HSEViolationFormProps) {
         safetyCodesBroken: "",
         descriptionOfEvent: "",
         nextCourseOfAction: "",
-        createdAt: "",
       });
 
-      onSuccess?.();
     } catch (error) {
       toast({
         title: "Save Failed",
-        description: error instanceof Error ? error.message : "Failed to save HSE violation report",
+        description: error instanceof Error ? error.message : "Failed to save HSE violation record",
         variant: "destructive",
         duration: 3000,
       });
@@ -157,29 +122,16 @@ export function HSEViolationForm({ onSuccess }: HSEViolationFormProps) {
     <Card className="w-full max-w-4xl mx-auto">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <AlertTriangle className="h-5 w-5 text-orange-500" />
-          HSE Violation Report Form
+          <Shield className="h-5 w-5" />
+          HSE Violation Form
         </CardTitle>
-        <p className="text-sm text-muted-foreground">
-          Safety Violation Report - Complete all sections for workplace safety documentation
-        </p>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-8">
-          {/* Report Header */}
+          {/* Basic Information */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-foreground border-b pb-2">Report Header</h3>
+            <h3 className="text-lg font-semibold text-foreground border-b pb-2">Basic Information</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="violationNo">Violation No <span className="text-red-500">*</span></Label>
-                <Input
-                  id="violationNo"
-                  value={formData.violationNo}
-                  onChange={(e) => handleInputChange('violationNo', e.target.value)}
-                  placeholder="Auto-generated violation number"
-                  required
-                />
-              </div>
               <div className="space-y-2">
                 <Label htmlFor="employee">Employee <span className="text-red-500">*</span></Label>
                 <Input
@@ -191,12 +143,23 @@ export function HSEViolationForm({ onSuccess }: HSEViolationFormProps) {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="reportedTo">Reported to</Label>
+                <Label htmlFor="violationNo">Violation No</Label>
+                <Input
+                  id="violationNo"
+                  value={formData.violationNo}
+                  onChange={(e) => handleInputChange('violationNo', e.target.value)}
+                  placeholder="Auto-generated violation number"
+                  readOnly
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="reportedTo">Reported to <span className="text-red-500">*</span></Label>
                 <Input
                   id="reportedTo"
                   value={formData.reportedTo}
                   onChange={(e) => handleInputChange('reportedTo', e.target.value)}
                   placeholder="Supervisor / Department"
+                  required
                 />
               </div>
               <div className="space-y-2">
@@ -235,7 +198,7 @@ export function HSEViolationForm({ onSuccess }: HSEViolationFormProps) {
                 />
               </div>
               <div className="space-y-2">
-                <Label>Date of Incident</Label>
+                <Label>Date of Incident <span className="text-red-500">*</span></Label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
@@ -269,7 +232,7 @@ export function HSEViolationForm({ onSuccess }: HSEViolationFormProps) {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="reportType">Report Type</Label>
+                <Label htmlFor="reportType">Report Type <span className="text-red-500">*</span></Label>
                 <Select value={formData.reportType} onValueChange={(value) => handleInputChange('reportType', value)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select report type" />
@@ -288,75 +251,72 @@ export function HSEViolationForm({ onSuccess }: HSEViolationFormProps) {
           {/* Violation Details */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-foreground border-b pb-2">Violation Details</h3>
-
-            <div className="space-y-2">
-              <Label htmlFor="violators">Violator(s) <span className="text-red-500">*</span></Label>
-              <Textarea
-                id="violators"
-                value={formData.violators}
-                onChange={(e) => handleInputChange('violators', e.target.value)}
-                placeholder="List full names and roles of individuals who committed or witnessed the violation"
-                rows={3}
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="location">Location <span className="text-red-500">*</span></Label>
-              <Textarea
-                id="location"
-                value={formData.location}
-                onChange={(e) => handleInputChange('location', e.target.value)}
-                placeholder="Specify exact location (site, area, floor, section, etc.) where the incident occurred"
-                rows={2}
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="safetyCodesBroken">Safety Code(s) Broken <span className="text-red-500">*</span></Label>
-              <Textarea
-                id="safetyCodesBroken"
-                value={formData.safetyCodesBroken}
-                onChange={(e) => handleInputChange('safetyCodesBroken', e.target.value)}
-                placeholder="Identify specific safety rule(s), regulation(s), or company policy violated (e.g., PPE non-compliance, unsafe equipment use, etc.)"
-                rows={3}
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="descriptionOfEvent">Description of Event <span className="text-red-500">*</span></Label>
-              <Textarea
-                id="descriptionOfEvent"
-                value={formData.descriptionOfEvent}
-                onChange={(e) => handleInputChange('descriptionOfEvent', e.target.value)}
-                placeholder="Describe in detail what occurred, including time, sequence of events, witnesses, and any immediate actions taken"
-                rows={4}
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="nextCourseOfAction">Next Course of Action</Label>
-              <Textarea
-                id="nextCourseOfAction"
-                value={formData.nextCourseOfAction}
-                onChange={(e) => handleInputChange('nextCourseOfAction', e.target.value)}
-                placeholder="Outline corrective actions, retraining, disciplinary measures, or preventive recommendations to avoid recurrence"
-                rows={4}
-              />
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="violators">Violator(s)</Label>
+                <Textarea
+                  id="violators"
+                  value={formData.violators}
+                  onChange={(e) => handleInputChange('violators', e.target.value)}
+                  placeholder="List full names and roles of individuals who committed or witnessed the violation"
+                  rows={3}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="location">Location <span className="text-red-500">*</span></Label>
+                <Input
+                  id="location"
+                  value={formData.location}
+                  onChange={(e) => handleInputChange('location', e.target.value)}
+                  placeholder="Specify exact location (site, area, floor, section, etc.)"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="safetyCodesBroken">Safety Code(s) Broken <span className="text-red-500">*</span></Label>
+                <Textarea
+                  id="safetyCodesBroken"
+                  value={formData.safetyCodesBroken}
+                  onChange={(e) => handleInputChange('safetyCodesBroken', e.target.value)}
+                  placeholder="Identify specific safety rule(s), regulation(s), or company policy violated"
+                  rows={3}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="descriptionOfEvent">Description of Event <span className="text-red-500">*</span></Label>
+                <Textarea
+                  id="descriptionOfEvent"
+                  value={formData.descriptionOfEvent}
+                  onChange={(e) => handleInputChange('descriptionOfEvent', e.target.value)}
+                  placeholder="Describe in detail what occurred, including time, sequence of events, witnesses, and any immediate actions taken"
+                  rows={4}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="nextCourseOfAction">Next Course of Action</Label>
+                <Textarea
+                  id="nextCourseOfAction"
+                  value={formData.nextCourseOfAction}
+                  onChange={(e) => handleInputChange('nextCourseOfAction', e.target.value)}
+                  placeholder="Outline corrective actions, retraining, disciplinary measures, or preventive recommendations to avoid recurrence"
+                  rows={4}
+                />
+              </div>
             </div>
           </div>
 
           <div className="flex justify-end">
             <Button type="submit" disabled={loading} className="flex items-center gap-2">
               <Save className="h-4 w-4" />
-              {loading ? "Saving..." : "Save HSE Violation Report"}
+              {loading ? "Saving..." : "Save HSE Violation"}
             </Button>
           </div>
         </form>
       </CardContent>
     </Card>
   );
-}
+};
+
+export default HSEViolationForm;
