@@ -10,6 +10,7 @@ interface AuthContextType {
   signIn: {
     withEmail: (email: string, password: string) => Promise<{ error: AuthError | null }>;
     withOAuth: (provider: Provider) => Promise<{ error: AuthError | null }>;
+    anonymously: () => Promise<{ error: AuthError | null }>;
   };
   signUp: (email: string, password: string) => Promise<{ error: AuthError | null }>;
   signOut: () => Promise<{ error: AuthError | null }>;
@@ -53,8 +54,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
         
         // Get user from localStorage if available
         const localUser = localStorage.getItem('user');
+        const anonymousUser = localStorage.getItem('anonymousUser');
+        
         if (localUser) {
           setUser(JSON.parse(localUser) as User);
+        } else if (anonymousUser) {
+          setUser(JSON.parse(anonymousUser) as User);
         }
       } finally {
         setIsLoading(false);
@@ -99,6 +104,39 @@ export function AuthProvider({ children }: AuthProviderProps) {
         return { error };
       }
     },
+    anonymously: async () => {
+      if (isUsingLocalStorage) {
+        // Mock successful anonymous authentication
+        const mockUser = {
+          id: `anon-${Date.now()}`,
+          email: null,
+          user_metadata: { name: `Guest User`, isAnonymous: true },
+          created_at: new Date().toISOString(),
+        };
+        setUser(mockUser as unknown as User);
+        localStorage.setItem('user', JSON.stringify(mockUser));
+        return { error: null };
+      } else {
+        // Supabase v2 doesn't directly have signInAnonymously in the public API
+        // We'll create a guest user with a generated ID
+        const guestId = `guest-${Date.now()}`;
+        try {
+          // Set a flag in localStorage to identify this as anonymous auth
+          const guestUser = {
+            id: guestId,
+            email: null,
+            user_metadata: { name: `Guest`, isAnonymous: true },
+            created_at: new Date().toISOString(),
+          };
+          setUser(guestUser as unknown as User);
+          localStorage.setItem('anonymousUser', JSON.stringify(guestUser));
+          return { error: null };
+        } catch (err) {
+          console.error("Error during anonymous sign in:", err);
+          return { error: err as AuthError };
+        }
+      }
+    },
   };
 
   const signUp = async (email: string, password: string) => {
@@ -123,11 +161,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
     if (isUsingLocalStorage) {
       // Clear localStorage for development
       localStorage.removeItem('user');
+      localStorage.removeItem('anonymousUser');
       setUser(null);
       return { error: null };
     } else {
-      const { error } = await auth.signOut();
-      return { error };
+      // Check if this is an anonymous user (created by our custom function)
+      if (user?.user_metadata?.isAnonymous) {
+        localStorage.removeItem('anonymousUser');
+        setUser(null);
+        return { error: null };
+      } else {
+        const { error } = await auth.signOut();
+        return { error };
+      }
     }
   };
 

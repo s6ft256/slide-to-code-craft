@@ -15,6 +15,26 @@ export default function AuthPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
+  
+  const handleAnonymousSignIn = async () => {
+    setError(null);
+    setIsAuthenticating(true);
+    
+    try {
+      const { error } = await signIn.anonymously();
+      
+      if (error) {
+        setError(error.message);
+      } else {
+        navigate("/");
+      }
+    } catch (err) {
+      setError("An unexpected error occurred. Please try again.");
+      console.error(err);
+    } finally {
+      setIsAuthenticating(false);
+    }
+  };
 
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -147,6 +167,20 @@ export default function AuthPage() {
               >
                 <Github className="h-5 w-5" />
                 Continue with GitHub
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                className="flex gap-2"
+                onClick={handleAnonymousSignIn}
+                disabled={isAuthenticating}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+                  <path d="M12 2a10 10 0 100 20 10 10 0 000-20z"></path>
+                  <circle cx="12" cy="9" r="3"></circle>
+                  <path d="M17.5 20h.5a2 2 0 002-2v-1.5a2.5 2.5 0 00-2.5-2.5h-10A2.5 2.5 0 005 16.5V18a2 2 0 002 2h.5"></path>
+                </svg>
+                Continue as Guest
               </Button>
               
               <div className="relative my-3">

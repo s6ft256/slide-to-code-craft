@@ -11,7 +11,7 @@ A modern Health, Safety, and Environment (HSE) management system dashboard built
 - Emergency management
 - Daily management tools
 - Statistical reports
-- User authentication with Google and GitHub
+- User authentication with Google, GitHub, email/password, or anonymous access
 
 ## Tech Stack
 
@@ -79,13 +79,24 @@ cp .env.example .env
 ```
 
 4. Configure Supabase Authentication
-   - Create a Supabase account at [https://supabase.io](https://supabase.io)
-   - Create a new project
+
+In the Supabase dashboard:
    - Go to Authentication > Settings > URL Configuration
-   - Add your site URL and local development URL to the list of allowed redirect URLs
-   - Go to Project Settings > API to get your Supabase URL and anon key
-   - Update these values in your .env file
+   - Add http://localhost:8080/slide-to-code-craft/ to the Site URL list
+   - Add http://localhost:8080/slide-to-code-craft/ to the Redirect URLs list
    - Enable the Google and GitHub auth providers in Authentication > Settings > External OAuth Providers
+   - For anonymous authentication, go to Authentication > Providers and ensure "Anonymous" is enabled
+
+### Authentication Options
+
+The application supports multiple authentication methods:
+
+1. **Email/Password**: Traditional sign-up and login with email and password
+2. **Google OAuth**: Sign in with Google account
+3. **GitHub OAuth**: Sign in with GitHub account
+4. **Anonymous Authentication**: Quick access as a guest user by clicking "Continue as Guest"
+
+Anonymous users have limited permissions but can still view most of the application. This is useful for demo purposes or for users who want to try the application before creating an account.
 
 5. Start the development server
 ```bash
