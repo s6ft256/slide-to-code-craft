@@ -30,21 +30,21 @@ const HSESidebar = () => {
   const location = useLocation();
   
   return (
-    <nav className="fixed left-0 top-20 h-[calc(100vh-5rem)] w-64 bg-card/95 backdrop-blur-xl border-r border-border/50 shadow-soft overflow-y-auto z-10 hidden md:block">
+    <nav className="fixed left-0 top-20 h-[calc(100vh-5rem)] w-64 bg-card/95 backdrop-blur-xl border-r border-border/50 shadow-soft overflow-y-auto">
       <div className="p-6">
         <div className="mb-8">
           <h2 className="text-lg font-bold text-gradient mb-2">Navigation</h2>
           <p className="text-sm text-muted-foreground">Manage HSE operations</p>
         </div>
         
-        <div className="flex flex-col space-y-3">
+        <div className="space-y-2">
           {menuItems.map((item, index) => (
-            <Link key={index} to={item.path} className="w-full">
+            <Link key={index} to={item.path}>
               <div
                 className={cn(
-                  "group flex items-center gap-3 px-4 py-3.5 rounded-xl border transition-all duration-300 hover-lift cursor-pointer w-full",
+                  "group flex items-center gap-3 px-4 py-3 rounded-xl border transition-all duration-300 hover-lift cursor-pointer",
                   location.pathname === item.path 
-                    ? "bg-gradient-primary text-primary-foreground border-primary/50 shadow-lg" 
+                    ? "bg-gradient-primary text-primary-foreground border-primary/50 shadow-lg scale-105" 
                     : "bg-card/50 text-card-foreground border-border/30 hover:bg-accent/10 hover:border-accent/30 hover:shadow-md"
                 )}
                 style={{ animationDelay: `${index * 50}ms` }}

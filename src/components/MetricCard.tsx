@@ -24,13 +24,13 @@ const MetricCard = ({
   const getVariantClasses = () => {
     switch (variant) {
       case "success":
-        return "border-success/20 bg-success-light/50 shadow-sm shadow-success/10";
+        return "border-success/20 bg-success-light/50";
       case "warning":
-        return "border-warning/20 bg-warning-light/50 shadow-sm shadow-warning/10";
+        return "border-warning/20 bg-warning-light/50";
       case "destructive":
-        return "border-destructive/20 bg-destructive-light/50 shadow-sm shadow-destructive/10";
+        return "border-destructive/20 bg-destructive-light/50";
       default:
-        return "border-border bg-card shadow-sm hover:shadow-md";
+        return "border-border bg-card";
     }
   };
 
@@ -59,22 +59,22 @@ const MetricCard = ({
   };
 
   return (
-    <Card className={cn("transition-all duration-300 hover:-translate-y-1", getVariantClasses(), className)}>
+    <Card className={cn("shadow-soft hover:shadow-medium transition-smooth", getVariantClasses(), className)}>
       <CardContent className="p-6">
         <div className="flex items-start justify-between">
           <div className="space-y-2 flex-1">
-            <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">{title}</p>
+            <p className="text-sm font-medium text-muted-foreground">{title}</p>
             <div className="flex items-baseline gap-2">
               <p className="text-2xl font-bold text-foreground">{value}</p>
               {subtitle && (
-                <p className={cn("text-xs font-semibold rounded-full px-2 py-0.5 bg-background", getTrendColor())}>
+                <p className={cn("text-sm font-medium", getTrendColor())}>
                   {subtitle}
                 </p>
               )}
             </div>
           </div>
-          <div className={cn("w-12 h-12 rounded-full flex items-center justify-center", getIconClasses())}>
-            <Icon className="h-5 w-5" />
+          <div className={cn("w-12 h-12 rounded-lg flex items-center justify-center", getIconClasses())}>
+            <Icon className="h-6 w-6" />
           </div>
         </div>
       </CardContent>

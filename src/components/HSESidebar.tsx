@@ -30,44 +30,34 @@ const HSESidebar = () => {
   const location = useLocation();
   
   return (
-    <div className="fixed left-0 top-16 h-screen w-64 bg-sidebar-background border-r border-sidebar-border shadow-md overflow-y-auto z-10">
-      <div className="px-3 py-6">
-        <div className="mb-6 px-3">
-          <h2 className="text-sidebar-foreground font-bold text-sm uppercase tracking-wider opacity-80">
-            HSE Management
-          </h2>
-        </div>
-        <nav className="space-y-1">
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = location.pathname === item.path;
-
-            return (
-              <Link key={item.path} to={item.path} className="block">
+    <nav className="bg-sidebar-background border-b border-sidebar-border shadow-sm">
+      <div className="px-6 py-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            {/* Logo removed as requested */}
+          </div>
+          
+          <div className="flex items-center space-x-2 overflow-x-hidden">
+            {menuItems.map((item, index) => (
+              <Link key={index} to={item.path}>
                 <div
                   className={cn(
-                    "flex items-center gap-3 px-4 py-3 my-1 rounded-md transition-all duration-200",
-                    isActive 
-                      ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-sm font-medium" 
-                      : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                    "flex items-center gap-2 px-4 py-2 rounded-lg border transition-all duration-200 hover:shadow-md whitespace-nowrap",
+                    location.pathname === item.path 
+                      ? "bg-primary text-primary-foreground border-primary shadow-sm" 
+                      : "bg-card text-card-foreground border-border hover:bg-accent hover:border-accent-foreground/20"
                   )}
                 >
-                  <Icon className="h-4 w-4 flex-shrink-0" />
-                  <span className="text-sm">{item.label}</span>
+                  <item.icon className="h-4 w-4" />
+                  <span className="text-sm font-medium">{item.label}</span>
                 </div>
               </Link>
-            );
-          })}
-        </nav>
-        
-        <div className="mt-8 px-3 py-4 border-t border-sidebar-border">
-          <div className="flex items-center justify-between text-xs text-sidebar-foreground/70">
-            <span>© 2025 HSE Dashboard</span>
-            <span>v1.2.0</span>
+            ))}
           </div>
         </div>
+        
       </div>
-    </div>
+    </nav>
   );
 };
 

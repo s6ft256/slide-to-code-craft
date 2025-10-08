@@ -1,5 +1,6 @@
 // Comprehensive dashboard metrics hook for localStorage
 import { useState, useEffect } from 'react';
+import { getLtiCount } from '@/lib/utils';
 
 export type TimePeriod = 'week' | 'month';
 
@@ -91,8 +92,8 @@ export function useDashboardMetrics(period: TimePeriod = 'month') {
         ART: latestMasterRecord.kpiRatingART || 0, // Still from master register
         MEETINGS: latestMasterRecord.managementMeetings || 0, // Still from master register
         TRIR: 0, // Calculate if needed
-        LTIFR: latestMasterRecord.ltifr || 0,
-        LTISR: latestMasterRecord.ltisr || 0
+  LTIFR: getLtiCount(latestMasterRecord.ltifr ?? 0),
+  LTISR: getLtiCount(latestMasterRecord.ltisr ?? 0)
       };
 
       // Incident metrics (filtered by period)

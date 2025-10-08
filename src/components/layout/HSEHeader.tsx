@@ -1,28 +1,14 @@
 import { FileText, Database } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { NotificationDropdown } from "@/components/layout/NotificationDropdown";
-import { UserProfileDropdown } from "@/components/layout/UserProfileDropdown";
+import { NotificationDropdown } from "@/components/NotificationDropdown";
+import { UserProfileDropdown } from "@/components/UserProfileDropdown";
 import { userData } from "@/lib/userData";
-import { ProjectSelector } from "@/components/layout/ProjectSelector";
-import { ThemeToggle } from "@/components/layout/ThemeToggle";
+import { ProjectSelector } from "@/components/ProjectSelector";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { Link } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
 
 const HSEHeader = () => {
-  const { user } = useAuth();
-  
-  // Get user display name
-  const getUserDisplayName = () => {
-    if (!user) return "Guest User";
-    
-    if (user.user_metadata?.isAnonymous) return "Guest User";
-    
-    return user.user_metadata?.name || 
-           user.user_metadata?.full_name || 
-           (user.email ? user.email.split('@')[0] : "User");
-  };
-
   return (
     <header className="fixed top-0 left-0 right-0 z-40 bg-card/80 backdrop-blur-xl border-b border-border/50 shadow-soft">
       <div className="px-6 py-4">
@@ -77,7 +63,7 @@ const HSEHeader = () => {
 
             <div className="flex items-center gap-3 pl-4 border-l border-border">
               <div className="text-right text-sm">
-                <div className="font-semibold text-foreground">{getUserDisplayName()}</div>
+                <div className="font-semibold text-foreground">{userData.name}</div>
               </div>
               <UserProfileDropdown />
             </div>

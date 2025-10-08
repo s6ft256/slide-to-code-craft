@@ -7,8 +7,8 @@
 @layer base {
   :root {
     /* Base colors - Clean light theme */
-    --background: 210 20% 98%;
-    --foreground: 215 25% 27%;
+    --background: 0 0% 100%;
+    --foreground: 224 71% 4%;
 
     /* Card system */
     --card: 0 0% 100%;
@@ -18,9 +18,9 @@
     --popover-foreground: 224 71% 4%;
 
     /* Primary - Professional blue */
-    --primary: 215 90% 42%;
+    --primary: 221 83% 53%;
     --primary-foreground: 210 40% 98%;
-    --primary-hover: 215 90% 35%;
+    --primary-hover: 221 83% 48%;
 
     /* Secondary - Light gray */
     --secondary: 220 14% 96%;
@@ -32,8 +32,8 @@
 
     /* Accent - Safety green */
     --accent: 142 76% 36%;
-    --accent-foreground: 0 0% 100%;
-    --accent-light: 142 70% 95%;
+    --accent-foreground: 355 100% 100%;
+    --accent-light: 142 45% 95%;
 
     /* Status colors */
     --success: 142 76% 36%;
@@ -71,9 +71,9 @@
     --gradient-warning: linear-gradient(135deg, hsl(38 92% 50%), hsl(38 82% 60%));
     
     /* Shadows */
-    --shadow-soft: 0 2px 4px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.08);
-    --shadow-medium: 0 5px 15px -3px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.07);
-    --shadow-strong: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 5px 10px -5px rgba(0, 0, 0, 0.1);
+    --shadow-soft: 0 1px 3px 0 hsl(220 13% 91% / 0.1), 0 1px 2px -1px hsl(220 13% 91% / 0.1);
+    --shadow-medium: 0 4px 6px -1px hsl(220 13% 91% / 0.1), 0 1px 3px -1px hsl(220 13% 91% / 0.1);
+    --shadow-strong: 0 10px 15px -3px hsl(220 13% 91% / 0.1), 0 4px 6px -4px hsl(220 13% 91% / 0.1);
 
     /* Transitions */
     --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -143,24 +143,5 @@
 
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
-  }
-}
-
-@layer utilities {
-  .glassmorphism {
-    @apply bg-white/80 backdrop-blur-md border border-white/20;
-  }
-  
-  .card-hover {
-    @apply transition-all duration-200 hover:shadow-medium hover:-translate-y-0.5;
-  }
-
-  .safety-gradient {
-    @apply bg-gradient-to-r from-green-500 to-green-600;
-  }
-  
-  .dashboard-grid {
-    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5;
   }
 }

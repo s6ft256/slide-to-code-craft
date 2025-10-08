@@ -1,17 +1,17 @@
-import Layout from "@/components/layout/Layout";
-import ProjectStatus from "@/components/charts/ProjectStatus";
-import MetricCard from "@/components/charts/MetricCard";
-import ChartCard from "@/components/charts/ChartCard";
-import MasterRegisterRecords from "@/components/records/MasterRegisterRecords";
-import InjuryDetailsRecords from "@/components/records/InjuryDetailsRecords";
+import Layout from "@/components/Layout";
+import ProjectStatus from "@/components/ProjectStatus";
+import MetricCard from "@/components/MetricCard";
+import ChartCard from "@/components/ChartCard";
+import MasterRegisterRecords from "@/components/MasterRegisterRecords";
+import InjuryDetailsRecords from "@/components/InjuryDetailsRecords";
 
 import { Activity, Users, Clock, Target, AlertTriangle } from "lucide-react";
 import { useState, useEffect } from "react";
-import ObservationTrackerRecords from "@/components/records/ObservationTrackerRecords";
-import NCRRecords from "@/components/records/NCRRecords";
-import TrainingRecords from "@/components/records/TrainingRecords";
-import TrainingCompetencyRecords from "@/components/records/TrainingCompetencyRecords";
-import EventRecords from "@/components/records/EventRecords";
+import ObservationTrackerRecords from "@/components/ObservationTrackerRecords";
+import NCRRecords from "@/components/NCRRecords";
+import TrainingRecords from "@/components/TrainingRecords";
+import TrainingCompetencyRecords from "@/components/TrainingCompetencyRecords";
+import EventRecords from "@/components/EventRecords";
 import { useDashboardMetrics } from "@/hooks/use-dashboard-metrics";
 import { calculateHSEMetrics, HSEMetrics } from "@/lib/hseMetrics";
 
