@@ -17,13 +17,13 @@ const HSEHeader = () => {
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-3 hover-lift p-2 rounded-lg transition-all duration-200">
               <img
-                src="/slide-to-code-craft/troj.jpg"
+                src="/troj.jpg"
                 alt="Troj Logo"
                 className="w-10 h-10 rounded-lg object-cover ring-2 ring-primary/20 shadow-medium"
               />
               <div className="hidden sm:block">
                 <div className="text-sm font-semibold text-foreground">
-                  HSE Management System
+                  THSEBMS
                 </div>
                 <div className="text-xs text-muted-foreground">
                   Professional Safety Solutions
