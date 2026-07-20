@@ -5,6 +5,7 @@ import { Calendar, Clock, Users, Target, TrendingUp, Shield, Plus, Edit } from "
 import { Button } from "@/components/ui/button";
 import { useState, useEffect, useCallback } from "react";
 import { AddProjectInfoForm } from "./AddProjectInfoForm";
+import { useProject } from "@/contexts/ProjectContext";
 
 interface ProjectData {
   projectCode: string;
@@ -27,19 +28,25 @@ interface ProjectData {
   daysWithoutLTI?: string;
 }
 
+interface ProjectInfoProps {
+  projectCode?: string;
+}
+
 export function ProjectInfo({ projectCode }: ProjectInfoProps) {
+  const { selectedProject } = useProject();
+  const actualProjectCode = projectCode || selectedProject.code;
   const [showForm, setShowForm] = useState(false);
   const [projectData, setProjectData] = useState<ProjectData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadProjectData();
-  }, [projectCode]);
+  }, [actualProjectCode]);
 
   const loadProjectData = useCallback(() => {
     setLoading(true);
     try {
-      const storedData = localStorage.getItem(`project_info_${projectCode}`);
+      const storedData = localStorage.getItem(`project_info_${actualProjectCode}`);
       if (storedData) {
         const parsed = JSON.parse(storedData);
         // Convert date string back to Date object for display
@@ -50,24 +57,24 @@ export function ProjectInfo({ projectCode }: ProjectInfoProps) {
       } else {
         // Default data for demonstration
         setProjectData({
-          projectCode,
-          projectName: projectCode === "TG-2134" ? "Baniyas West" : "Project Name",
-          partnerName: projectCode === "TG-2134" ? "NA" : "",
-          client: projectCode === "TG-2134" ? "Abu Dhabi Housing Authority" : "",
-          consultant: projectCode === "TG-2134" ? "Pioneer Engineering Consultancy" : "",
-          projectStartingDate: projectCode === "TG-2134" ? new Date("2023-04-25") : undefined,
-          projectProgress: projectCode === "TG-2134" ? "12.10" : "",
-          projectDuration: projectCode === "TG-2134" ? "1462" : "",
-          elapsedTime: projectCode === "TG-2134" ? "893" : "",
-          timeToCompletion: projectCode === "TG-2134" ? "569" : "",
-          srProjectManager: projectCode === "TG-2134" ? "Tareq Salah" : "",
-          hseManager: projectCode === "TG-2134" ? "Usman Zahid" : "",
-          projectManager: projectCode === "TG-2134" ? "Ahmed Ahmed Mohamed Ahmed" : "",
-          technicalManager: projectCode === "TG-2134" ? "Ahmed Mohamed Kamal" : "",
-          qaQcManager: projectCode === "TG-2134" ? "Mohamed Aboueluser" : "",
-          ltiDays: projectCode === "TG-2134" ? "1" : "",
-          safeManhours: projectCode === "TG-2134" ? "6580" : "",
-          daysWithoutLTI: projectCode === "TG-2134" ? "45" : ""
+          projectCode: actualProjectCode,
+          projectName: actualProjectCode === "TG-2134" ? "Baniyas West" : "Project Name",
+          partnerName: actualProjectCode === "TG-2134" ? "NA" : "",
+          client: actualProjectCode === "TG-2134" ? "Abu Dhabi Housing Authority" : "",
+          consultant: actualProjectCode === "TG-2134" ? "Pioneer Engineering Consultancy" : "",
+          projectStartingDate: actualProjectCode === "TG-2134" ? new Date("2023-04-25") : undefined,
+          projectProgress: actualProjectCode === "TG-2134" ? "12.10" : "",
+          projectDuration: actualProjectCode === "TG-2134" ? "1462" : "",
+          elapsedTime: actualProjectCode === "TG-2134" ? "893" : "",
+          timeToCompletion: actualProjectCode === "TG-2134" ? "569" : "",
+          srProjectManager: actualProjectCode === "TG-2134" ? "Tareq Salah" : "",
+          hseManager: actualProjectCode === "TG-2134" ? "Usman Zahid" : "",
+          projectManager: actualProjectCode === "TG-2134" ? "Ahmed Ahmed Mohamed Ahmed" : "",
+          technicalManager: actualProjectCode === "TG-2134" ? "Ahmed Mohamed Kamal" : "",
+          qaQcManager: actualProjectCode === "TG-2134" ? "Mohamed Aboueluser" : "",
+          ltiDays: actualProjectCode === "TG-2134" ? "1" : "",
+          safeManhours: actualProjectCode === "TG-2134" ? "6580" : "",
+          daysWithoutLTI: actualProjectCode === "TG-2134" ? "45" : ""
         });
       }
     } catch (error) {
@@ -76,7 +83,7 @@ export function ProjectInfo({ projectCode }: ProjectInfoProps) {
     } finally {
       setLoading(false);
     }
-  }, [projectCode]);
+  }, [actualProjectCode]);
 
   useEffect(() => {
     loadProjectData();
@@ -134,7 +141,7 @@ export function ProjectInfo({ projectCode }: ProjectInfoProps) {
             </CardTitle>
             <div className="flex gap-2">
               <Badge variant="secondary" className="text-sm">
-                {projectCode}
+                {actualProjectCode}
               </Badge>
               <Button onClick={() => setShowForm(true)} size="sm">
                 <Edit className="h-4 w-4 mr-2" />

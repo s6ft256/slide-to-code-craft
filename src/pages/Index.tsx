@@ -3,17 +3,18 @@ import HSEMetricsGrid from "@/components/HSEMetricsGrid";
 import LTIChart from "@/components/LTIChart";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { RefreshCw, TrendingUp, Calendar, Keyboard, Info } from "lucide-react";
+import { RefreshCw, TrendingUp, Calendar, Keyboard, Info, Building2 } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { useDashboardMetrics, TimePeriod } from "@/hooks/use-dashboard-metrics";
 import { useToast } from "@/hooks/use-toast";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ProjectInfo } from "@/components/ProjectInfo";
 import { useProject } from "@/contexts/ProjectContext";
+import { ProjectsGrid } from "@/components/ProjectsGrid";
 
 const Index = () => {
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [activeTab, setActiveTab] = useState<'week' | 'month' | 'project-info'>('week');
+  const [activeTab, setActiveTab] = useState<'week' | 'month' | 'projects' | 'project-info'>('week');
   
   // Compute current period based on active tab
   const currentPeriod: TimePeriod = activeTab === 'week' ? 'week' : activeTab === 'month' ? 'month' : 'month';
@@ -22,7 +23,7 @@ const Index = () => {
   const { toast } = useToast();
   const { selectedProject } = useProject();
 
-  const handleTabChange = useCallback(async (value: 'week' | 'month' | 'project-info') => {
+  const handleTabChange = useCallback(async (value: 'week' | 'month' | 'projects' | 'project-info') => {
     // Prevent multiple rapid clicks
     if (isTransitioning) return;
     
@@ -148,7 +149,7 @@ const Index = () => {
         </div>
 
       <Tabs value={activeTab} onValueChange={handleTabChange} className="mb-6">
-        <TabsList className="grid w-full grid-cols-3 max-w-lg gap-4">
+        <TabsList className="grid w-full grid-cols-4 max-w-2xl gap-4">
           <TabsTrigger 
             value="week"
             disabled={isTransitioning}
@@ -172,6 +173,13 @@ const Index = () => {
             )}
           </TabsTrigger>
           <TabsTrigger 
+            value="projects"
+            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-200 hover:bg-primary/10"
+          >
+            <Building2 className="h-4 w-4 mr-2" />
+            Projects
+          </TabsTrigger>
+          <TabsTrigger 
             value="project-info"
             className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-200 hover:bg-primary/10"
           >
@@ -192,6 +200,10 @@ const Index = () => {
             <HSEMetricsGrid metrics={metrics} loading={loading} error={error} period="month" />
             <LTIChart />
           </div>
+        </TabsContent>
+
+        <TabsContent value="projects" className="space-y-6">
+          <ProjectsGrid />
         </TabsContent>
 
         <TabsContent value="project-info" className="space-y-6">

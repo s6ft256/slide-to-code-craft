@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { NotificationDropdown } from "@/components/NotificationDropdown";
 import { UserProfileDropdown } from "@/components/UserProfileDropdown";
 import { userData } from "@/lib/userData";
-import { ProjectSelector } from "@/components/ProjectSelector";
+import { ProjectSelector } from "@/components/layout/ProjectSelector";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Link } from "react-router-dom";
 

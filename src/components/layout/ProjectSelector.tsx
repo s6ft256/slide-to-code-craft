@@ -17,13 +17,7 @@ interface ProjectSelectorProps {
 }
 
 export function ProjectSelector({ className }: ProjectSelectorProps) {
-  const { selectedProject, setSelectedProject } = useProject();
-
-  // Mock project data - in a real app, this would come from an API
-  const projects = [
-    { code: "TG000", name: "Zayed National Museum", type: "Project" },
-    { code: "TG-2134", name: "Baniyas West", type: "Project" },
-  ];
+  const { selectedProject, setSelectedProject, projects } = useProject();
 
   const getProjectTypeColor = (type: string) => {
     switch (type.toLowerCase()) {
@@ -61,8 +55,8 @@ export function ProjectSelector({ className }: ProjectSelectorProps) {
           <ChevronDown className="h-4 w-4 text-muted-foreground" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-64">
-        <DropdownMenuLabel className="flex items-center gap-2">
+      <DropdownMenuContent align="start" className="w-80 max-h-[400px] overflow-y-auto">
+        <DropdownMenuLabel className="flex items-center gap-2 sticky top-0 bg-background z-10">
           <Building2 className="h-4 w-4" />
           Select Project
         </DropdownMenuLabel>
@@ -78,7 +72,7 @@ export function ProjectSelector({ className }: ProjectSelectorProps) {
           >
             <div className="flex-1">
               <div className="font-medium text-sm">{project.code}</div>
-              <div className="text-xs text-muted-foreground">{project.name}</div>
+              <div className="text-xs text-muted-foreground line-clamp-1">{project.name}</div>
             </div>
             <Badge className={`text-xs ml-2 ${getProjectTypeColor(project.type)}`}>
               {project.type}
