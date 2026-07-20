@@ -14,11 +14,21 @@ const HSEHeader = () => {
       <div className="flex items-center justify-between">
         {/* Left section - Logo and Project Info */}
         <div className="flex items-center gap-6">
-          <img 
-            src="/slide-to-code-craft/troj.jpg" 
-            alt="Troj Logo" 
-            className="w-10 h-10 rounded-lg object-cover"
-          />
+          <div className="flex items-center gap-3">
+            <img 
+              src="/troj.jpg" 
+              alt="Troj Logo" 
+              className="w-10 h-10 rounded-lg object-cover ring-2 ring-primary/20 shadow-medium"
+            />
+            <div className="hidden sm:block">
+              <div className="text-sm font-semibold text-foreground">
+                THSEBMS
+              </div>
+              <div className="text-xs text-muted-foreground">
+                Professional Safety Solutions
+              </div>
+            </div>
+          </div>
           
           <div className="flex items-center gap-4">
             <div className="text-sm font-semibold text-foreground">
