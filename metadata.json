@@ -1,0 +1,6 @@
+{
+  "name": "TBMS 2.0 - HSE Management System",
+  "description": "Comprehensive Health, Safety & Environment management system for construction projects. Track incidents, compliance, and safety metrics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
