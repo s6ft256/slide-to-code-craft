@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 import { Link, useLocation } from "react-router-dom";
 
 const menuItems = [
-  { icon: Home, label: "Dashboard", path: "/" },
+  { icon: Home, label: "Dashboard", path: "/dashboard" },
   { icon: Calendar, label: "Daily Management", path: "/daily-management" },
   { icon: FileBarChart, label: "Statistic Reports", path: "/statistic-reports" },
   { icon: AlertTriangle, label: "Incident Management", path: "/incident-management" },

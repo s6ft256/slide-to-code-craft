@@ -21,11 +21,21 @@ const Index = () => {
   
   const { metrics, loading, error, refreshMetrics } = useDashboardMetrics(currentPeriod);
   const { toast } = useToast();
-  const { selectedProject } = useProject();
+  const { selectedProject, userProjectCode } = useProject();
 
   const handleTabChange = useCallback(async (value: 'week' | 'month' | 'projects' | 'project-info') => {
     // Prevent multiple rapid clicks
     if (isTransitioning) return;
+    
+    // Prevent switching to projects tab if user has a specific project
+    if (userProjectCode && value === 'projects') {
+      toast({
+        title: 'Access Restricted',
+        description: 'You only have access to your assigned project',
+        variant: 'destructive',
+      });
+      return;
+    }
     
     setIsTransitioning(true);
     
@@ -66,7 +76,7 @@ const Index = () => {
       });
       setIsTransitioning(false);
     }
-  }, [isTransitioning, refreshMetrics, toast]);
+  }, [isTransitioning, refreshMetrics, toast, userProjectCode]);
 
   const handleRefresh = useCallback(async () => {
     try {
@@ -103,6 +113,13 @@ const Index = () => {
             event.preventDefault();
             handleTabChange('month');
             break;
+          case 'p':
+            // Only allow projects tab if user doesn't have a specific project
+            if (!userProjectCode) {
+              event.preventDefault();
+              handleTabChange('projects');
+            }
+            break;
           case 'r':
             event.preventDefault();
             handleRefresh();
@@ -113,7 +130,7 @@ const Index = () => {
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [handleTabChange, handleRefresh]); // Include the callback dependencies
+  }, [handleTabChange, handleRefresh, userProjectCode]); // Include the callback dependencies
 
   return (
     <TooltipProvider>
@@ -172,13 +189,15 @@ const Index = () => {
               <TrendingUp className="h-3 w-3 ml-2 opacity-70" />
             )}
           </TabsTrigger>
-          <TabsTrigger 
-            value="projects"
-            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-200 hover:bg-primary/10"
-          >
-            <Building2 className="h-4 w-4 mr-2" />
-            Projects
-          </TabsTrigger>
+          {!userProjectCode && (
+            <TabsTrigger 
+              value="projects"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-200 hover:bg-primary/10"
+            >
+              <Building2 className="h-4 w-4 mr-2" />
+              Projects
+            </TabsTrigger>
+          )}
           <TabsTrigger 
             value="project-info"
             className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-200 hover:bg-primary/10"

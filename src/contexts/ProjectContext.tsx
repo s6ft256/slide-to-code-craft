@@ -10,6 +10,7 @@ interface ProjectContextType {
   selectedProject: Project;
   setSelectedProject: (project: Project) => void;
   projects: Project[];
+  userProjectCode?: string;
 }
 
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
@@ -17,6 +18,7 @@ const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
 // Parse CSV data to extract projects
 const parseProjectsFromCSV = (): Project[] => {
   const projects: Project[] = [];
+  const seenCodes = new Set<string>();
   
   // Project data from CSV file
   const csvData = `TG2151,Refurbishment of underground car parking,TG2151_Refurbishment of underground car parking
@@ -62,7 +64,6 @@ TG2141,Design and Build for Mina Gathering Village in Abu Dhabi,TG2141_Design an
 TG2143,Sport Hotel -Main Works,TG2143_Sport Hotel -Main Works
 TG2146,Saadiyat Lagoons,TG2146_Saadiyat Lagoons
 TG2149B,Zayed Military University ? Final Operating Capability (FOC),TG2149B_Zayed Military University ? Final Operating Capability (FOC)
-TG2151,Refurbishment of underground car parking,TG2151_Refurbishment of underground car parking
 TG2156,Construction Of Mainland Villas & TownHouses 593No's,TG2156_Construction Of Mainland Villas & TownHouses 593No's
 TG2162,Construction Of North & South Villas 32 No's,TG2162_Construction Of North & South Villas 32 No's
 TG2163,P22-Heptagon Project,TG2163_P22-Heptagon Project
@@ -84,7 +85,8 @@ TG000,Zayed National Museum,TG000_Zayed National Museum`;
     if (parts.length >= 2) {
       const code = parts[0].trim();
       const name = parts[1].trim();
-      if (code && name) {
+      if (code && name && !seenCodes.has(code)) {
+        seenCodes.add(code);
         projects.push({
           code,
           name,
@@ -97,7 +99,7 @@ TG000,Zayed National Museum,TG000_Zayed National Museum`;
   return projects;
 };
 
-export function ProjectProvider({ children }: { children: React.ReactNode }) {
+export function ProjectProvider({ children, userProjectCode }: { children: React.ReactNode; userProjectCode?: string }) {
   const [selectedProject, setSelectedProject] = useState<Project>({
     code: "TG000",
     name: "Zayed National Museum",
@@ -106,7 +108,17 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
   const [projects] = useState<Project[]>(parseProjectsFromCSV());
 
   useEffect(() => {
-    // Load selected project from localStorage
+    // First, check if user has a specific project from their profile
+    if (userProjectCode) {
+      const userProject = projects.find(p => p.code === userProjectCode);
+      if (userProject) {
+        setSelectedProject(userProject);
+        localStorage.setItem('selectedProject', JSON.stringify(userProject));
+        return;
+      }
+    }
+
+    // Otherwise, load selected project from localStorage
     const savedProject = localStorage.getItem('selectedProject');
     if (savedProject) {
       try {
@@ -115,7 +127,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
         console.error('Error loading selected project:', error);
       }
     }
-  }, []);
+  }, [userProjectCode, projects]);
 
   const handleSetSelectedProject = (project: Project) => {
     setSelectedProject(project);
@@ -126,7 +138,8 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     <ProjectContext.Provider value={{
       selectedProject,
       setSelectedProject: handleSetSelectedProject,
-      projects
+      projects,
+      userProjectCode
     }}>
       {children}
     </ProjectContext.Provider>

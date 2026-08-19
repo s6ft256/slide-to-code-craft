@@ -20,7 +20,7 @@ const Library = () => {
         return (
           <div className="h-full">
             <iframe
-              src="/slide-to-code-craft/ISO.pdf"
+              src={`${import.meta.env.BASE_URL}ISO.pdf`}
               width="100%"
               height="600px"
               title="ISO Documents"

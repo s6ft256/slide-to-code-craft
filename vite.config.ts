@@ -5,7 +5,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: mode === 'production' ? '/' : '/slide-to-code-craft/', // Use '/' for Vercel, '/slide-to-code-craft/' for GitHub Pages
+  base: '/', // Use '/' for both Vercel and local development
   server: {
     host: "::",
     port: 8080,

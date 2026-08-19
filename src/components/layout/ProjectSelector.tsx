@@ -17,7 +17,12 @@ interface ProjectSelectorProps {
 }
 
 export function ProjectSelector({ className }: ProjectSelectorProps) {
-  const { selectedProject, setSelectedProject, projects } = useProject();
+  const { selectedProject, setSelectedProject, projects, userProjectCode } = useProject();
+
+  // Filter projects to show only user's project if they have one
+  const availableProjects = userProjectCode 
+    ? projects.filter(p => p.code === userProjectCode)
+    : projects;
 
   const getProjectTypeColor = (type: string) => {
     switch (type.toLowerCase()) {
@@ -36,7 +41,7 @@ export function ProjectSelector({ className }: ProjectSelectorProps) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenuTrigger asChild disabled={!!userProjectCode}>
         <Button
           variant="outline"
           className={`flex items-center gap-3 px-4 py-2 h-auto border-2 hover:border-primary/50 transition-colors ${className}`}
@@ -52,7 +57,7 @@ export function ProjectSelector({ className }: ProjectSelectorProps) {
           <Badge className={`text-xs ${getProjectTypeColor(selectedProject.type)}`}>
             {selectedProject.type}
           </Badge>
-          <ChevronDown className="h-4 w-4 text-muted-foreground" />
+          {!userProjectCode && <ChevronDown className="h-4 w-4 text-muted-foreground" />}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-80 max-h-[400px] overflow-y-auto">
@@ -62,7 +67,7 @@ export function ProjectSelector({ className }: ProjectSelectorProps) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
 
-        {projects.map((project) => (
+        {availableProjects.map((project) => (
           <DropdownMenuItem
             key={project.code}
             className={`flex items-center justify-between p-3 cursor-pointer ${

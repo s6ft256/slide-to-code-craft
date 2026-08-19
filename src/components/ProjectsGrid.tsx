@@ -7,10 +7,15 @@ import { useProject } from "@/contexts/ProjectContext";
 import { Button } from "@/components/ui/button";
 
 export function ProjectsGrid() {
-  const { projects, setSelectedProject, selectedProject } = useProject();
+  const { projects, setSelectedProject, selectedProject, userProjectCode } = useProject();
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredProjects = projects.filter(project =>
+  // Filter projects to show only user's project if they have one
+  const availableProjects = userProjectCode 
+    ? projects.filter(p => p.code === userProjectCode)
+    : projects;
+
+  const filteredProjects = availableProjects.filter(project =>
     project.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
     project.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -36,10 +41,13 @@ export function ProjectsGrid() {
         <div>
           <h2 className="text-2xl font-bold flex items-center gap-2">
             <Building2 className="h-6 w-6" />
-            All Projects
+            {userProjectCode ? 'Your Project' : 'All Projects'}
           </h2>
           <p className="text-muted-foreground mt-1">
-            {filteredProjects.length} project{filteredProjects.length !== 1 ? 's' : ''} available
+            {userProjectCode 
+              ? `You have access to ${filteredProjects.length} project${filteredProjects.length !== 1 ? 's' : ''}`
+              : `${filteredProjects.length} project${filteredProjects.length !== 1 ? 's' : ''} available`
+            }
           </p>
         </div>
       </div>
