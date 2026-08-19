@@ -2,13 +2,84 @@ import Layout from "@/components/Layout";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { FileText, Globe, Clipboard, Shield } from "lucide-react";
+import { FileText, Globe, Clipboard, Shield, ChevronDown } from "lucide-react";
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 
 const libraryTabs = [
   { id: "iso", label: "ISO", icon: Shield, description: "International Organization for Standardization documents" },
   { id: "uae", label: "UAE", icon: Globe, description: "United Arab Emirates regulations and guidelines" },
   { id: "sops", label: "SOPs", icon: Clipboard, description: "Standard Operating Procedures" },
   { id: "policy", label: "Policy", icon: FileText, description: "Company policies and governance documents" },
+];
+
+// Policy content extracted from Trojan QHSE pages
+const policyData = [
+  {
+    id: "qhse-policy",
+    title: "QHSE Policy",
+    subtitle: "Health, Safety & Environmental Protection",
+    content: [
+      "Trojan General Contracting is committed to achieve the highest practical standards of health, safety, and environmental protection, in all spheres of its operations. This concept is at the heart of the company's philosophy.",
+      "The company requires all levels of staff throughout the organization to be aware of and implement its safety procedures. Trojan General Contracting's management actively encourages the implementation and continuous review of safety standards.",
+      "While safety on site is of prime consideration, we believe that successful safety procedures must embrace all of the company's activities, including its office, material and plant procurement operation.",
+      "It is our belief that environmental protection procedures, good health, and safety can, and should, also improve construction in terms of both efficiency and value.",
+      "Trojan General Contracting also considers that its environmental protection philosophy, health, and safety must be dynamic and not static. The preparation and implementation of procedures is the beginning, not the end. These procedures should be communicated, reiterated, regularly reviewed, and developed, to suit changing conditions, standards, and technology.",
+      "Trojan General Contracting is dedicated to the pursuit of excellence and firmly believes that environmental protection procedures, health, and safety are an intrinsic part of this philosophy."
+    ],
+    relatedPolicies: [
+      "Code of Conduct and Business Ethics",
+      "Environmental Policy",
+      "Executive Compensation",
+      "Human Rights Policy",
+      "Occupational Health and Safety Policy Statement",
+      "Privacy and Data Security Policy",
+      "Supplier Code of Conduct Policy",
+      "TCG Quality Policy",
+      "Whistleblower Policy"
+    ]
+  },
+  {
+    id: "quality-policy",
+    title: "Quality Policy",
+    subtitle: "ISO 9001:2008 Compliant Quality Management",
+    content: [
+      "It is the policy of Trojan General Contracting to provide consistent levels of work performance that meet or exceed the quality requirements of the customer, including statutory and regulatory requirements.",
+      "We are committed to providing continuous effort, to identify and eliminate any defects or discrepancies, and continually improve the effectiveness of the quality management system by:"
+    ],
+    bullets: [
+      "Implementing a quality management system conforming to ISO 9001:2008;",
+      "Identifying and controlling the process and product effectively;",
+      "Ensuring the availability of human resources who are capable of meeting the challenges and who fully accept the responsibilities;",
+      "Monitoring, measuring, and analyzing the progress;",
+      "Minimizing the number of defects/complaints;",
+      "Taking action to achieve the targets and continually improve the system."
+    ],
+    closing: [
+      "The quality policy is communicated and understood within the company and is available to all employees who have a direct bearing on quality within the construction.",
+      "The policy and performance are reviewed for continuing suitability and accordingly revised when required."
+    ]
+  },
+  {
+    id: "iso-certificates",
+    title: "ISO Certificates",
+    subtitle: "International Organization for Standardization Certifications",
+    content: [
+      "The ISO Certificates section contains all current ISO certifications held by Trojan General Contracting, including certificate numbers, standards, scopes, issuing bodies, and validity periods.",
+      "This information is dynamically loaded from the company's QHSE management system. Please refer to the ISO tab for the full PDF document containing all certificates."
+    ],
+    note: "Full certificate details (ISO 9001, ISO 14001, ISO 45001, etc.) with certificate numbers, scopes, issuing bodies, and expiry dates are available in the ISO tab PDF document."
+  },
+  {
+    id: "group-policy-statement",
+    title: "Group Policy Statement",
+    subtitle: "Corporate Governance & Policy Statement",
+    content: [
+      "The Group Policy Statement outlines Trojan General Contracting's overarching corporate governance framework, commitments, and strategic policy directives.",
+      "This document is maintained by senior leadership and reflects the organization's commitment to ethical business practices, regulatory compliance, and sustainable operations.",
+      "For the complete Group Policy Statement document including signatories, effective dates, and full policy text, please contact the QHSE department or refer to the company's document management system."
+    ],
+    note: "The full Group Policy Statement with signatory details and effective dates is available through the company's document management system."
+  }
 ];
 
 const Library = () => {
@@ -46,10 +117,73 @@ const Library = () => {
         );
       case "policy":
         return (
-          <div className="p-8 text-center">
-            <FileText className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-            <h3 className="text-lg font-semibold mb-2">Company Policies</h3>
-            <p className="text-muted-foreground">Policy documents and governance materials will be available here.</p>
+          <div className="p-6 h-full overflow-y-auto">
+            <div className="mb-6">
+              <h3 className="text-xl font-semibold mb-1">Company Policies</h3>
+              <p className="text-muted-foreground text-sm">QHSE policies, quality management, and governance documents</p>
+            </div>
+            <Accordion type="single" collapsible className="w-full space-y-3">
+              {policyData.map((policy) => (
+                <AccordionItem key={policy.id} value={policy.id} className="border rounded-lg overflow-hidden bg-card">
+                  <AccordionTrigger className="bg-muted/50 hover:bg-muted px-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="font-medium text-base">{policy.title}</div>
+                        <div className="text-xs text-muted-foreground">{policy.subtitle}</div>
+                      </div>
+                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-4">
+                    <div className="space-y-3 text-sm text-foreground/90">
+                      {policy.content.map((paragraph, idx) => (
+                        <p key={`content-${policy.id}-${idx}`} className="leading-relaxed">
+                          {paragraph}
+                        </p>
+                      ))}
+                      {policy.bullets && (
+                        <ul className="list-disc list-inside space-y-2 ml-4">
+                          {policy.bullets.map((bullet, idx) => (
+                            <li key={`bullet-${policy.id}-${idx}`} className="leading-relaxed">
+                              {bullet}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                      {policy.closing && (
+                        <>
+                          {policy.closing.map((paragraph, idx) => (
+                            <p key={`closing-${policy.id}-${idx}`} className="leading-relaxed">
+                              {paragraph}
+                            </p>
+                          ))}
+                        </>
+                      )}
+                      {policy.relatedPolicies && (
+                        <div className="pt-2 border-t border-border">
+                          <p className="font-medium text-xs text-muted-foreground mb-2 uppercase tracking-wide">Related Policies</p>
+                          <div className="flex flex-wrap gap-2">
+                            {policy.relatedPolicies.map((relPolicy, idx) => (
+                              <span
+                                key={`related-${policy.id}-${idx}`}
+                                className="px-2 py-1 text-xs bg-muted rounded border text-muted-foreground"
+                              >
+                                {relPolicy}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {policy.note && (
+                        <p className="pt-2 text-xs text-muted-foreground italic border-t border-border">
+                          {policy.note}
+                        </p>
+                      )}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
           </div>
         );
       default:
