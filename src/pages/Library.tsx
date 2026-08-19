@@ -2,8 +2,7 @@ import Layout from "@/components/Layout";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { FileText, Globe, Clipboard, Shield, ChevronDown } from "lucide-react";
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
+import { FileText, Globe, Clipboard, Shield } from "lucide-react";
 
 const libraryTabs = [
   { id: "iso", label: "ISO", icon: Shield, description: "International Organization for Standardization documents" },
@@ -82,6 +81,13 @@ const policyData = [
   }
 ];
 
+const policyTabs = [
+  { id: "qhse-policy", label: "QHSE Policy" },
+  { id: "quality-policy", label: "Quality Policy" },
+  { id: "iso-certificates", label: "ISO Certificates" },
+  { id: "group-policy-statement", label: "Group Policy Statement" },
+];
+
 const Library = () => {
   const [activeTab, setActiveTab] = useState("iso");
 
@@ -116,74 +122,88 @@ const Library = () => {
           </div>
         );
       case "policy":
+        const [activePolicyTab, setActivePolicyTab] = useState("qhse-policy");
+        const activePolicy = policyData.find(p => p.id === activePolicyTab);
         return (
-          <div className="p-6 h-full overflow-y-auto">
-            <div className="mb-6">
-              <h3 className="text-xl font-semibold mb-1">Company Policies</h3>
-              <p className="text-muted-foreground text-sm">QHSE policies, quality management, and governance documents</p>
+          <div className="h-full flex flex-col">
+            {/* Policy Sub-tabs */}
+            <div className="border-b border-border px-4">
+              <nav className="flex gap-1 -mb-px" role="tablist">
+                {policyTabs.map((tab) => (
+                  <Button
+                    key={tab.id}
+                    variant={activePolicyTab === tab.id ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => setActivePolicyTab(tab.id)}
+                    className={cn(
+                      "h-10 px-4 text-sm font-medium transition-all",
+                      activePolicyTab === tab.id
+                        ? "bg-primary text-primary-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                    )}
+                    role="tab"
+                    aria-selected={activePolicyTab === tab.id}
+                  >
+                    {tab.label}
+                  </Button>
+                ))}
+              </nav>
             </div>
-            <Accordion type="single" collapsible className="w-full space-y-3">
-              {policyData.map((policy) => (
-                <AccordionItem key={policy.id} value={policy.id} className="border rounded-lg overflow-hidden bg-card">
-                  <AccordionTrigger className="bg-muted/50 hover:bg-muted px-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="font-medium text-base">{policy.title}</div>
-                        <div className="text-xs text-muted-foreground">{policy.subtitle}</div>
-                      </div>
-                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="px-4">
-                    <div className="space-y-3 text-sm text-foreground/90">
-                      {policy.content.map((paragraph, idx) => (
-                        <p key={`content-${policy.id}-${idx}`} className="leading-relaxed">
+            
+            {/* Policy Content */}
+            <div className="flex-1 overflow-y-auto p-6">
+              {activePolicy && (
+                <div className="space-y-4 text-sm text-foreground/90 animate-fade-in">
+                  <div className="mb-4">
+                    <h4 className="font-semibold text-lg">{activePolicy.title}</h4>
+                    <p className="text-xs text-muted-foreground">{activePolicy.subtitle}</p>
+                  </div>
+                  {activePolicy.content.map((paragraph, idx) => (
+                    <p key={`content-${activePolicy.id}-${idx}`} className="leading-relaxed">
+                      {paragraph}
+                    </p>
+                  ))}
+                  {activePolicy.bullets && (
+                    <ul className="list-disc list-inside space-y-2 ml-4">
+                      {activePolicy.bullets.map((bullet, idx) => (
+                        <li key={`bullet-${activePolicy.id}-${idx}`} className="leading-relaxed">
+                          {bullet}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {activePolicy.closing && (
+                    <>
+                      {activePolicy.closing.map((paragraph, idx) => (
+                        <p key={`closing-${activePolicy.id}-${idx}`} className="leading-relaxed">
                           {paragraph}
                         </p>
                       ))}
-                      {policy.bullets && (
-                        <ul className="list-disc list-inside space-y-2 ml-4">
-                          {policy.bullets.map((bullet, idx) => (
-                            <li key={`bullet-${policy.id}-${idx}`} className="leading-relaxed">
-                              {bullet}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                      {policy.closing && (
-                        <>
-                          {policy.closing.map((paragraph, idx) => (
-                            <p key={`closing-${policy.id}-${idx}`} className="leading-relaxed">
-                              {paragraph}
-                            </p>
-                          ))}
-                        </>
-                      )}
-                      {policy.relatedPolicies && (
-                        <div className="pt-2 border-t border-border">
-                          <p className="font-medium text-xs text-muted-foreground mb-2 uppercase tracking-wide">Related Policies</p>
-                          <div className="flex flex-wrap gap-2">
-                            {policy.relatedPolicies.map((relPolicy, idx) => (
-                              <span
-                                key={`related-${policy.id}-${idx}`}
-                                className="px-2 py-1 text-xs bg-muted rounded border text-muted-foreground"
-                              >
-                                {relPolicy}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                      {policy.note && (
-                        <p className="pt-2 text-xs text-muted-foreground italic border-t border-border">
-                          {policy.note}
-                        </p>
-                      )}
+                    </>
+                  )}
+                  {activePolicy.relatedPolicies && (
+                    <div className="pt-4 border-t border-border">
+                      <p className="font-medium text-xs text-muted-foreground mb-2 uppercase tracking-wide">Related Policies</p>
+                      <div className="flex flex-wrap gap-2">
+                        {activePolicy.relatedPolicies.map((relPolicy, idx) => (
+                          <span
+                            key={`related-${activePolicy.id}-${idx}`}
+                            className="px-2 py-1 text-xs bg-muted rounded border text-muted-foreground"
+                          >
+                            {relPolicy}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
+                  )}
+                  {activePolicy.note && (
+                    <p className="pt-4 text-xs text-muted-foreground italic border-t border-border">
+                      {activePolicy.note}
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         );
       default:
