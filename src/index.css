@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  font-family: "Poppins", "system-ui", "sans-serif";
+}
+
 /* HSE Management System Design System - Professional Industrial Theme */
 
 @layer base {
