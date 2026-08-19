@@ -26,21 +26,21 @@ type NCRRecord = {
 
 const getSeverityColor = (typeOfNCR: string) => {
   switch (typeOfNCR.toLowerCase()) {
-    case 'svr': return 'bg-red-100 text-red-800';
-    case 'swn': return 'bg-orange-100 text-orange-800';
-    case 'major': return 'bg-yellow-100 text-yellow-800';
-    case 'minor': return 'bg-blue-100 text-blue-800';
-    default: return 'bg-gray-100 text-gray-800';
+    case 'svr': return 'bg-destructive/10 text-destructive border border-destructive/20';
+    case 'swn': return 'bg-warning/10 text-warning border border-warning/20';
+    case 'major': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
+    case 'minor': return 'bg-primary/10 text-primary border border-primary/20';
+    default: return 'bg-muted text-muted-foreground border border-border';
   }
 };
 
 const getStatusColor = (status: string) => {
   switch (status.toLowerCase()) {
-    case 'open': return 'bg-red-100 text-red-800';
-    case 'in progress': return 'bg-yellow-100 text-yellow-800';
-    case 'closed': return 'bg-green-100 text-green-800';
-    case 'cancelled': return 'bg-gray-100 text-gray-800';
-    default: return 'bg-gray-100 text-gray-800';
+    case 'open': return 'bg-destructive/10 text-destructive border border-destructive/20';
+    case 'in progress': return 'bg-warning/10 text-warning border border-warning/20';
+    case 'closed': return 'bg-success/10 text-success border border-success/20';
+    case 'cancelled': return 'bg-muted text-muted-foreground border border-border';
+    default: return 'bg-muted text-muted-foreground border border-border';
   }
 };
 
@@ -66,11 +66,11 @@ export default function NCRRecords() {
   }, []);
 
   if (loading) {
-    return <div className="p-4">Loading NCR records...</div>;
+    return <div className="p-4 text-muted-foreground">Loading NCR records...</div>;
   }
 
   if (error) {
-    return <div className="p-4 text-red-600">Error: {error}</div>;
+    return <div className="p-4 text-destructive">Error: {error}</div>;
   }
 
   if (records.length === 0) {
@@ -84,42 +84,42 @@ export default function NCRRecords() {
       </CardHeader>
       <CardContent>
         <div className="overflow-auto">
-          <table className="min-w-full border rounded text-sm">
+          <table className="min-w-full border border-border rounded text-sm bg-card">
             <thead>
-              <tr className="bg-gray-50">
-                <th className="border border-gray-300 px-4 py-2 text-left">Sr.No</th>
-                <th className="border border-gray-300 px-4 py-2 text-left">Reference</th>
-                <th className="border border-gray-300 px-4 py-2 text-left">Issued Date</th>
-                <th className="border border-gray-300 px-4 py-2 text-left">Subject</th>
-                <th className="border border-gray-300 px-4 py-2 text-left">Type of NCR</th>
-                <th className="border border-gray-300 px-4 py-2 text-left">Type</th>
-                <th className="border border-gray-300 px-4 py-2 text-left">Responsible Company</th>
-                <th className="border border-gray-300 px-4 py-2 text-left">Status</th>
-                <th className="border border-gray-300 px-4 py-2 text-left">Description</th>
+              <tr className="bg-muted">
+                <th className="border border-border px-4 py-2 text-left text-muted-foreground">Sr.No</th>
+                <th className="border border-border px-4 py-2 text-left text-muted-foreground">Reference</th>
+                <th className="border border-border px-4 py-2 text-left text-muted-foreground">Issued Date</th>
+                <th className="border border-border px-4 py-2 text-left text-muted-foreground">Subject</th>
+                <th className="border border-border px-4 py-2 text-left text-muted-foreground">Type of NCR</th>
+                <th className="border border-border px-4 py-2 text-left text-muted-foreground">Type</th>
+                <th className="border border-border px-4 py-2 text-left text-muted-foreground">Responsible Company</th>
+                <th className="border border-border px-4 py-2 text-left text-muted-foreground">Status</th>
+                <th className="border border-border px-4 py-2 text-left text-muted-foreground">Description</th>
               </tr>
             </thead>
             <tbody>
               {records.map((row) => (
-                <tr key={row.id} className="hover:bg-gray-50">
-                  <td className="border border-gray-300 px-4 py-2 font-medium">{row.srNo}</td>
-                  <td className="border border-gray-300 px-4 py-2">{row.reference}</td>
-                  <td className="border border-gray-300 px-4 py-2">
+                <tr key={row.id} className="hover:bg-muted/50">
+                  <td className="border border-border px-4 py-2 font-medium text-foreground">{row.srNo}</td>
+                  <td className="border border-border px-4 py-2 text-foreground">{row.reference}</td>
+                  <td className="border border-border px-4 py-2 text-foreground">
                     {row.issuedDate ? new Date(row.issuedDate).toLocaleDateString() : 'N/A'}
                   </td>
-                  <td className="border border-gray-300 px-4 py-2">{row.subject}</td>
-                  <td className="border border-gray-300 px-4 py-2">
+                  <td className="border border-border px-4 py-2 text-foreground">{row.subject}</td>
+                  <td className="border border-border px-4 py-2">
                     <Badge className={getSeverityColor(row.typeOfNCR)}>
                       {row.typeOfNCR}
                     </Badge>
                   </td>
-                  <td className="border border-gray-300 px-4 py-2">{row.type}</td>
-                  <td className="border border-gray-300 px-4 py-2">{row.responsibleCompanyName || 'N/A'}</td>
-                  <td className="border border-gray-300 px-4 py-2">
+                  <td className="border border-border px-4 py-2 text-foreground">{row.type}</td>
+                  <td className="border border-border px-4 py-2 text-foreground">{row.responsibleCompanyName || 'N/A'}</td>
+                  <td className="border border-border px-4 py-2">
                     <Badge className={getStatusColor(row.status)}>
                       {row.status}
                     </Badge>
                   </td>
-                  <td className="border border-gray-300 px-4 py-2 max-w-xs truncate" title={row.description}>
+                  <td className="border border-border px-4 py-2 max-w-xs truncate text-foreground" title={row.description}>
                     {row.description.length > 50 ? `${row.description.substring(0, 50)}...` : row.description}
                   </td>
                 </tr>

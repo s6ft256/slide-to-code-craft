@@ -173,7 +173,7 @@ export function AddProjectInfoForm({ onSave, onCancel }: AddProjectInfoFormProps
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="projectName">Project Name <span className="text-red-500">*</span></Label>
+                <Label htmlFor="projectName">Project Name <span className="text-destructive">*</span></Label>
                 <Input
                   id="projectName"
                   value={formData.projectName}
@@ -192,7 +192,7 @@ export function AddProjectInfoForm({ onSave, onCancel }: AddProjectInfoFormProps
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="client">Client <span className="text-red-500">*</span></Label>
+                <Label htmlFor="client">Client <span className="text-destructive">*</span></Label>
                 <Input
                   id="client"
                   value={formData.client}

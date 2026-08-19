@@ -37,11 +37,11 @@ export default function TrainingRecords() {
   }, []);
 
   if (loading) {
-    return <div className="p-4">Loading training records...</div>;
+    return <div className="p-4 text-muted-foreground">Loading training records...</div>;
   }
 
   if (error) {
-    return <div className="p-4 text-red-600">Error: {error}</div>;
+    return <div className="p-4 text-destructive">Error: {error}</div>;
   }
 
   if (records.length === 0) {
@@ -55,32 +55,32 @@ export default function TrainingRecords() {
       </CardHeader>
       <CardContent>
         <div className="overflow-auto">
-          <table className="min-w-full border rounded text-sm">
+          <table className="min-w-full border border-border rounded text-sm bg-card">
             <thead>
-              <tr className="bg-gray-50">
-                <th className="border border-gray-300 px-4 py-2 text-left">EMP ID / EID</th>
-                <th className="border border-gray-300 px-4 py-2 text-left">Name</th>
-                <th className="border border-gray-300 px-4 py-2 text-left">Designation</th>
-                <th className="border border-gray-300 px-4 py-2 text-left">Company</th>
-                <th className="border border-gray-300 px-4 py-2 text-left">Date of Induction</th>
-                <th className="border border-gray-300 px-4 py-2 text-left">Location</th>
-                <th className="border border-gray-300 px-4 py-2 text-left">Training Provider</th>
-                <th className="border border-gray-300 px-4 py-2 text-left">Refresher Before</th>
+              <tr className="bg-muted">
+                <th className="border border-border px-4 py-2 text-left text-muted-foreground">EMP ID / EID</th>
+                <th className="border border-border px-4 py-2 text-left text-muted-foreground">Name</th>
+                <th className="border border-border px-4 py-2 text-left text-muted-foreground">Designation</th>
+                <th className="border border-border px-4 py-2 text-left text-muted-foreground">Company</th>
+                <th className="border border-border px-4 py-2 text-left text-muted-foreground">Date of Induction</th>
+                <th className="border border-border px-4 py-2 text-left text-muted-foreground">Location</th>
+                <th className="border border-border px-4 py-2 text-left text-muted-foreground">Training Provider</th>
+                <th className="border border-border px-4 py-2 text-left text-muted-foreground">Refresher Before</th>
               </tr>
             </thead>
             <tbody>
               {records.map((row) => (
-                <tr key={row.id} className="hover:bg-gray-50">
-                  <td className="border border-gray-300 px-4 py-2">{row.empId}</td>
-                  <td className="border border-gray-300 px-4 py-2">{row.name}</td>
-                  <td className="border border-gray-300 px-4 py-2">{row.designation}</td>
-                  <td className="border border-gray-300 px-4 py-2">{row.company}</td>
-                  <td className="border border-gray-300 px-4 py-2">
+                <tr key={row.id} className="hover:bg-muted/50">
+                  <td className="border border-border px-4 py-2 text-foreground">{row.empId}</td>
+                  <td className="border border-border px-4 py-2 text-foreground">{row.name}</td>
+                  <td className="border border-border px-4 py-2 text-foreground">{row.designation}</td>
+                  <td className="border border-border px-4 py-2 text-foreground">{row.company}</td>
+                  <td className="border border-border px-4 py-2 text-foreground">
                     {row.dateOfInduction ? new Date(row.dateOfInduction).toLocaleDateString() : 'N/A'}
                   </td>
-                  <td className="border border-gray-300 px-4 py-2">{row.location || 'N/A'}</td>
-                  <td className="border border-gray-300 px-4 py-2">{row.trainingProvider || 'N/A'}</td>
-                  <td className="border border-gray-300 px-4 py-2">{row.refresherBefore || 'N/A'}</td>
+                  <td className="border border-border px-4 py-2 text-foreground">{row.location || 'N/A'}</td>
+                  <td className="border border-border px-4 py-2 text-foreground">{row.trainingProvider || 'N/A'}</td>
+                  <td className="border border-border px-4 py-2 text-foreground">{row.refresherBefore || 'N/A'}</td>
                 </tr>
               ))}
             </tbody>

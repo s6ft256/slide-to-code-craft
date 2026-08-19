@@ -81,8 +81,8 @@ const FileUploader: React.FC<FileUploaderProps> = ({
       {/* Upload Area */}
       <div
         className={cn(
-          "border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer transition-colors",
-          "hover:border-gray-400 hover:bg-gray-50",
+          "border-2 border-dashed border-border rounded-lg p-6 text-center cursor-pointer transition-colors",
+          "hover:border-primary/50 hover:bg-muted/50",
           isUploading && "pointer-events-none opacity-50"
         )}
         onDragOver={handleDragOver}
@@ -164,7 +164,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
                           className="w-10 h-10 object-cover rounded"
                         />
                       ) : (
-                        <div className="w-10 h-10 bg-gray-100 rounded flex items-center justify-center">
+                        <div className="w-10 h-10 bg-muted rounded flex items-center justify-center">
                           {getFileIcon(file.type)}
                         </div>
                       )}
@@ -172,10 +172,10 @@ const FileUploader: React.FC<FileUploaderProps> = ({
 
                     {/* File Info */}
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate">
+                      <p className="text-sm font-medium text-foreground truncate">
                         {file.name}
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-muted-foreground">
                         {formatFileSize(file.size)} • {new Date(file.uploadedAt).toLocaleString()}
                       </p>
                     </div>

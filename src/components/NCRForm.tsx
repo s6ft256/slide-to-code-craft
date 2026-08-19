@@ -152,7 +152,7 @@ const NCRForm = ({ onClose }: { onClose: () => void }) => {
                 name="srNo"
                 value={formData.srNo}
                 readOnly
-                className="bg-gray-50"
+                className="bg-muted"
               />
             </div>
 

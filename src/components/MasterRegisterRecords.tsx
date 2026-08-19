@@ -30,25 +30,25 @@ export default function MasterRegisterRecords() {
     // Add any necessary field mappings here if needed
   }));
 
-  if (loading) return <div>Loading records...</div>;
-  if (error) return <div className="text-red-600">{error}</div>;
-  if (!records.length) return <div>No records found.</div>;
+  if (loading) return <div className="text-muted-foreground">Loading records...</div>;
+  if (error) return <div className="text-destructive">{error}</div>;
+  if (!records.length) return <div className="text-muted-foreground">No records found.</div>;
 
   return (
     <div className="overflow-auto">
-      <table className="min-w-full border rounded">
+      <table className="min-w-full border border-border rounded bg-card">
         <thead>
           <tr>
             {Object.keys(mappedRecords[0]).map((key) => (
-              <th key={key} className="px-2 py-1 border-b bg-gray-100 text-xs font-semibold text-gray-700">{key}</th>
+              <th key={key} className="px-2 py-1 border-b border-border bg-muted text-xs font-semibold text-muted-foreground">{key}</th>
             ))}
           </tr>
         </thead>
         <tbody>
           {mappedRecords.map((row, idx) => (
-            <tr key={idx} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+            <tr key={idx} className={idx % 2 === 0 ? "bg-card" : "bg-muted/50"}>
               {Object.values(row).map((val, i) => (
-                <td key={i} className="px-2 py-1 border-b text-xs">{String(val ?? "")}</td>
+                <td key={i} className="px-2 py-1 border-b border-border text-xs text-foreground">{String(val ?? "")}</td>
               ))}
             </tr>
           ))}

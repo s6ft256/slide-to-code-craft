@@ -228,12 +228,12 @@ export default function MasterRegisterForm({ onSubmit }: { onSubmit?: (data: Rec
             </Button>
           </div>
           {error && (
-            <div className="text-red-600 text-sm mt-2 p-2 bg-red-50 rounded">
+            <div className="text-destructive text-sm mt-2 p-2 bg-destructive-light/50 border border-destructive/20 rounded">
               {error}
             </div>
           )}
           {success && (
-            <div className="text-green-600 text-sm mt-2 p-2 bg-green-50 rounded">
+            <div className="text-success text-sm mt-2 p-2 bg-success-light/50 border border-success/20 rounded">
               Master Register record added successfully!
             </div>
           )}

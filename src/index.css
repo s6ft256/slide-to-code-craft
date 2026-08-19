@@ -145,7 +145,37 @@ body {
     @apply border-border;
   }
 
+  html {
+    @apply bg-background;
+  }
+
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Ensure form elements inherit theme */
+  input,
+  textarea,
+  select {
+    @apply bg-background text-foreground;
+  }
+
+  /* Scrollbar styling for dark mode */
+  .dark ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  .dark ::-webkit-scrollbar-track {
+    background: hsl(215 25% 10%);
+  }
+
+  .dark ::-webkit-scrollbar-thumb {
+    background: hsl(215 25% 18%);
+    border-radius: 5px;
+  }
+
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: hsl(215 25% 25%);
   }
 }

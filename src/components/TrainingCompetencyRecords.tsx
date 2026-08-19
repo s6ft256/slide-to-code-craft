@@ -24,17 +24,17 @@ type TrainingCompetencyRecord = {
 
 const getScoreColor = (score: string) => {
   const numScore = parseFloat(score);
-  if (isNaN(numScore)) return 'bg-gray-100 text-gray-800';
-  if (numScore >= 90) return 'bg-green-100 text-green-800';
-  if (numScore >= 70) return 'bg-yellow-100 text-yellow-800';
-  return 'bg-red-100 text-red-800';
+  if (isNaN(numScore)) return 'bg-muted text-muted-foreground border border-border';
+  if (numScore >= 90) return 'bg-success/10 text-success border border-success/20';
+  if (numScore >= 70) return 'bg-warning/10 text-warning border border-warning/20';
+  return 'bg-destructive/10 text-destructive border border-destructive/20';
 };
 
 const getTypeColor = (type: string) => {
   switch (type.toLowerCase()) {
-    case 'internal': return 'bg-blue-100 text-blue-800';
-    case 'external': return 'bg-purple-100 text-purple-800';
-    default: return 'bg-gray-100 text-gray-800';
+    case 'internal': return 'bg-primary/10 text-primary border border-primary/20';
+    case 'external': return 'bg-accent/10 text-accent border border-accent/20';
+    default: return 'bg-muted text-muted-foreground border border-border';
   }
 };
 
@@ -60,11 +60,11 @@ export default function TrainingCompetencyRecords() {
   }, []);
 
   if (loading) {
-    return <div className="p-4">Loading training competency records...</div>;
+    return <div className="p-4 text-muted-foreground">Loading training competency records...</div>;
   }
 
   if (error) {
-    return <div className="p-4 text-red-600">Error: {error}</div>;
+    return <div className="p-4 text-destructive">Error: {error}</div>;
   }
 
   if (records.length === 0) {
@@ -78,40 +78,40 @@ export default function TrainingCompetencyRecords() {
       </CardHeader>
       <CardContent>
         <div className="overflow-auto">
-          <table className="min-w-full border rounded text-sm">
+          <table className="min-w-full border border-border rounded text-sm bg-card">
             <thead>
-              <tr className="bg-gray-50">
-                <th className="border border-gray-300 px-4 py-2 text-left">Sr.No</th>
-                <th className="border border-gray-300 px-4 py-2 text-left">EMP ID</th>
-                <th className="border border-gray-300 px-4 py-2 text-left">Name</th>
-                <th className="border border-gray-300 px-4 py-2 text-left">Training Course</th>
-                <th className="border border-gray-300 px-4 py-2 text-left">Provider</th>
-                <th className="border border-gray-300 px-4 py-2 text-left">Type</th>
-                <th className="border border-gray-300 px-4 py-2 text-left">Score</th>
-                <th className="border border-gray-300 px-4 py-2 text-left">Date</th>
+              <tr className="bg-muted">
+                <th className="border border-border px-4 py-2 text-left text-muted-foreground">Sr.No</th>
+                <th className="border border-border px-4 py-2 text-left text-muted-foreground">EMP ID</th>
+                <th className="border border-border px-4 py-2 text-left text-muted-foreground">Name</th>
+                <th className="border border-border px-4 py-2 text-left text-muted-foreground">Training Course</th>
+                <th className="border border-border px-4 py-2 text-left text-muted-foreground">Provider</th>
+                <th className="border border-border px-4 py-2 text-left text-muted-foreground">Type</th>
+                <th className="border border-border px-4 py-2 text-left text-muted-foreground">Score</th>
+                <th className="border border-border px-4 py-2 text-left text-muted-foreground">Date</th>
               </tr>
             </thead>
             <tbody>
               {records.map((record) => (
-                <tr key={record.id} className="hover:bg-gray-50">
-                  <td className="border border-gray-300 px-4 py-2 font-medium">{record.srNo}</td>
-                  <td className="border border-gray-300 px-4 py-2">{record.empIdEid}</td>
-                  <td className="border border-gray-300 px-4 py-2">{record.name}</td>
-                  <td className="border border-gray-300 px-4 py-2 max-w-xs truncate" title={record.trainingCourseTitle}>
+                <tr key={record.id} className="hover:bg-muted/50">
+                  <td className="border border-border px-4 py-2 font-medium text-foreground">{record.srNo}</td>
+                  <td className="border border-border px-4 py-2 text-foreground">{record.empIdEid}</td>
+                  <td className="border border-border px-4 py-2 text-foreground">{record.name}</td>
+                  <td className="border border-border px-4 py-2 max-w-xs truncate text-foreground" title={record.trainingCourseTitle}>
                     {record.trainingCourseTitle.length > 30 ? `${record.trainingCourseTitle.substring(0, 30)}...` : record.trainingCourseTitle}
                   </td>
-                  <td className="border border-gray-300 px-4 py-2">{record.trainingProvider || 'N/A'}</td>
-                  <td className="border border-gray-300 px-4 py-2">
+                  <td className="border border-border px-4 py-2 text-foreground">{record.trainingProvider || 'N/A'}</td>
+                  <td className="border border-border px-4 py-2">
                     <Badge className={getTypeColor(record.internalExternal)}>
                       {record.internalExternal || 'N/A'}
                     </Badge>
                   </td>
-                  <td className="border border-gray-300 px-4 py-2">
+                  <td className="border border-border px-4 py-2">
                     <Badge className={getScoreColor(record.score)}>
                       {record.score || 'N/A'}
                     </Badge>
                   </td>
-                  <td className="border border-gray-300 px-4 py-2">
+                  <td className="border border-border px-4 py-2 text-foreground">
                     {record.dateOfTraining ? new Date(record.dateOfTraining).toLocaleDateString() : 'N/A'}
                   </td>
                 </tr>

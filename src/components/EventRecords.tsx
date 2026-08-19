@@ -47,11 +47,11 @@ export default function EventRecords() {
   }, []);
 
   if (loading) {
-    return <div className="p-4">Loading event records...</div>;
+    return <div className="p-4 text-muted-foreground">Loading event records...</div>;
   }
 
   if (error) {
-    return <div className="p-4 text-red-600">Error: {error}</div>;
+    return <div className="p-4 text-destructive">Error: {error}</div>;
   }
 
   if (records.length === 0) {
@@ -65,52 +65,52 @@ export default function EventRecords() {
       </CardHeader>
       <CardContent>
         <div className="overflow-auto">
-          <table className="min-w-full border rounded text-xs">
+          <table className="min-w-full border border-border rounded text-xs bg-card">
             <thead>
-              <tr>
-                <th>Sr.No</th>
-                <th>Date</th>
-                <th>Type of Activity</th>
-                <th>Title / Topic</th>
-                <th>Number of attendees</th>
-                <th>Supervisors</th>
-                <th>Site Engineer</th>
-                <th>Project Engineer</th>
-                <th>Dept Managers Lead</th>
-                <th>Project Manager</th>
-                <th>Project Director</th>
-                <th>HSE team</th>
-                <th>Corporate HSE</th>
-                <th>Top Management</th>
-                <th>Activity Leader</th>
-                <th>Activity Leader Designation</th>
-                <th>Project Senior Management Involvement</th>
-                <th>Corporate Management Involvement</th>
-                <th>Remarks</th>
+              <tr className="bg-muted">
+                <th className="border border-border px-2 py-1 text-left text-muted-foreground">Sr.No</th>
+                <th className="border border-border px-2 py-1 text-left text-muted-foreground">Date</th>
+                <th className="border border-border px-2 py-1 text-left text-muted-foreground">Type of Activity</th>
+                <th className="border border-border px-2 py-1 text-left text-muted-foreground">Title / Topic</th>
+                <th className="border border-border px-2 py-1 text-left text-muted-foreground">Number of attendees</th>
+                <th className="border border-border px-2 py-1 text-left text-muted-foreground">Supervisors</th>
+                <th className="border border-border px-2 py-1 text-left text-muted-foreground">Site Engineer</th>
+                <th className="border border-border px-2 py-1 text-left text-muted-foreground">Project Engineer</th>
+                <th className="border border-border px-2 py-1 text-left text-muted-foreground">Dept Managers Lead</th>
+                <th className="border border-border px-2 py-1 text-left text-muted-foreground">Project Manager</th>
+                <th className="border border-border px-2 py-1 text-left text-muted-foreground">Project Director</th>
+                <th className="border border-border px-2 py-1 text-left text-muted-foreground">HSE team</th>
+                <th className="border border-border px-2 py-1 text-left text-muted-foreground">Corporate HSE</th>
+                <th className="border border-border px-2 py-1 text-left text-muted-foreground">Top Management</th>
+                <th className="border border-border px-2 py-1 text-left text-muted-foreground">Activity Leader</th>
+                <th className="border border-border px-2 py-1 text-left text-muted-foreground">Activity Leader Designation</th>
+                <th className="border border-border px-2 py-1 text-left text-muted-foreground">Project Senior Management Involvement</th>
+                <th className="border border-border px-2 py-1 text-left text-muted-foreground">Corporate Management Involvement</th>
+                <th className="border border-border px-2 py-1 text-left text-muted-foreground">Remarks</th>
               </tr>
             </thead>
             <tbody>
               {records.map((row) => (
-                <tr key={row.id}>
-                  <td>{row.srNo}</td>
-                  <td>{row.date}</td>
-                  <td>{row.typeOfActivity}</td>
-                  <td>{row.titleTopic}</td>
-                  <td>{row.numberOfAttendees}</td>
-                  <td>{row.supervisors}</td>
-                  <td>{row.siteEngineer}</td>
-                  <td>{row.projectEngineer}</td>
-                  <td>{row.deptManagersLead}</td>
-                  <td>{row.projectManager}</td>
-                  <td>{row.projectDirector}</td>
-                  <td>{row.hseTeam}</td>
-                  <td>{row.corporateHSE}</td>
-                  <td>{row.topManagement}</td>
-                  <td>{row.activityLeader}</td>
-                  <td>{row.activityLeaderDesignation}</td>
-                  <td>{row.projectSeniorManagementInvolvement}</td>
-                  <td>{row.corporateManagementInvolvement}</td>
-                  <td>{row.remarks}</td>
+                <tr key={row.id} className="hover:bg-muted/50">
+                  <td className="border border-border px-2 py-1 text-foreground">{row.srNo}</td>
+                  <td className="border border-border px-2 py-1 text-foreground">{row.date}</td>
+                  <td className="border border-border px-2 py-1 text-foreground">{row.typeOfActivity}</td>
+                  <td className="border border-border px-2 py-1 text-foreground">{row.titleTopic}</td>
+                  <td className="border border-border px-2 py-1 text-foreground">{row.numberOfAttendees}</td>
+                  <td className="border border-border px-2 py-1 text-foreground">{row.supervisors}</td>
+                  <td className="border border-border px-2 py-1 text-foreground">{row.siteEngineer}</td>
+                  <td className="border border-border px-2 py-1 text-foreground">{row.projectEngineer}</td>
+                  <td className="border border-border px-2 py-1 text-foreground">{row.deptManagersLead}</td>
+                  <td className="border border-border px-2 py-1 text-foreground">{row.projectManager}</td>
+                  <td className="border border-border px-2 py-1 text-foreground">{row.projectDirector}</td>
+                  <td className="border border-border px-2 py-1 text-foreground">{row.hseTeam}</td>
+                  <td className="border border-border px-2 py-1 text-foreground">{row.corporateHSE}</td>
+                  <td className="border border-border px-2 py-1 text-foreground">{row.topManagement}</td>
+                  <td className="border border-border px-2 py-1 text-foreground">{row.activityLeader}</td>
+                  <td className="border border-border px-2 py-1 text-foreground">{row.activityLeaderDesignation}</td>
+                  <td className="border border-border px-2 py-1 text-foreground">{row.projectSeniorManagementInvolvement}</td>
+                  <td className="border border-border px-2 py-1 text-foreground">{row.corporateManagementInvolvement}</td>
+                  <td className="border border-border px-2 py-1 text-foreground">{row.remarks}</td>
                 </tr>
               ))}
             </tbody>

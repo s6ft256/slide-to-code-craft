@@ -27,35 +27,35 @@ const ChartCard: React.FC<ChartCardProps> = ({
   const getTrendIcon = () => {
     switch (trend) {
       case 'up':
-        return <TrendingUp className="h-4 w-4 text-green-500" />;
+        return <TrendingUp className="h-4 w-4 text-success" />;
       case 'down':
-        return <TrendingDown className="h-4 w-4 text-red-500" />;
+        return <TrendingDown className="h-4 w-4 text-destructive" />;
       default:
-        return <Minus className="h-4 w-4 text-gray-500" />;
+        return <Minus className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
   const getTrendColor = () => {
     switch (trend) {
       case 'up':
-        return 'text-green-600';
+        return 'text-success';
       case 'down':
-        return 'text-red-600';
+        return 'text-destructive';
       default:
-        return 'text-gray-600';
+        return 'text-muted-foreground';
     }
   };
 
   const getVariantStyles = () => {
     switch (variant) {
       case 'success':
-        return 'border-green-200 bg-green-50';
+        return 'border-success/20 bg-success-light/50';
       case 'warning':
-        return 'border-yellow-200 bg-yellow-50';
+        return 'border-warning/20 bg-warning-light/50';
       case 'destructive':
-        return 'border-red-200 bg-red-50';
+        return 'border-destructive/20 bg-destructive-light/50';
       default:
-        return 'border-gray-200 bg-white';
+        return 'border-border bg-card';
     }
   };
 
