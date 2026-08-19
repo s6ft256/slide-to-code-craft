@@ -24,7 +24,7 @@ const AuthInput = React.forwardRef<HTMLInputElement, AuthInputProps>(
           type={type}
           ref={ref}
           className={cn(
-            "w-full rounded-xl border border-white/30 bg-white/5 px-4 py-3 text-base text-white placeholder-white/45 shadow-inner transition-colors placeholder-shown:text-sm focus:border-cyan-400/70 focus:ring-2 focus:ring-cyan-400/40 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60",
+            "peer w-full rounded-xl border border-white/30 bg-white/5 px-4 py-3 text-base text-white placeholder-white/45 shadow-inner transition-all duration-200 placeholder-shown:text-sm focus:border-cyan-400/70 focus:ring-2 focus:ring-cyan-400/40 focus:shadow-[0_0_12px_rgba(0,243,255,0.35)] focus:outline-none disabled:cursor-not-allowed disabled:opacity-60",
             className,
           )}
           {...props}

@@ -33,10 +33,7 @@ function ParticleField() {
   const delays = ["0.3s", "0.7s", "1.1s", "1.5s", "1.9s", "2.3s"];
 
   return (
-    <div
-      aria-hidden="true"
-      className="pointer-events-none absolute inset-0 -z-10"
-    >
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
       {Array.from({ length: count }).map((_, i) => {
         // Golden-angle spread gives an even, natural-looking distribution.
         const left = ((i * 137.508) % 100).toFixed(2);
@@ -95,8 +92,8 @@ export default function AuthShell({
       {/* Floating particles */}
       <ParticleField />
 
-      <div className="relative z-10 w-full max-w-md px-4 py-8">
-        <div className="rounded-[34px] bg-gradient-to-r from-cyan-300/30 via-teal-300/20 to-blue-300/30 p-px shadow-[0_0_0_1px_rgba(255,255,255,0.06)]">
+      <div className="relative z-10 w-full max-w-md animate-fade-in-up px-4 py-8">
+        <div className="rounded-[34px] bg-gradient-to-r from-cyan-300/30 via-teal-300/20 to-blue-300/30 p-px shadow-[0_0_0_1px_rgba(255,255,255,0.06)] animate-pulse-glow">
           <div className="rounded-[28px] bg-black/45 px-8 py-9">
             <div className="mb-6 flex justify-center">
               <span className="text-[26px] font-extrabold tracking-[0.4em] text-cyan-50 drop-shadow-[0_0_12px_rgba(0,243,255,0.85)] drop-shadow-[0_0_22px_rgba(0,243,255,0.5)]">

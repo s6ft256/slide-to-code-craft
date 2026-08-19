@@ -7,7 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 
 const btnCls =
-  "w-full rounded-xl bg-gradient-to-r from-cyan-400 via-teal-400 to-blue-500 py-3 text-base font-semibold text-white shadow-[0_0_24px_0_rgba(0,243,255,0.45)] ring-1 ring-white/30 transition-all duration-200 hover:brightness-110 hover:shadow-[0_0_30px_0_rgba(0,243,255,0.6)] disabled:cursor-not-allowed disabled:opacity-70";
+  "w-full rounded-xl bg-gradient-to-r from-cyan-400 via-teal-400 to-blue-500 py-3 text-base font-semibold text-white shadow-[0_0_24px_0_rgba(0,243,255,0.45)] ring-1 ring-white/30 transition-all duration-200 hover:brightness-110 hover:scale-[1.03] active:scale-[0.98] hover:shadow-[0_0_30px_0_rgba(0,243,255,0.6)] disabled:cursor-not-allowed disabled:opacity-70";
 
 export default function SignIn() {
   const navigate = useNavigate();

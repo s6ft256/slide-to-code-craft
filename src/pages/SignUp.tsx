@@ -15,7 +15,7 @@ import { useProject } from "@/contexts/ProjectContext";
 import { useToast } from "@/hooks/use-toast";
 
 const btnCls =
-  "w-full rounded-xl bg-gradient-to-r from-cyan-400 via-teal-400 to-blue-500 py-3 text-base font-semibold text-white shadow-[0_0_24px_0_rgba(0,243,255,0.45)] ring-1 ring-white/30 transition-all duration-200 hover:brightness-110 hover:shadow-[0_0_30px_0_rgba(0,243,255,0.6)] disabled:cursor-not-allowed disabled:opacity-70";
+  "w-full rounded-xl bg-gradient-to-r from-cyan-400 via-teal-400 to-blue-500 py-3 text-base font-semibold text-white shadow-[0_0_24px_0_rgba(0,243,255,0.45)] ring-1 ring-white/30 transition-all duration-200 hover:brightness-110 hover:scale-[1.03] active:scale-[0.98] hover:shadow-[0_0_30px_0_rgba(0,243,255,0.6)] disabled:cursor-not-allowed disabled:opacity-70";
 
 const inputCls =
   "border-white/30 placeholder-white/45 focus:border-cyan-400/70 focus:ring-cyan-400/40";
@@ -210,7 +210,7 @@ export default function SignUp() {
               onValueChange={handleProjectChange}
               disabled={loading}
             >
-              <SelectTrigger className="w-full rounded-xl border border-white/30 bg-white/5 px-4 py-3 text-base text-white placeholder-white/45 shadow-inner focus:border-cyan-400/70 focus:ring-2 focus:ring-cyan-400/40 focus:outline-none">
+              <SelectTrigger className="w-full rounded-xl border border-white/30 bg-white/5 px-4 py-3 text-base text-white placeholder-white/45 shadow-inner transition-all duration-200 focus:border-cyan-400/70 focus:ring-2 focus:ring-cyan-400/40 focus:shadow-[0_0_12px_rgba(0,243,255,0.35)] focus:outline-none">
                 <SelectValue placeholder="Select a project" />
               </SelectTrigger>
               <SelectContent className="border border-white/20 bg-slate-900/90 text-white">
