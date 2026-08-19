@@ -90,6 +90,7 @@ const policyTabs = [
 
 const Library = () => {
   const [activeTab, setActiveTab] = useState("iso");
+  const [activePolicyTab, setActivePolicyTab] = useState("qhse-policy");
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -121,8 +122,7 @@ const Library = () => {
             <p className="text-muted-foreground">SOPs and procedural documents will be available here.</p>
           </div>
         );
-      case "policy":
-        const [activePolicyTab, setActivePolicyTab] = useState("qhse-policy");
+      case "policy": {
         const activePolicy = policyData.find(p => p.id === activePolicyTab);
         return (
           <div className="h-full flex flex-col">
@@ -206,6 +206,7 @@ const Library = () => {
             </div>
           </div>
         );
+      }
       default:
         return null;
     }
